@@ -17,15 +17,20 @@ fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
 app.layout = html.Div([
     
         html.Div([
-            'Minerva ETF Dashboard'
-        ], className="text-center text-[50px]"),
-
-        html.Div([
-            dcc.Link(page['name'], href=page['path'], className="px-4 py-2 border rounded-lg") for page in dash.page_registry.values()
-        ], className="flex justify-center gap-4"),
         
-        html.Hr(),
+            html.Div([
+                html.Img(src="./assets/IconJPM_AM.svg", className="w-[96px] h-[31px]"),
+                
+                html.Div([
+                    'Minerva ETF Dashboard'
+                ], className="text-center text-[24px]"),
+            ], className="flex gap-8 items-center font-medium"),
 
+            html.Div([
+                dcc.Link(page['name'], href=page['path'], className="px-4 py-2 border rounded-lg hover:bg-[#096183] hover:text-white") for page in dash.page_registry.values()
+            ], className="flex justify-center gap-4"),
+        ], className="bg-[#f5f7f8] h-[80px] px-4 flex justify-between items-center border-b border-"),
+        
         # dcc.Graph(
         #     id='example-graph',
         #     figure=fig
@@ -33,7 +38,7 @@ app.layout = html.Div([
         
         dash.page_container
     
-], className="flex flex-col gap-2")
+])
 
 if __name__ == '__main__':
     app.run(debug=True)
