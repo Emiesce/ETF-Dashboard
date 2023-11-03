@@ -20,7 +20,7 @@ app.layout = html.Div(
         html.Div([
             dcc.Link(page['name']+" | ", href=page['path']) for page in dash.page_registry.values()
         ]),
-        html.HR(),
+        html.Hr(),
 
         # dcc.Graph(
         #     id='example-graph',
