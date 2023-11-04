@@ -4,10 +4,10 @@ import plotly.express as px
 import pandas as pd
 
 tailwind_cdn = "https://cdn.tailwindcss.com"
-app = Dash(__name__, use_pages = True, external_scripts=[
-    tailwind_cdn,
-    { "src": "./assets/tailwind_config.js" }
-]) # Access Multiple Pages
+app = Dash(__name__,
+           use_pages = True, # Access Multiple Pages
+           external_scripts=[tailwind_cdn, { "src": "./assets/tailwind_config.js" }],  # enable TailwindCSS
+    )
 
 df = pd.DataFrame({
     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
