@@ -35,10 +35,10 @@ app.layout = html.Div([
             ], className="flex gap-8 items-center font-medium"),
 
             html.Div([
-                dcc.Link(page['name'], href=page['path'], className="px-4 py-2 border border-gray-medium rounded-lg hover:bg-[#096183] hover:text-white") for page in dash.page_registry.values()
+                dcc.Link(page['name'], id=page["name"], href=page['path'], className="px-4 py-2 border border-gray-medium rounded-lg focus:bg-aqua focus:text-white hover:bg-aqua hover:text-white", ) for page in dash.page_registry.values()
             ], className="flex justify-center gap-4"),
         ], className="bg-gray-light h-[80px] px-4 flex justify-between items-center border-b border-gray-medium text-gray-medium"),
-        
+                
         # dcc.Graph(
         #     id='example-graph',
         #     figure=fig
