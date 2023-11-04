@@ -22,7 +22,7 @@ def find_advantage(df, x1, x2):
     diff[best] = float('-inf')
     second_best = diff.idxmax()
 
-    return best, second_best
+    return best, second_best 
 
 
 df = pd.read_csv('example.csv')
