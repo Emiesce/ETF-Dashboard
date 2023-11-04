@@ -29,7 +29,7 @@
     "Real Estate": [
         "Industrial REITs", "Specialized REITs"
     ],
-    "Utilities": [],
+    "Utilities": ["Utilities"],
     "Theme": [
         "Video Games & ESports", "Environment", "FinTech", "Renewable Energy", "Internet", "Blockchain", "Mobility", "Low Carbon", "Digital Economy", "Broad Thematic", "Infrastructure", "Big Tech", "Broad Technology", "Consumer", "Shipping", "Housing", "Natural Resources", "Space", "Robotics & AI", "Millennials", "5G", "Cybersecurity", "Cannabis", "Genomic Advancements", "Agriculture", "Water", "Telecoms", "Broad Retail", "Mortgage REITs", "Timber", "Nuclear Energy", "Digital Payments", "Remote Work"
     ]
