@@ -27,4 +27,3 @@ def find_advantage(df, x1, x2):
 
 df = pd.read_csv('example.csv')
 print(find_advantage(df, 'JPEI', 'QQQ'))
-#print(df)
