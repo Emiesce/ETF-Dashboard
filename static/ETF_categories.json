@@ -1,0 +1,36 @@
+{
+    "Materials": [
+        "Gold Miners", "Metals & Mining", "Steel Producers", "Silver Miners", "Copper Miners"
+    ],
+    "Communciations Services": [
+        "Media & Entertainment", "Interactive & Media Services"
+    ],
+    "Consumer Discretionary": [
+        "Internet & Direct Marketing Retail", "Homebuilding", "Restaurants", "Casinos & Gaming", "Hotels, Resorts, & Cruise Lines", "Footwear", "Automobiles"
+    ],
+    "Consumer Staples": [
+        "Food, Beverage, & Tobacco", "Broad Consumer Staples"
+    ],
+    "Energy": [
+        "Oil, Gas & Consumable Fuels", "Energy Equipment & Services", "MLPs", "Oil & Gas Equipment & Services", "Oil & Gas Exploration & Production", "Natural Gas", "Oil & Gas Refining & Marketing"
+    ],
+    "Financials": [
+        "Financial Exchanges & Data", "Asset Management & Custody Banks", "Insurance", "Capital Markets", "Regional Banks", "Mortgage REITs", "Private Equity", "Banks", "Banking And Investment Services", "Property & Casualty Insurance"
+    ],
+    "Health Care": [
+        "Pharma, Biotech & Life Sciences", "Health Care Providers & Services", "Health Care Equipment & Services", "Health Care Technology", "Health Care Equipment", "Pharmaceuticals", "Health Care Equipment & Supplies", "Biotechnology", "Life Sciences Tools & Services"
+    ],
+    "Industrials": [
+        "Aerospace & Defense", "Autos", "Transportation", "Construction & Engineering", "Airlines"
+    ],
+    "Technology": [
+        "Sermiconductors", "Internet Services & Infrastructure", "Technology Hardware Storage & Peripheral", "Software & Services", "Communications Equipment", "Software", "Data Processing & Outsourced Services", "Systems Software", "Broad Information Technology", "Internet", "Hardware", "Technology Equipment"
+    ],
+    "Real Estate": [
+        "Industrial REITs", "Specialized REITs"
+    ],
+    "Utilities": ["Utilities"],
+    "Theme": [
+        "Video Games & ESports", "Environment", "FinTech", "Renewable Energy", "Internet", "Blockchain", "Mobility", "Low Carbon", "Digital Economy", "Broad Thematic", "Infrastructure", "Big Tech", "Broad Technology", "Consumer", "Shipping", "Housing", "Natural Resources", "Space", "Robotics & AI", "Millennials", "5G", "Cybersecurity", "Cannabis", "Genomic Advancements", "Agriculture", "Water", "Telecoms", "Broad Retail", "Mortgage REITs", "Timber", "Nuclear Energy", "Digital Payments", "Remote Work"
+    ]
+}
