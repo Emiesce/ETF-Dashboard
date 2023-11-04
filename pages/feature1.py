@@ -27,15 +27,15 @@ layout = html.Div([
                 dmc.Accordion([
                     dmc.AccordionItem([
                         
-                        dmc.AccordionControl(category, className="py-3 text-aqua font-medium"),
+                        dmc.AccordionControl(category, className="py-3 text-aqua font-medium focus:bg-gray-light focus:font-bold"),
                         
                         dmc.AccordionPanel(
                             
                             dcc.Checklist([
                                 {"label": html.Span(sub_category, className="ml-2"), "value": sub_category} for sub_category in categories[category]
-                            ], labelClassName="my-2 ml-6 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
+                            ], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
                             
-                        )
+                        , className="bg-aqua/5")
                     ], value=category) for category in list(categories.keys())
                 ])               
             ])
