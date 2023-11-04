@@ -1,7 +1,5 @@
 import dash
-from dash import dcc, html, callback, Output, Input
-import plotly.express as px
-import pandas as pd
+from dash import dcc, html, callback, Output, Input, State
 import dash_mantine_components as dmc
 import json
 
@@ -29,13 +27,15 @@ layout = html.Div([
                         
                         dmc.AccordionControl(category, className="py-3 text-aqua font-medium focus:bg-gray-light focus:font-bold"),
                         
-                        dmc.AccordionPanel(
+                        dmc.AccordionPanel([
                             
+                            html.Button("Select all", id=f"select-all-{category}", n_clicks=None, className="text-bronze hover:underline hover:font-medium hover:cursor-pointer"),
+                                
                             dcc.Checklist(id=category, options=[
                                 {"label": html.Span(sub_category, className="ml-2"), "value": sub_category} for sub_category in categories[category]
-                            ], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
+                            ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
                             
-                        , className="bg-aqua/5")
+                        ], className="bg-aqua/5")
                     ], value=category) for category in list(categories.keys())
                 ])               
             ])
@@ -52,7 +52,7 @@ layout = html.Div([
             
             html.Div(id="selected_categories", className="flex flex-col gap-2")
 
-        ], className="flex-grow p-4 bg-gray-light rounded-lg"),
+        ], className="flex-grow p-4 bg-aqua/5 rounded-lg"),
         
         html.Hr(className="border-b-2 border-bronze"),
         
@@ -73,5 +73,30 @@ def get_selected_categories(*args):
     #print(selected_categories)
     
     return [html.Div([
-        html.Span(f"{key} > {', '.join(val)}")
+        
+        html.Span([
+            
+            f"\u27a4 {key} > ",
+            
+            html.Span(f"{', '.join(val)}", className="font-normal")
+        
+        ], className="font-medium")
     ]) for key, val in selected_categories.items()]
+    
+# @callback([
+#     Output(category, "value") for category in list(categories.keys())
+# ], [
+#     [Input(f"select-all-{category}", "n_clicks") for category in list(categories.keys())]
+# ], [
+#     [State(category, "options") for category in list(categories.keys())]
+# ])
+# def select_all_categories(n_clicks, all_children_options):
+#     all_or_none = []
+#     for ind, n_click in enumerate(n_clicks):
+#         if n_click is not None and n_click % 2 == 1:
+#             current = all_children_options[ind]
+#             all_or_none.append([option["value"] for option in current])
+#         else:
+#             all_or_none.append(None)
+#     print(all_or_none)
+#     return all_or_none
