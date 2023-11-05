@@ -14,12 +14,16 @@ def find_advantage(df, x1, x2):
 
     # Calculate percentage difference for each column
     diff = ((etf1 - etf2) / etf1) * 100
+    
+    advantages = diff[diff > 0]
+    return advantages
 
     # Find the best and the second best column
-    best = diff.idxmax()
-    diff[best] = float('-inf')
-    second_best = diff.idxmax()
-    return best, second_best 
+    # best = diff.idxmax()
+    # diff[best] = float('-inf')
+    # second_best = diff.idxmax()
+    # return best, second_best 
+    
 
 ###Clean competitor_data.csv
 def clean_competitor_data(data_df):
