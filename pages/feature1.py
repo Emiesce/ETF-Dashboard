@@ -46,16 +46,18 @@ layout = html.Div([
     
     html.Div([
         
+        dcc.Store(id="show-selection"),
+        
         html.Div([
 
             html.Span("You have selected:", className="text-[18px] font-medium"),
             
-            html.Div(id="selected_categories", className="flex flex-col gap-2")
+            html.Div(id="selected_categories", className="flex flex-col gap-2 mb-2"),
 
-        ], className="flex-grow p-4 bg-aqua/5 rounded-lg"),
+        ], id="selection-display",className="flex-grow p-4 bg-aqua/5 rounded-lg"),
         
-        html.Hr(className="border-b-2 border-bronze"),
-        
+        html.Hr(id="selection-display-hr", className="border-b-2 border-bronze"),
+                
         html.Div([], className="min-h-[90%] border border-gray-medium rounded-lg p-4")
     
     ], className="flex flex-grow flex-col gap-4")
@@ -82,7 +84,32 @@ def get_selected_categories(*args):
         
         ], className="font-medium")
     ]) for key, val in selected_categories.items()]
-    
+
+@callback(
+    [
+        Output("selection-display", "className"),
+        Output("selection-display-hr", "className")
+    ],
+    [
+        Input(category, "value") for category in list(categories.keys())
+    ],
+    [
+        State("selection-display", "className"),
+        State("selection-display-hr", "className")
+    ])
+def hide_selection(*args):
+    print(args)
+    state1, state2 = 'flex-grow p-4 bg-aqua/5 rounded-lg', 'border-b-2 border-bronze'
+    selection = list(filter(lambda x: x, args[:-2]))
+    return (state1, state2) if len(selection) else ("hidden", "hidden")
+
+# @callback([
+#     Output(),
+#     Input()
+# ])
+# def show_selection():
+#     pass
+
 # @callback([
 #     Output(category, "value") for category in list(categories.keys())
 # ], [
