@@ -1,14 +1,22 @@
 import dash
 from dash import dcc, html, callback, Output, Input, State
 import dash_mantine_components as dmc
+import pandas as pd
 import json
 
 dash.register_page(__name__, path='/')
 
+# data retrieval
 categories = None
 with open("./static/ETF_categories.json") as file:
     categories = json.load(file)
 
+df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", "Ticker", "Expense Ratio", "Tot Asset US$ (M)", "Tot Ret 1Y"])
+df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx")
+
+print(df_etf)
+
+# layout
 layout = html.Div([
     
     html.Div([
