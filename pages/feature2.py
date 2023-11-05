@@ -3,7 +3,8 @@ from dash import dcc, html
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-#from feature2_backend import find_advantage
+from pages.feature2_backend import find_advantage
+from pages.feature2_backend import clean_competitor_data
 
 dash.register_page(__name__)
 
@@ -64,9 +65,21 @@ layout = html.Div(
             ),
 
         ], className="p-4 flex flex-col gap-4 w-[20%] border border-gray-medium rounded-lg"),
-        dcc.Graph(id='graph', className="p-8 flex justify-center gap-12")
+        html.Div(
+            [
+                dcc.Graph(id='graph', className="p-8 flex justify-center gap-12"),
+                html.Div(
+                    id='advantages-box',
+                    className="p-4 border border-gray-medium rounded-lg",
+                    style={'position': 'absolute', 'top': '30%', 'right': '10px'}
+                )
+            ],
+            style={'position': 'relative', 'flex': '1'}
+        )
+    ],
+        # dcc.Graph(id='graph', className="p-8 flex justify-center gap-12")
         # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
-    ], 
+    # ], 
     className="p-8 flex justify-center gap-12"
 )
 
@@ -114,3 +127,28 @@ def update_selected_div(selected_options):
         return selected_divs
     else:
         return []
+    
+    
+# Function for updating the advantages box
+@dash.callback(
+    dash.dependencies.Output('advantages-box', 'children'),
+    dash.dependencies.Input('checkbox', 'value')
+)
+def update_advantages_box(selected_options):
+    data_frame = pd.read_csv('Competitor Data.csv')
+    data_frame = clean_competitor_data(data_frame)
+    advantages = find_advantage(data_frame, 'JEPI US Equity', 'CQQQ US Equity')
+    if not advantages.empty:
+        advantage_list = []
+        container_style = {'display': 'flex', 'justify-content': 'space-between'}
+        # advantage_list.append(html.Hr())
+        advantage_list.append(html.H2("JEPI US Equity v.s. CQQQ US Equity", style={'font-size': '24px'}))
+        for index, value in advantages.items():
+            # advantage_list.append(html.P(f'{index}:'))
+            # advantage_list.append(html.P(f'{value}% better', style={'text-align': 'right'}))
+            container = html.Div(style=container_style, children=[
+                html.P(f'{index}:'),
+                html.P(f'{value}% better', style={'text-align': 'right'})
+            ])
+            advantage_list.append(container)
+    return advantage_list

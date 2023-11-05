@@ -15,6 +15,7 @@ def find_advantage(df, x1, x2):
 
     # Calculate percentage difference for each column
     diff = ((etf1 - etf2) / etf1) * 100
+    diff = diff.round(2)
     
     advantages = diff[diff > 0]
     return advantages
