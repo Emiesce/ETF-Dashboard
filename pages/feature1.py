@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html, callback, Output, Input, State
+from dash import dcc, html, callback, Output, Input, State, dash_table
 import dash_mantine_components as dmc
 import pandas as pd
 import json
@@ -50,7 +50,7 @@ layout = html.Div([
             
         ], className="flex flex-col gap-2")
         
-    ], className="p-4 flex flex-col gap-4 w-[20%] border border-gray-medium rounded-lg"),
+    ], className="p-4 flex flex-col gap-4 w-[20%] border-y border-gray-medium"),
     
     html.Div([
         
@@ -62,12 +62,41 @@ layout = html.Div([
             
             html.Div(id="selected_categories", className="flex flex-col gap-2 mb-2"),
 
-        ], id="selection-display",className="flex-grow p-4 bg-aqua/5 rounded-lg"),
+        ], id="selection-display", className="flex-grow p-4 bg-aqua/5 rounded-lg"),
         
-        html.Hr(id="selection-display-hr", className="border-b-2 border-bronze"),
+        html.Hr(id="selection-display-hr", className="border-b border-bronze"),
                 
-        html.Div([], className="min-h-[90%] border border-gray-medium rounded-lg p-4")
-    
+        html.Div([
+            
+            html.Div([
+                
+                html.Span("Ticker"),
+                html.Span("Name"),
+                html.Span("Holdings by Sector (% NAV)"),
+                html.Span("Expense Ratio"),
+                html.Span("AUM (USD million)"),
+                html.Span("1 Year Return (%)")
+            
+            ], className="p-4 grid grid-cols-6 gap-4 border-b-2 border-bronze font-semibold"),
+            
+            html.Div([
+                
+                
+                html.Div([
+                    
+                    html.Span(row["Ticker"], className="text-jade font-medium"),
+                    html.Span(row["Name"], className="text-aqua font-medium"),
+                    html.Div(["I am portfolio percentage"]),
+                    html.Span(row["Expense Ratio"]),
+                    html.Span(row["Tot Asset US$ (M)"]),
+                    html.Span(row["Tot Ret 1Y"])
+                    
+                ], className="p-4 grid grid-cols-6 gap-4 border-b border-gray-medium") for _, row in df_etf.iterrows()
+            
+            ], className="flex flex-col text-[14px] text-start")
+        
+        ], className="min-h-[90%]")
+        
     ], className="flex flex-grow flex-col gap-4")
 
 ], className="p-8 flex justify-center gap-12")
