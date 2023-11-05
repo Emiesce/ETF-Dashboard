@@ -1,10 +1,15 @@
 import dash
+import dash_ag_grid as dag
 from dash import dcc, html, callback, Output, Input, State, dash_table
 import dash_mantine_components as dmc
+from plotly import graph_objects as go
 import pandas as pd
 import json
+import numpy as np
 
 dash.register_page(__name__, path='/')
+
+
 
 # data retrieval
 categories = None
@@ -12,9 +17,31 @@ with open("./static/ETF_categories.json") as file:
     categories = json.load(file)
 
 df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", "Ticker", "Expense Ratio", "Tot Asset US$ (M)", "Tot Ret 1Y"])
-df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx")
+df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx", sheet_name=None)  # read all sheets, i.e holdings of all ETFs
 
-print(df_etf)
+#print(df_etf)
+print(df_holding)
+
+# dummy variables
+def generate_random_bar_chart():
+    random_x = np.random.choice(SECTORS, size=5, replace=False),
+    random_y = np.random.random(5)
+    random_y /= sum(random_y)
+    random_y *= 100
+    
+    fig = go.Figure(go.Pie(
+        labels=random_x,
+        values=random_y,
+    ))
+    
+    fig.update_layout(
+        width=700,
+        height=700
+    )
+    
+    return fig
+
+SECTORS=["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
 
 # layout
 layout = html.Div([
@@ -81,12 +108,13 @@ layout = html.Div([
             
             html.Div([
                 
-                
                 html.Div([
                     
                     html.Span(row["Ticker"], className="text-jade font-medium"),
                     html.Span(row["Name"], className="text-aqua font-medium"),
-                    html.Div(["I am portfolio percentage"]),
+                    
+                    html.Span(),
+                    
                     html.Span(row["Expense Ratio"]),
                     html.Span(row["Tot Asset US$ (M)"]),
                     html.Span(row["Tot Ret 1Y"])
@@ -99,7 +127,7 @@ layout = html.Div([
         
     ], className="flex flex-grow flex-col gap-4")
 
-], className="p-8 flex justify-center gap-12")
+], className="p-8 flex justify-center gap-12")    
 
 @callback(Output("selected_categories", "children"),
           [Input(category, "value") for category in list(categories.keys())])
