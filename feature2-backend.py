@@ -2,16 +2,15 @@ import pandas as pd
 
 #x1 is JPM's ETF, x2 is target competitor's ETF
 def find_advantage(df, x1, x2):
-    df['ESG Rate'] = df['ESG Rate'].astype(str)
-    etf1 = df[df['Symbol'] == x1].iloc[0][1:]
-    etf2 = df[df['Symbol'] == x2].iloc[0][1:]
-    # print(df['ESG Rate'])
+    # Get data for the two ETFs
+    etf1 = df[df['Ticker'] == x1].iloc[0][1:]
+    etf2 = df[df['Ticker'] == x2].iloc[0][1:]
+    etf1 = etf1[8:].astype(float)
+    etf2 = etf2[8:].astype(float)
     
     # Remove '%' symbol and commas, and convert to float
-    etf1 = etf1.str.replace('%', '').str.replace(',', '').astype(float)
-    etf2 = etf2.str.replace('%', '').str.replace(',', '').astype(float)
-    # print(etf1)
-    # print(etf2)
+    # etf1 = etf1.str.replace('%', '').str.replace(',', '').astype(float)
+    # etf2 = etf2.str.replace('%', '').str.replace(',', '').astype(float)
 
     # Calculate percentage difference for each column
     diff = ((etf1 - etf2) / etf1) * 100
@@ -24,6 +23,22 @@ def find_advantage(df, x1, x2):
 
     return best, second_best 
 
+def clean_competitor_data(data_df):
+    
+    modified_df = data_df.copy()
+    # Replace NaN with -inf for Parent Comp. Name = "JP Morgan ETFs/USA"
+    modified_df.loc[modified_df["Parent Comp. Name"] == "JP Morgan ETFs/USA"] = modified_df.loc[modified_df["Parent Comp. Name"] == "JP Morgan ETFs/USA"].fillna(float('-inf'))
 
-df = pd.read_csv('example.csv')
-print(find_advantage(df, 'JPEI', 'QQQ'))
+    # Replace NaN with +inf for the rest of the data
+    modified_df = modified_df.fillna(float('inf'))
+
+    return modified_df
+
+
+df = pd.read_csv('Competitor Data.csv')
+# print(df)
+df = clean_competitor_data(df)
+# print(df)
+print(find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity'))
+print(find_advantage(df, 'BBSC US Equity', 'SPYG US Equity'))
+
