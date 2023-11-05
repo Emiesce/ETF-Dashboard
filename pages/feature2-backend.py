@@ -85,11 +85,26 @@ def plot_advantages(df, x1, x2):
             continue
         metric = plot_metric[metric]
 
+        etf_code1 = x1.split()[0]
+        etf_code2 = x2.split()[0]
+
         plot_timeseries(
-            'JEPI', # This is hard coded for now, need to fix later by fixing file names
-            'DFAC',
+            etf_code1,
+            etf_code2, 
             metric,
             time_period) # Multiply year value by 365 
+
+
+# TODO: By Adi: Implement following function
+def plot_multi_advantages(df, x1, x2_list, jpm_x1 = True):
+    pass
+    # x1 singular ETF
+    # x2 list of ETFs to compare
+    # jpm_x1 is True if x1 is a JPM ETF, False otherwise
+    # In essence, this function should plot all the advantages of x1 over x2_list if jpm_x1 is True
+    # Otherwise it should plot all the advantages of x2_list over x1
+
+
 
 df = pd.read_csv('Competitor Data.csv')
 # print(df)
