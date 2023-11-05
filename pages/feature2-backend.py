@@ -72,16 +72,24 @@ def plot_advantages(df, x1, x2):
         print(f' Plotting {row[0]}')
         split_row = row[0].split()
         print(split_row)
+        
         if split_row[-1][1] == 'Y': # Check the last split word for 'Y'
-            plot_timeseries(
-                'JEPI',
-                'QQQ',
-                plot_metric[' '.join(split_row[:-1])],
-                365*int(split_row[-1][0]) # Multiply year value by 365 
-            ) 
-    # plot_timeseries(x1, x2, row[0]) # TODO: Fix name discrepancy between select_column and find_advantage
+            metric = ' '.join(split_row[:-1]) # Join all words except the last word
+            time_period = 365*int(split_row[-1][0]) # Multiply year value by 365 
         else:
-            plot_timeseries('JEPI', 'QQQ', plot_metric[row[0]])
+            metric = ' '.join(split_row)
+            time_period = 365
+
+        if metric not in plot_metric:
+            print(f'No metric found for {metric}')
+            continue
+        metric = plot_metric[metric]
+
+        plot_timeseries(
+            'JEPI', # This is hard coded for now, need to fix later by fixing file names
+            'DFAC',
+            metric,
+            time_period) # Multiply year value by 365 
 
 df = pd.read_csv('Competitor Data.csv')
 # print(df)
@@ -92,7 +100,7 @@ df = clean_competitor_data(df)
 # print(select_column('QQQ', 'FUND_NET_ASSET_VAL'))
 # plot_timeseries('DFAC', 'QQQ', 'FUND_NET_ASSET_VAL', 365)
 print(find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity'))
-plot_advantages(df, 'JEPI US Equity', 'CQQQ US Equity')
+plot_advantages(df, 'JEPI US Equity', 'DFAC US Equity')
 
 # print(select_column('QQQ', 'FUND_NET_ASSET_VAL'))
 # print(select_column('QQQ', 'TOT_RETURN_INDEX_GROSS_DVDS'))
