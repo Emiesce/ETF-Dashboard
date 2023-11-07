@@ -1,0 +1,28 @@
+.ag-theme-alpine {
+    --ag-borders: None;
+    --ag-row-border-style: solid;
+    --ag-row-border-width: 1px;
+    --ag-row-border-color: #dadada;
+
+    --ag-header-column-separator-display: block;
+    --ag-header-column-separator-height: 50%;
+    --ag-header-column-separator-width: 2px;
+    --ag-header-column-separator-color: grey;
+}
+
+.ag-header-cell {
+    font-size: 16px;
+    font-weight: 500;
+    text-wrap: wrap;
+}
+
+.ag-header {
+    border-bottom-style: solid;
+    border-bottom: 1px;
+    border-bottom-color: #936846;
+}
+
+.ag-cell {
+    text-wrap: wrap;
+    line-height: 1.5;
+}

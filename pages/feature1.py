@@ -11,24 +11,6 @@ import numpy as np
 dash.register_page(__name__, path='/')
 
 # dummy variables
-def generate_random_bar_chart():
-    random_x = np.random.choice(SECTORS, size=5, replace=False),
-    random_y = np.random.random(5)
-    random_y /= sum(random_y)
-    random_y *= 100
-    
-    fig = go.Figure(go.Pie(
-        labels=random_x,
-        values=random_y,
-    ))
-    
-    fig.update_layout(
-        width=700,
-        height=700
-    )
-    
-    return fig
-
 SECTORS=["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
 
 # data retrieval
@@ -58,19 +40,27 @@ for i, row in df_etf.iterrows():
         xaxis_visible=False,
         xaxis_showticklabels=False,
         margin=dict(l=0, r=0, t=0, b=0),
-        template="plotly_white",
+        template="none",
+        yaxis={"categoryorder": "total descending"},
+        yaxis_range=[0, 100]
     )
     df_etf.at[i, "graph"] = fig
 
 columnDefs = [
-    { "field": "Name" },
-    { "field": "Ticker" },
+    {
+        "field": "Ticker",
+        "cellClass": "text-jade font-medium",
+    },
+    {
+        "field": "Name",
+        "cellClass": "text-aqua font-medium"
+    },
     {
         "field": "graph",
         "cellRenderer": "DCC_GraphClickData",
         "headerName": "Holdings by Sector (%NAV)",
-        "maxWidth": 900,
-        "minWidth": 500,
+        "maxWidth": 300,
+        "minWidth": 100,
     },
     {
         "field": "Expense Ratio",
@@ -142,44 +132,14 @@ layout = html.Div([
                 
         html.Div([
             
-            # Ag Grid
             dag.AgGrid(
                 rowData=df_etf.to_dict("records"),
                 columnSize="sizeToFit",
                 columnDefs=columnDefs,
                 defaultColDef={"sortable": True, "filter": True, "minWidth": 125},
-                dashGridOptions={"rowHeight": 100},
-                style={"height": 800},
+                dashGridOptions={"rowHeight": 80, "domLayout": "autoHeight"},
+                style={"height": None}
             ),
-            
-            # table
-            html.Div([
-                
-                html.Span("Ticker"),
-                html.Span("Name"),
-                html.Span("Holdings by Sector (% NAV)"),
-                html.Span("Expense Ratio"),
-                html.Span("AUM (USD million)"),
-                html.Span("1 Year Return (%)")
-            
-            ], className="p-4 grid grid-cols-6 gap-4 border-b-2 border-bronze font-semibold"),
-            
-            html.Div([
-                
-                html.Div([
-                    
-                    html.Span(row["Ticker"], className="text-jade font-medium"),
-                    html.Span(row["Name"], className="text-aqua font-medium"),
-                    
-                    html.Span(),
-                    
-                    html.Span(row["Expense Ratio"]),
-                    html.Span(row["Tot Asset US$ (M)"]),
-                    html.Span(row["Tot Ret 1Y"])
-                    
-                ], className="p-4 grid grid-cols-6 gap-4 border-b border-gray-medium") for _, row in df_etf.iterrows()
-            
-            ], className="flex flex-col text-[14px] text-start")
         
         ], className="min-h-[90%]")
         
