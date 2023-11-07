@@ -1,14 +1,86 @@
 import dash
-from dash import dcc, html, callback, Output, Input, State
+import dash_ag_grid as dag
+import plotly.express as px
+from dash import dcc, html, callback, Output, Input, State, dash_table
 import dash_mantine_components as dmc
+from plotly import graph_objects as go
+import pandas as pd
 import json
+import numpy as np
 
 dash.register_page(__name__, path='/')
 
+# dummy variables
+SECTORS=["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
+
+# data retrieval
 categories = None
 with open("./static/ETF_categories.json") as file:
     categories = json.load(file)
 
+df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", "Ticker", "Expense Ratio", "Tot Asset US$ (M)", "Tot Ret 1Y", "Top 5 Sector", "Top 5 %NAV"])
+df_etf["Top 5 Sector"] = df_etf["Top 5 Sector"].apply(lambda x: x.split(","))
+df_etf["Top 5 %NAV"] = df_etf["Top 5 %NAV"].apply(lambda x: x.split(","))
+# df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx", sheet_name=None)  # read all sheets, i.e holdings of all ETFs
+
+df_etf["graph"] = ""
+for i, row in df_etf.iterrows():
+    df_fig = pd.DataFrame({ "Sector": row["Top 5 Sector"], "%NAV": row["Top 5 %NAV"] })
+    
+    fig = px.bar(
+        df_fig,
+        x="Sector",
+        y="%NAV",
+    )
+    
+    fig.update_layout(
+        showlegend=False,
+        yaxis_visible=False,
+        yaxis_showticklabels=False,
+        xaxis_visible=False,
+        xaxis_showticklabels=False,
+        margin=dict(l=0, r=0, t=0, b=0),
+        template="none",
+        yaxis={"categoryorder": "total descending"},
+        yaxis_range=[0, 100]
+    )
+    df_etf.at[i, "graph"] = fig
+
+columnDefs = [
+    {
+        "field": "Ticker",
+        "cellClass": "text-jade font-medium",
+    },
+    {
+        "field": "Name",
+        "cellClass": "text-aqua font-medium"
+    },
+    {
+        "field": "graph",
+        "cellRenderer": "DCC_GraphClickData",
+        "headerName": "Holdings by Sector (%NAV)",
+        "maxWidth": 300,
+        "minWidth": 100,
+    },
+    {
+        "field": "Expense Ratio",
+        "valueFormatter": {"function": 'd3.format("(,.2f")(params.value)'},
+    },
+    {
+        "field": "Tot Asset US$ (M)",
+        "headerName": "AUM (USD million)"
+    },
+    {
+        "field": "Tot Ret 1Y",
+        "headerName": "1 Year Return (%)",
+        "valueFormatter": {"function": 'd3.format("(,.2f")(params.value)'}
+    }
+]
+
+# print(df_etf)
+# print(df_holding)
+
+# layout
 layout = html.Div([
     
     html.Div([
@@ -42,7 +114,7 @@ layout = html.Div([
             
         ], className="flex flex-col gap-2")
         
-    ], className="p-4 flex flex-col gap-4 w-[20%] border border-gray-medium rounded-lg"),
+    ], className="p-4 flex flex-col gap-4 w-[20%] border-y border-gray-medium"),
     
     html.Div([
         
@@ -54,15 +126,26 @@ layout = html.Div([
             
             html.Div(id="selected_categories", className="flex flex-col gap-2 mb-2"),
 
-        ], id="selection-display",className="flex-grow p-4 bg-aqua/5 rounded-lg"),
+        ], id="selection-display", className="flex-grow p-4 bg-aqua/5 rounded-lg"),
         
-        html.Hr(id="selection-display-hr", className="border-b-2 border-bronze"),
+        html.Hr(id="selection-display-hr", className="border-b border-bronze"),
                 
-        html.Div([], className="min-h-[90%] border border-gray-medium rounded-lg p-4")
-    
+        html.Div([
+            
+            dag.AgGrid(
+                rowData=df_etf.to_dict("records"),
+                columnSize="sizeToFit",
+                columnDefs=columnDefs,
+                defaultColDef={"sortable": True, "filter": True, "minWidth": 125},
+                dashGridOptions={"rowHeight": 80, "domLayout": "autoHeight"},
+                style={"height": None}
+            ),
+        
+        ], className="min-h-[90%]")
+        
     ], className="flex flex-grow flex-col gap-4")
 
-], className="p-8 flex justify-center gap-12")
+], className="p-8 flex justify-center gap-12")    
 
 @callback(Output("selected_categories", "children"),
           [Input(category, "value") for category in list(categories.keys())])
@@ -98,7 +181,7 @@ def get_selected_categories(*args):
         State("selection-display-hr", "className")
     ])
 def hide_selection(*args):
-    print(args)
+    # print(args)
     state1, state2 = 'flex-grow p-4 bg-aqua/5 rounded-lg', 'border-b-2 border-bronze'
     selection = list(filter(lambda x: x, args[:-2]))
     return (state1, state2) if len(selection) else ("hidden", "hidden")
