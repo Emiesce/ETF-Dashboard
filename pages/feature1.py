@@ -21,7 +21,8 @@ df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", 
 df_etf["Top 5 Sector"] = df_etf["Top 5 Sector"].apply(lambda x: x.split(","))
 df_etf["Top 5 %NAV"] = df_etf["Top 5 %NAV"].apply(lambda x: x.split(","))
 df_etf["Name"] = df_etf[["Name", "Ticker"]].apply(lambda x: ",".join(x), axis=1)
-# df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx", sheet_name=None)  # read all sheets, i.e holdings of all ETFs
+df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx", sheet_name=None)  # read all sheets, i.e holdings of all ETFs
+df_nav_perct = pd.read_excel("./static/JPMorgan_5-ETF-composition.xlsx", sheet_name=None)
 
 df_etf["graph"] = ""
 for i, row in df_etf.iterrows():
@@ -236,10 +237,53 @@ def hide_selection(*args):
     prevent_initial_call=True
 )
 def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
-    print(selected_categories)
-    print(operator)
-    print(threshold)
-    return df_etf.to_dict("records")
+    print("Filter criteria:")
+    print(f"\t\u27a4 {selected_categories=}")
+    print(f"\t\u27a4 {operator=}")
+    print(f"\t\u27a4 {threshold=}")
+    
+    filter_ticker = []
+    
+    for ETF_name, df_nav in df_nav_perct.items():
+        print(ETF_name)
+        for ind, sector in enumerate(list(selected_categories.keys())):
+            sector_nav = df_nav.loc[df_nav["Sector"].str.match(sector)]["%NAV"]
+            if len(sector_nav) == 0:
+                continue
+            nav = float(df_nav.loc[df_nav["Sector"].str.match(sector)]["%NAV"].item())
+            target_nav = float(threshold[ind])
+            op = operator[ind]
+            
+            if op == "geq" and nav >= target_nav:
+                filter_ticker.append(ETF_name)
+            
+            elif op == "g" and nav > target_nav:
+                filter_ticker.append(ETF_name)
+                
+            elif op == "eq" and nav == target_nav:
+                filter_ticker.append(ETF_name)
+            
+            elif op == "l" and nav < target_nav:
+                filter_ticker.append(ETF_name)
+                
+            elif op == "leq" and nav <= target_nav:
+                filter_ticker.append(ETF_name)
+  
+    df_filter = df_etf[df_etf["Ticker"].apply(lambda x: x in filter_ticker)]
+    
+    # === Sorry my brain is melting ===
+    # filter_result = []
+    # for ETF_name, ETF_holdings_df in df_holding.items():
+    #     df_nav_by_sector = ETF_holdings_df[["%NAV", "Sector"]].groupby(by="Sector").sum()
+    #     for ind, selected in enumerate(selected_categories.values()):
+    #         for sector in selected:
+    #             if sector not in ETF_holdings_df["Sector"]:
+    #                 continue
+    #             if operator[ind] == "geq":
+    #                 if 
+    #     print("Done with " + ETF_name)
+    
+    return df_filter.to_dict("records")
 
 # @callback([
 #     Output(),
