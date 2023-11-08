@@ -26,7 +26,7 @@ dagcomponentfuncs.ShowNameAndTicker = function(props) {
         { className: "flex flex-col" },
         [
             React.createElement("span", { className: "text-jade" }, ticker),
-            React.createElement("span", { className: "-mt-3" }, name),
+            React.createElement("span", { className: "-mt-2" }, name),
         ]
     );
 }

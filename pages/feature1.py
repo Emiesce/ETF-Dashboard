@@ -115,14 +115,18 @@ layout = html.Div([
     ], className="p-4 flex flex-col gap-4 w-[20%] border-y border-gray-medium"),
     
     html.Div([
-        
-        dcc.Store(id="show-selection"),
-        
+               
         html.Div([
 
             html.Span("You have selected:", className="text-[18px] font-medium"),
             
             html.Div(id="selected_categories", className="flex flex-col gap-2 mb-2"),
+
+            html.Div([
+                
+                html.Button(id="submit-filter", children="Search", className="px-4 py-[6px] border border-gray-medium font-medium hover:bg-aqua hover:text-white rounded-md")
+        
+            ], className="flex justify-end")
 
         ], id="selection-display", className="flex-grow p-4 bg-aqua/5 rounded-lg"),
         
@@ -163,8 +167,30 @@ def get_selected_categories(*args):
             
             html.Span(f"{', '.join(val)}", className="font-normal")
         
-        ], className="font-medium")
-    ]) for key, val in selected_categories.items()]
+        ], className="font-medium"),
+        
+        dcc.Dropdown(
+            id=f"{val}-operator",
+            options=[
+                { "label": "> Greater than", "value": "g"  },
+                { "label": ">= Greater than or equal to ", "value": "geq" },
+                { "label": "= Equal to", "value": "eq" },
+                { "label": "< Less than", "value": "l" },
+                { "label": "<= Less than or equal to", "value": "leq" }
+            ],
+            placeholder="Operator",
+        ),
+        
+        dcc.Input(
+            id=f"{val}-threshold",
+            type="number",
+            placeholder="% NAV",
+            min=0,
+            max=100,
+            className="w-[17%] px-[10px] min-h-[36px] border border-[#cccccc] rounded-[5px]"
+        )
+        
+    ], className="flex gap-4 items-center") for key, val in selected_categories.items()]
 
 @callback(
     [
