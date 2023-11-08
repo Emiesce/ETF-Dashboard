@@ -1,20 +1,21 @@
 import dash
 import dash_ag_grid as dag
 import plotly.express as px
-from dash import dcc, html, callback, Output, Input, State
+from dash import dcc, html, callback, Output, Input, State, ALL
 import dash_mantine_components as dmc
 import pandas as pd
 import json
 
 dash.register_page(__name__, path='/')
 
-# dummy variables
+# variables
 SECTORS=["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
 
 # data retrieval
 categories = None
 with open("./static/ETF_categories.json") as file:
     categories = json.load(file)
+parent_categories = list(categories.keys())
 
 df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", "Ticker", "Expense Ratio", "Tot Asset US$ (M)", "Tot Ret 1Y", "Top 5 Sector", "Top 5 %NAV"])
 df_etf["Top 5 Sector"] = df_etf["Top 5 Sector"].apply(lambda x: x.split(","))
@@ -106,7 +107,7 @@ layout = html.Div([
                             ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
                             
                         ], className="bg-aqua/5")
-                    ], value=category) for category in list(categories.keys())
+                    ], value=category) for category in parent_categories
                 ])               
             ])
             
@@ -120,7 +121,9 @@ layout = html.Div([
 
             html.Span("You have selected:", className="text-[18px] font-medium"),
             
-            html.Div(id="selected_categories", className="flex flex-col gap-2 mb-2"),
+            dcc.Store(id="filter-data", data=None),
+            
+            html.Div(id="selected-categories", className="flex flex-col gap-2 mb-2", ),
 
             html.Div([
                 
@@ -135,6 +138,7 @@ layout = html.Div([
         html.Div([
             
             dag.AgGrid(
+                id="etf-ag-grid",
                 rowData=df_etf.to_dict("records"),
                 columnSize="sizeToFit",
                 columnDefs=columnDefs,
@@ -149,15 +153,18 @@ layout = html.Div([
 
 ], className="p-8 flex justify-center gap-12")    
 
-@callback(Output("selected_categories", "children"),
-          [Input(category, "value") for category in list(categories.keys())])
+@callback(
+    [
+        Output("selected-categories", "children"),
+        Output("filter-data", "data")
+    ],
+    [Input(category, "value") for category in parent_categories])
 def get_selected_categories(*args):
     selected_categories = {}
     for ind, checklist in enumerate(args):
         if checklist is not None and len(checklist):
-            parent = list(categories.keys())[ind]
+            parent = parent_categories[ind]
             selected_categories[parent] = checklist
-    #print(selected_categories)
     
     return [html.Div([
         
@@ -170,7 +177,10 @@ def get_selected_categories(*args):
         ], className="font-medium"),
         
         dcc.Dropdown(
-            id=f"{val}-operator",
+            id={
+                "type": "filter-operator",
+                "index": 0
+            },
             options=[
                 { "label": "> Greater than", "value": "g"  },
                 { "label": ">= Greater than or equal to ", "value": "geq" },
@@ -182,7 +192,10 @@ def get_selected_categories(*args):
         ),
         
         dcc.Input(
-            id=f"{val}-threshold",
+            id={
+                "type": "filter-threshold",
+                "index": 0
+            },
             type="number",
             placeholder="% NAV",
             min=0,
@@ -190,7 +203,7 @@ def get_selected_categories(*args):
             className="w-[17%] px-[10px] min-h-[36px] border border-[#cccccc] rounded-[5px]"
         )
         
-    ], className="flex gap-4 items-center") for key, val in selected_categories.items()]
+    ], className="flex gap-4 items-center") for key, val in selected_categories.items()], selected_categories
 
 @callback(
     [
@@ -198,17 +211,35 @@ def get_selected_categories(*args):
         Output("selection-display-hr", "className")
     ],
     [
-        Input(category, "value") for category in list(categories.keys())
+        Input(category, "value") for category in parent_categories
     ],
     [
         State("selection-display", "className"),
         State("selection-display-hr", "className")
-    ])
+    ]
+)
 def hide_selection(*args):
     # print(args)
     state1, state2 = 'flex-grow p-4 bg-aqua/5 rounded-lg', 'border-b-2 border-bronze'
     selection = list(filter(lambda x: x, args[:-2]))
     return (state1, state2) if len(selection) else ("hidden", "hidden")
+
+
+@callback(
+    Output("etf-ag-grid", "rowData"),
+    Input("submit-filter", "n_clicks"),
+    [
+        State("filter-data", "data"),
+        State({"type": "filter-operator", "index": ALL}, "value"),
+        State({"type": "filter-threshold", "index": ALL}, "value")
+    ],
+    prevent_initial_call=True
+)
+def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
+    print(selected_categories)
+    print(operator)
+    print(threshold)
+    return df_etf.to_dict("records")
 
 # @callback([
 #     Output(),
@@ -218,11 +249,11 @@ def hide_selection(*args):
 #     pass
 
 # @callback([
-#     Output(category, "value") for category in list(categories.keys())
+#     Output(category, "value") for category in parent_categories
 # ], [
-#     [Input(f"select-all-{category}", "n_clicks") for category in list(categories.keys())]
+#     [Input(f"select-all-{category}", "n_clicks") for category in parent_categories]
 # ], [
-#     [State(category, "options") for category in list(categories.keys())]
+#     [State(category, "options") for category in parent_categories]
 # ])
 # def select_all_categories(n_clicks, all_children_options):
 #     all_or_none = []
