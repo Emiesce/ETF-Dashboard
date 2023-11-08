@@ -1,12 +1,10 @@
 import dash
 import dash_ag_grid as dag
 import plotly.express as px
-from dash import dcc, html, callback, Output, Input, State, dash_table
+from dash import dcc, html, callback, Output, Input, State
 import dash_mantine_components as dmc
-from plotly import graph_objects as go
 import pandas as pd
 import json
-import numpy as np
 
 dash.register_page(__name__, path='/')
 
@@ -21,6 +19,7 @@ with open("./static/ETF_categories.json") as file:
 df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", "Ticker", "Expense Ratio", "Tot Asset US$ (M)", "Tot Ret 1Y", "Top 5 Sector", "Top 5 %NAV"])
 df_etf["Top 5 Sector"] = df_etf["Top 5 Sector"].apply(lambda x: x.split(","))
 df_etf["Top 5 %NAV"] = df_etf["Top 5 %NAV"].apply(lambda x: x.split(","))
+df_etf["Name"] = df_etf[["Name", "Ticker"]].apply(lambda x: ",".join(x), axis=1)
 # df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx", sheet_name=None)  # read all sheets, i.e holdings of all ETFs
 
 df_etf["graph"] = ""
@@ -48,19 +47,18 @@ for i, row in df_etf.iterrows():
 
 columnDefs = [
     {
-        "field": "Ticker",
-        "cellClass": "text-jade font-medium",
-    },
-    {
         "field": "Name",
-        "cellClass": "text-aqua font-medium"
+        "cellClass": "text-aqua font-medium",
+        "cellRenderer": "ShowNameAndTicker",
+        "minWidth": 250,
+        "maxWidth": 300
     },
     {
         "field": "graph",
         "cellRenderer": "DCC_GraphClickData",
         "headerName": "Holdings by Sector (%NAV)",
-        "maxWidth": 300,
-        "minWidth": 100,
+        "minWidth": 250,
+        "maxWidth": 400,
     },
     {
         "field": "Expense Ratio",
@@ -137,8 +135,8 @@ layout = html.Div([
                 columnSize="sizeToFit",
                 columnDefs=columnDefs,
                 defaultColDef={"sortable": True, "filter": True, "minWidth": 125},
-                dashGridOptions={"rowHeight": 80, "domLayout": "autoHeight"},
-                style={"height": None}
+                dashGridOptions={"rowHeight": 90, "domLayout": "autoHeight"},
+                style={"height": None, "width": "100%" }
             ),
         
         ], className="min-h-[90%]")

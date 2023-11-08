@@ -15,3 +15,18 @@ dagcomponentfuncs.DCC_GraphClickData = function (props) {
         config: {displayModeBar: false},
     });
 };
+
+dagcomponentfuncs.ShowNameAndTicker = function(props) {
+    const nameAndTicker = props.value.split(",");
+    const name = nameAndTicker[0];
+    const ticker = nameAndTicker[1];
+
+    return React.createElement(
+        "div", 
+        { className: "flex flex-col" },
+        [
+            React.createElement("span", { className: "text-jade" }, ticker),
+            React.createElement("span", { className: "-mt-3" }, name),
+        ]
+    );
+}
