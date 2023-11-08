@@ -18,6 +18,8 @@ def find_advantage(df, x1, x2):
     diff = diff.round(2)
     
     advantages = diff[diff > 0]
+    # print(type(advantages))
+    # print(advantages.tolist())
     return advantages
 
     # Find the best and the second best column
@@ -44,17 +46,17 @@ def select_column(etf, column):
     selected_data = data_df[selected_columns]
     return selected_data
 
-def plot_timeseries(etf1, etf2, column, period=365):
-    etf1_data = select_column(etf1, column)[:period]
-    etf2_data = select_column(etf2, column)[:period]
-    print(type(etf2_data[column][0]))
-    etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
-    etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
-    plt.plot(etf1_data['Date'], etf1_data[column], label=etf1)
-    plt.plot(etf2_data['Date'], etf2_data[column], label=etf2)
-    plt.title(f'{column} of {etf1} and {etf2}')
-    plt.legend()
-    plt.show()
+# def plot_timeseries(etf1, etf2, column, period=365):
+#     etf1_data = select_column(etf1, column)[:period]
+#     etf2_data = select_column(etf2, column)[:period]
+#     print(type(etf2_data[column][0]))
+#     etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
+#     etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
+#     plt.plot(etf1_data['Date'], etf1_data[column], label=etf1)
+#     plt.plot(etf2_data['Date'], etf2_data[column], label=etf2)
+#     plt.title(f'{column} of {etf1} and {etf2}')
+#     plt.legend()
+#     plt.show()
 
 
 # List of what metric to plot for each advantage
@@ -65,35 +67,35 @@ plot_metric = {
     'Tot Ret' : 'FUND_NET_ASSET_VAL',
 }
 
-def plot_advantages(df, x1, x2):
-    advantages = find_advantage(df, x1, x2)
-    print(f'Detecting {len(advantages)} advantages')
-    print(f'Advantages: {advantages}')
-    for row in advantages.items():
-        print(f' Plotting {row[0]}')
-        split_row = row[0].split()
-        print(split_row)
+# def plot_advantages(df, x1, x2):
+#     advantages = find_advantage(df, x1, x2)
+#     print(f'Detecting {len(advantages)} advantages')
+#     print(f'Advantages: {advantages}')
+#     for row in advantages.items():
+#         print(f' Plotting {row[0]}')
+#         split_row = row[0].split()
+#         print(split_row)
         
-        if split_row[-1][1] == 'Y': # Check the last split word for 'Y'
-            metric = ' '.join(split_row[:-1]) # Join all words except the last word
-            time_period = 365*int(split_row[-1][0]) # Multiply year value by 365 
-        else:
-            metric = ' '.join(split_row)
-            time_period = 365
+#         if split_row[-1][1] == 'Y': # Check the last split word for 'Y'
+#             metric = ' '.join(split_row[:-1]) # Join all words except the last word
+#             time_period = 365*int(split_row[-1][0]) # Multiply year value by 365 
+#         else:
+#             metric = ' '.join(split_row)
+#             time_period = 365
 
-        if metric not in plot_metric:
-            print(f'No metric found for {metric}')
-            continue
-        metric = plot_metric[metric]
+#         if metric not in plot_metric:
+#             print(f'No metric found for {metric}')
+#             continue
+#         metric = plot_metric[metric]
 
-        etf_code1 = x1.split()[0]
-        etf_code2 = x2.split()[0]
+#         etf_code1 = x1.split()[0]
+#         etf_code2 = x2.split()[0]
 
-        plot_timeseries(
-            etf_code1,
-            etf_code2, 
-            metric,
-            time_period) # Multiply year value by 365 
+#         plot_timeseries(
+#             etf_code1,
+#             etf_code2, 
+#             metric,
+#             time_period) # Multiply year value by 365 
 
 
 # TODO: By Adi: Implement following function
@@ -115,8 +117,8 @@ df = clean_competitor_data(df)
 # print(find_advantage(df, 'BBSC US Equity', 'SPYG US Equity'))
 # print(select_column('QQQ', 'FUND_NET_ASSET_VAL'))
 # plot_timeseries('DFAC', 'QQQ', 'FUND_NET_ASSET_VAL', 365)
-print(find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity'))
-plot_advantages(df, 'JEPI US Equity', 'DFAC US Equity')
+find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity')
+# plot_advantages(df, 'JEPI US Equity', 'DFAC US Equity')
 
 # print(select_column('QQQ', 'FUND_NET_ASSET_VAL'))
 # print(select_column('QQQ', 'TOT_RETURN_INDEX_GROSS_DVDS'))

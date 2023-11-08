@@ -20,11 +20,15 @@ layout = html.Div(
             dcc.Checklist(
                 id='checkbox',
                 options = [
-                {'label': 'QQQ', 'value': 'QQQ'},
-                {'label': 'SPY', 'value': 'SPY'},
-                {'label': 'IVV', 'value': 'IVV'}
+                {'label': 'SPY', 'value': 'SPY US Equity'},
+                {'label': 'JEPI', 'value': 'JEPI US Equity'},
+                {'label': 'QQQ', 'value': 'QQQ US Equity'},
+                {'label': 'JPST', 'value': 'JPST US Equity'},
+                {'label': 'IVV', 'value': 'IVV US Equity'},
                 ],
-                labelStyle={'display': 'block'}
+                # labelStyle={'display': 'flex', 'justify-content': 'space-between'}
+                labelStyle={'display': 'inline-block', 'width': '50%'}
+                # labelStyle={'display': 'block'}
             ), 
             html.Div(id='selected-div'),
 
@@ -135,20 +139,77 @@ def update_selected_div(selected_options):
     dash.dependencies.Input('checkbox', 'value')
 )
 def update_advantages_box(selected_options):
+    if selected_options is None:
+        return
+    if len(selected_options) < 2:
+        return
     data_frame = pd.read_csv('Competitor Data.csv')
     data_frame = clean_competitor_data(data_frame)
-    advantages = find_advantage(data_frame, 'JEPI US Equity', 'CQQQ US Equity')
+    # advantages = find_advantage(data_frame, 'JEPI US Equity', 'CQQQ US Equity')
+    advantages = find_advantage(data_frame, selected_options[0], selected_options[1])
+    # if not advantages.empty:
+    #     advantage_list = []
+    #     container_style = {'display': 'flex', 'justify-content': 'space-between'}
+    #     max_value = max(advantages.values())
+
+    #     advantage_list.append(html.H2(f'{selected_options[0]} vs {selected_options[1]}', style={'font-size': '24px'}))
+
+    #     for index, value in advantages.items():
+    #         item_style = {'text-align': 'right'}
+    #         if value == max_value:
+    #             item_style['color'] = 'green'
+
+    #         container = html.Div(style=container_style, children=[
+    #             html.P(f'{index}:'),
+    #             html.P(f'{value}% better', style=item_style)
+    #         ])
+    #         advantage_list.append(container)
+
+    #     return advantage_list
     if not advantages.empty:
         advantage_list = []
         container_style = {'display': 'flex', 'justify-content': 'space-between'}
+        max_value = max(advantages.tolist())
         # advantage_list.append(html.Hr())
-        advantage_list.append(html.H2("JEPI US Equity v.s. CQQQ US Equity", style={'font-size': '24px'}))
+        advantage_list.append(html.H2(selected_options[0] + " v.s. " + selected_options[1], style={'font-size': '24px'}))
+        # advantage_list.append(html.H2("JEPI US Equity v.s. CQQQ US Equity", style={'font-size': '24px'}))
         for index, value in advantages.items():
             # advantage_list.append(html.P(f'{index}:'))
             # advantage_list.append(html.P(f'{value}% better', style={'text-align': 'right'}))
-            container = html.Div(style=container_style, children=[
-                html.P(f'{index}:'),
-                html.P(f'{value}% better', style={'text-align': 'right'})
+            if value == max_value:
+                container = html.Div(style=container_style, children=[
+                html.P(f'{index}:', style={'color' : 'green'}),
+                html.P(f'{value}% better', style={'text-align': 'right', 'color' : 'green'})
             ])
+            else:
+                container = html.Div(style=container_style, children=[
+                    html.P(f'{index}:'),
+                    html.P(f'{value}% better', style={'text-align': 'right'})
+                ])
             advantage_list.append(container)
     return advantage_list
+
+
+# @dash.callback(
+#     dash.dependencies.Output('advantages-box', 'children'),
+#     dash.dependencies.Input('checkbox', 'value')
+# )
+# def update_advantages_box(selected_options):
+#     data_frame = pd.read_csv('Competitor Data.csv')
+#     data_frame = clean_competitor_data(data_frame)
+
+#     # if len(selected_options) == 2:
+#     # advantage_label_1 = next((item['label'] for item in options if item['value'] == selected_options[0]), '')
+#     # advantage_label_2 = next((item['label'] for item in options if item['value'] == selected_options[1]), '')
+#     advantage_value = find_advantage(data_frame, selected_options[0], selected_options[1])
+        
+#     if not advantage_value.empty:
+#         advantage_list = []
+#         container_style = {'display': 'flex', 'justify-content': 'space-between'}
+            
+#         advantage_list.append(html.Div(style=container_style, children=[
+#             # html.P(f'{advantage_label_1} vs {advantage_label_2}:'),
+#             html.P(f'{advantage_value}% better', style={'text-align': 'right'})
+#         ]))
+            
+#         return advantage_list
