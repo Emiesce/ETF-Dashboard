@@ -20,10 +20,11 @@ layout = html.Div(
             dcc.Checklist(
                 id='checkbox',
                 options = [
-                {'label': 'SPY', 'value': 'SPY US Equity'},
                 {'label': 'JEPI', 'value': 'JEPI US Equity'},
-                {'label': 'QQQ', 'value': 'QQQ US Equity'},
+                {'label': 'SPY', 'value': 'SPY US Equity'},
                 {'label': 'JPST', 'value': 'JPST US Equity'},
+                {'label': 'QQQ', 'value': 'QQQ US Equity'},
+                {'label': 'JPUHF', 'value': 'JPUHF US Equity'},
                 {'label': 'IVV', 'value': 'IVV US Equity'},
                 ],
                 # labelStyle={'display': 'flex', 'justify-content': 'space-between'}
@@ -170,22 +171,27 @@ def update_advantages_box(selected_options):
         advantage_list = []
         container_style = {'display': 'flex', 'justify-content': 'space-between'}
         max_value = max(advantages.tolist())
-        # advantage_list.append(html.Hr())
         advantage_list.append(html.H2(selected_options[0] + " v.s. " + selected_options[1], style={'font-size': '24px'}))
         # advantage_list.append(html.H2("JEPI US Equity v.s. CQQQ US Equity", style={'font-size': '24px'}))
         for index, value in advantages.items():
             # advantage_list.append(html.P(f'{index}:'))
             # advantage_list.append(html.P(f'{value}% better', style={'text-align': 'right'}))
-            if value == max_value:
+            if value == max_value and value != float('inf'):
                 container = html.Div(style=container_style, children=[
                 html.P(f'{index}:', style={'color' : 'green'}),
                 html.P(f'{value}% better', style={'text-align': 'right', 'color' : 'green'})
             ])
             else:
-                container = html.Div(style=container_style, children=[
+                if value == float('inf') or value == -float('inf'):
+                    container = html.Div(style=container_style, children=[
                     html.P(f'{index}:'),
-                    html.P(f'{value}% better', style={'text-align': 'right'})
+                    html.P('data missing', style={'text-align': 'right'})
                 ])
+                else:
+                    container = html.Div(style=container_style, children=[
+                        html.P(f'{index}:'),
+                        html.P(f'{value}% better', style={'text-align': 'right'})
+                    ])
             advantage_list.append(container)
     return advantage_list
 
