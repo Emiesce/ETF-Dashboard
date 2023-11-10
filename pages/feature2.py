@@ -1,14 +1,17 @@
 import dash
 from dash import dcc, html
+import dash_mantine_components as dmc
 import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
 from pages.feature2_backend import find_advantage
 from pages.feature2_backend import clean_competitor_data
 
 dash.register_page(__name__)
 
-df = pd.read_csv("./Competitor Data.csv")
+REGIONS = ["US Equity", "MM Equity", "CN Equity", "BH Equity", "TP Equity"]
+#df = pd.read_csv("./Competitor Data.csv")
+df_v2 = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name=None)
+df = df_v2["Competitor Data"]
 
 layout = html.Div(
     [
@@ -68,18 +71,50 @@ layout = html.Div(
                 # html.Label('Select Competitor ETFs:'),
                 
                 # Displays Competitors in a Selectable List
-                dash.dash_table.DataTable(
-                    id="selection-checkbox-grid",
-                    columns=[{"name": 'Ticker', "id": 'Ticker'}],
-                    data=df.to_dict("records"),
-                    column_selectable="multi",
-                    editable=False,
-                    row_selectable="multi",
-                    style_table={"overflowY": 20},
-                    style_cell={"textAlign": "left"},
-                    page_size= 20,
-                    filter_action="native",
-                ),
+                dmc.Accordion([
+                    dmc.AccordionItem([
+                        
+                        dmc.AccordionControl(region, className="py-3 text-aqua font-medium focus:bg-gray-light focus:font-bold"),
+                        
+                        dmc.AccordionPanel([
+                                            
+                            dash.dash_table.DataTable(
+                                id={ "type": "ticker-selection", "index": 0 },
+                                columns=[{"name": 'Ticker', "id": 'Ticker'}],
+                                data=df_v2[region].to_dict("records"),
+                                column_selectable="multi",
+                                editable=False,
+                                row_selectable="multi",
+                                style_table={"overflowY": 20},
+                                style_cell={"textAlign": "left"},
+                                page_size= 20,
+                                filter_action="native",
+                            ),                    
+                                        
+                            # dcc.Checklist(
+                            #     id={
+                            #         "type": "ticker-selection",
+                            #         "index": 0
+                            #     },
+                            #     options=[{"label": html.Span(ticker, className="ml-2"), "value": ticker} for ticker in df_v2[region]["Ticker"]
+                            # ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
+                            
+                        ], className="bg-aqua/5")
+                    ], value=region) for region in REGIONS
+                ])            
+                
+                # dash.dash_table.DataTable(
+                #     id="selection-checkbox-grid",
+                #     columns=[{"name": 'Ticker', "id": 'Ticker'}],
+                #     data=df.to_dict("records"),
+                #     column_selectable="multi",
+                #     editable=False,
+                #     row_selectable="multi",
+                #     style_table={"overflowY": 20},
+                #     style_cell={"textAlign": "left"},
+                #     page_size= 20,
+                #     filter_action="native",
+                # ),
                 # html.Div(id="selection-output"),
             
             ]),
@@ -98,7 +133,7 @@ layout = html.Div(
             # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
         # ],
          
-        ], className="flex justify-center w-full")
+        ], className="flex justify-center w-full max-h-[]")
         
     ], className="p-8 flex gap-12"
 )
@@ -110,20 +145,34 @@ layout = html.Div(
     dash.dependencies.Input("x-variable", "value"),
     dash.dependencies.Input("y-variable", "value"),
     dash.dependencies.Input("z-variable", "value"),
-    dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
-    dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
+    dash.dependencies.Input({"type": "ticker-selection", "index": dash.ALL }, "derived_virtual_selected_rows")
+    #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
+    #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
 )
 def update_graph(
-    graph_type, x_variable, y_variable, z_variable, rows, selected_rows
+    graph_type, x_variable, y_variable, z_variable, selected_ticker_indices #rows, selected_rows
 ):
-    # print(selected_rows)
-    selected_Tickers = [
-        rows[row]["Ticker"] for row in selected_rows
-    ] if selected_rows else "None"
+    #print(rows)
+    #print(selected_rows)
+    #print(selected_ticker_indices)
+    
+    # selected_Tickers = [
+    #     rows[row]["Ticker"] for row in selected_rows
+    # ] if selected_rows else "None"
+
+    selected_tickers = []
+    for region_ind, region_dt in enumerate(selected_ticker_indices):
+        for ticker_ind in region_dt:
+            region = REGIONS[region_ind]
+            ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
+            selected_tickers.append(ticker)
+    print(selected_tickers)
+    
+    #selected_Tickers = [ticker for region in selected_tickers for ticker in region]
 
     if graph_type == "scatter_3d":
         figure = px.scatter_3d(
-            df[df["Ticker"].isin(selected_Tickers)],
+            df[df["Ticker"].isin(selected_tickers)],
             x=x_variable,
             y=y_variable,
             z=z_variable,
@@ -140,7 +189,7 @@ def update_graph(
 
     elif graph_type == "scatter":
         figure = px.scatter(
-            df[df["Ticker"].isin(selected_Tickers)],
+            df[df["Ticker"].isin(selected_tickers)],
             x=x_variable,
             y=y_variable,
             color="Ticker",
