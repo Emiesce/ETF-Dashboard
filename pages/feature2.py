@@ -221,19 +221,28 @@ def update_selected_div(selected_options):
     
 # Function for updating the advantages box
 @dash.callback(
-    dash.dependencies.Output('advantages-box', 'children'),
+    Output('advantages-box', 'children'),
     # dash.dependencies.Input('checkbox', 'value'),
-    dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
+    #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
+    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows")
 )
-def update_advantages_box(selected_options):
-    if selected_options is None:
+def update_advantages_box(selected_ticker_indices):
+    if None in selected_ticker_indices:
         return
-    if len(selected_options) < 2:
-        return
-    data_frame = pd.read_csv('Competitor Data.csv')
-    data_frame = clean_competitor_data(data_frame)
 
-    ticker_values = df.loc[selected_options, "Ticker"].tolist()
+    ticker_values = []
+    for region_ind, region_dt in enumerate(selected_ticker_indices):
+        for ticker_ind in region_dt:
+            region = REGIONS[region_ind]
+            ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
+            ticker_values.append(ticker)
+    print(ticker_values)
+    #ticker_values = df.loc[selected_options, "Ticker"].tolist()
+
+    if len(ticker_values) < 2:
+        return
+    
+    data_frame = clean_competitor_data(df)
 
     advantages = find_advantage(data_frame, ticker_values[0], ticker_values[1])
     
