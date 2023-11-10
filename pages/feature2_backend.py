@@ -39,17 +39,18 @@ def select_column(etf, column):
     selected_data = data_df[selected_columns]
     return selected_data
 
-def plot_timeseries(etf1, etf2, column, period=365):
-    etf1_data = select_column(etf1, column)[:period]
-    etf2_data = select_column(etf2, column)[:period]
-    print(type(etf2_data[column][0]))
-    etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
-    etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
-    plt.plot(etf1_data['Date'], etf1_data[column], label=etf1)
-    plt.plot(etf2_data['Date'], etf2_data[column], label=etf2)
-    plt.title(f'{column} of {etf1} and {etf2}')
-    plt.legend()
-    plt.show()
+# def plot_timeseries(etf1, etf2, column, period=365):
+#     column = plot_metric[column]
+#     etf1_data = select_column(etf1, column)[:period]
+#     etf2_data = select_column(etf2, column)[:period]
+#     print(type(etf2_data[column][0]))
+#     etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
+#     etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
+#     plt.plot(etf1_data['Date'], etf1_data[column], label=etf1)
+#     plt.plot(etf2_data['Date'], etf2_data[column], label=etf2)
+#     plt.title(f'{column} of {etf1} and {etf2}')
+#     plt.legend()
+#     plt.show()
 
 
 # List of what metric to plot for each advantage
@@ -107,5 +108,5 @@ df = pd.read_csv('Competitor Data.csv')
 df = clean_competitor_data(df)
 
 find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity')
-plot_timeseries('JEPI US Equity', 'QQQ US Equity',"FUND_NET_ASSET_VAL")
+# plot_timeseries('JEPI US Equity', 'QQQ US Equity', "Tot Asset US$ (M)")
 
