@@ -148,9 +148,10 @@ layout = html.Div(
     Input("x-variable", "value"),
     Input("y-variable", "value"),
     Input("z-variable", "value"),
-    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows")
+    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
     #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
     #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
+    prevent_initial_call=True
 )
 def update_graph(
     graph_type, x_variable, y_variable, z_variable, selected_ticker_indices #rows, selected_rows
@@ -173,6 +174,7 @@ def update_graph(
     
     #selected_Tickers = [ticker for region in selected_tickers for ticker in region]
 
+    figure = None
     if graph_type == "scatter_3d":
         figure = px.scatter_3d(
             df[df["Ticker"].isin(selected_tickers)],
@@ -202,21 +204,21 @@ def update_graph(
             width=800,
             height=800,
         )
-
+        
     return figure
 
-@dash.callback(
-    Output('selected-div', 'children'),
-    Input('checkbox', 'value')
-)
-def update_selected_div(selected_options):
-    if selected_options:
-        selected_divs = []
-        for option in selected_options:
-            selected_divs.append(html.Div(f'Selected Option: {option}', className='selected-opyion'))
-        return selected_divs
-    else:
-        return []
+# @dash.callback(
+#     Output('selected-div', 'children'),
+#     Input('checkbox', 'value')
+# )
+# def update_selected_div(selected_options):
+#     if selected_options:
+#         selected_divs = []
+#         for option in selected_options:
+#             selected_divs.append(html.Div(f'Selected Option: {option}', className='selected-opyion'))
+#         return selected_divs
+#     else:
+#         return []
     
     
 # Function for updating the advantages box
