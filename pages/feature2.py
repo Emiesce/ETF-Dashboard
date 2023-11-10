@@ -85,9 +85,12 @@ layout = html.Div(
                                 column_selectable="multi",
                                 editable=False,
                                 row_selectable="multi",
-                                style_table={"overflowY": 20},
-                                style_cell={"textAlign": "left"},
-                                page_size= 20,
+                                style_table={"overflowY": 20, "font-size": "16px", "width": "100%", "margin-top": "-1rem"},
+                                style_cell={"textAlign": "left", "font-family": "system-ui"},
+                                style_header={"border": "none", "visibility": "hidden"},
+                                style_filter={"background-color": "transparent", "color": "#AAAAAA"},
+                                style_data={"border": "none", "background-color": "transparent"},
+                                page_size= 10,
                                 filter_action="native",
                             ),                    
                                         
@@ -133,7 +136,7 @@ layout = html.Div(
             # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
         # ],
          
-        ], className="flex justify-center w-full max-h-[]")
+        ], className="flex justify-center w-full h-[550px]")
         
     ], className="p-8 flex gap-12"
 )

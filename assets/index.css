@@ -25,3 +25,27 @@
 .dash-dropdown {
     width: 270px;
 }
+
+input[type=checkbox] {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+th {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid #096183 !important;
+    width: 100%;
+}
+
+tr {
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.expanded-row--empty-cell {
+    display: none !important;
+}
