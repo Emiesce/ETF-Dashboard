@@ -107,4 +107,5 @@ df = pd.read_csv('Competitor Data.csv')
 df = clean_competitor_data(df)
 
 find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity')
+plot_timeseries('JEPI US Equity', 'QQQ US Equity',"FUND_NET_ASSET_VAL")
 
