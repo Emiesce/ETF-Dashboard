@@ -8,7 +8,7 @@ from pages.feature2_backend import clean_competitor_data
 
 dash.register_page(__name__)
 
-df = pd.read_csv("example.csv")
+df = pd.read_csv("./Competitor Data.csv")
 
 layout = html.Div(
     [
@@ -17,21 +17,20 @@ layout = html.Div(
             html.H1('Select a Graph Type:'),
 
             html.Label('Select Competitor ETFs:'),
-            dcc.Checklist(
-                id='checkbox',
-                options = [
-                {'label': 'JEPI', 'value': 'JEPI US Equity'},
-                {'label': 'SPY', 'value': 'SPY US Equity'},
-                {'label': 'JPST', 'value': 'JPST US Equity'},
-                {'label': 'QQQ', 'value': 'QQQ US Equity'},
-                {'label': 'JPUHF', 'value': 'JPUHF US Equity'},
-                {'label': 'IVV', 'value': 'IVV US Equity'},
-                ],
-                # labelStyle={'display': 'flex', 'justify-content': 'space-between'}
-                labelStyle={'display': 'inline-block', 'width': '50%'}
-                # labelStyle={'display': 'block'}
-            ), 
-            html.Div(id='selected-div'),
+            # Displays Competitors in a Selectable List
+            dash.dash_table.DataTable(
+                id="selection-checkbox-grid",
+                columns=[{"name": 'Ticker', "id": 'Ticker'}],
+                data=df.to_dict("records"),
+                column_selectable="multi",
+                editable=False,
+                row_selectable="multi",
+                style_table={"overflowY": 20},
+                style_cell={"textAlign": "left"},
+                page_size= 20,
+                filter_action="native",
+            ),
+            html.Div(id="selection-output"),
 
             dcc.Dropdown(
                 id='graph-type',
@@ -57,7 +56,7 @@ layout = html.Div(
                 options=[
                     {'label': col, 'value': col} for col in df.columns
                 ],
-                value = 'ESG Rate'
+                value = 'Tot Asset US$ (M)'
             ),
 
             html.Label('Select Z Variable:'),
@@ -66,7 +65,7 @@ layout = html.Div(
                 options=[
                     {'label': col, 'value': col} for col in df.columns
                 ],
-                value = 'AUM'
+                value = 'Avg Dvd Yield'
             ),
 
         ], className="p-4 flex flex-col gap-4 w-[20%] border border-gray-medium rounded-lg"),
@@ -90,33 +89,51 @@ layout = html.Div(
 
 # Function for updating the Graph depending on the selected Graph Type and Axes
 @dash.callback(
-    dash.dependencies.Output('graph', 'figure'),
-    dash.dependencies.Input('graph-type', 'value'),
-    dash.dependencies.Input('x-variable', 'value'),
-    dash.dependencies.Input('y-variable', 'value'),
-    dash.dependencies.Input('z-variable', 'value'),
+    dash.dependencies.Output("graph", "figure"),
+    dash.dependencies.Input("graph-type", "value"),
+    dash.dependencies.Input("x-variable", "value"),
+    dash.dependencies.Input("y-variable", "value"),
+    dash.dependencies.Input("z-variable", "value"),
+    dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
+    dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
 )
-def update_graph(graph_type, x_variable, y_variable, z_variable):
-    if graph_type == 'scatter_3d':
-        figure = px.scatter_3d(df, x=x_variable, y=y_variable, z=z_variable,
-            color="Symbol").update_layout(
-                scene = dict(
-                    xaxis_title=x_variable,
-                    yaxis_title=y_variable,
-                    zaxis_title=z_variable
-                ),
-                width=800,
-                height=800,
-            )
+def update_graph(
+    graph_type, x_variable, y_variable, z_variable, rows, selected_rows
+):
+    # print(selected_rows)
+    selected_Tickers = [
+        rows[row]["Ticker"] for row in selected_rows
+    ] if selected_rows else "None"
 
-    elif graph_type == 'scatter':
-        figure = px.scatter(df, x=x_variable, y=y_variable,
-            color="Symbol").update_layout(
+    if graph_type == "scatter_3d":
+        figure = px.scatter_3d(
+            df[df["Ticker"].isin(selected_Tickers)],
+            x=x_variable,
+            y=y_variable,
+            z=z_variable,
+            color="Ticker",
+        ).update_layout(
+            scene=dict(
                 xaxis_title=x_variable,
                 yaxis_title=y_variable,
-                width=800,
-                height=800,
-            )
+                zaxis_title=z_variable,
+            ),
+            width=800,
+            height=800,
+        )
+
+    elif graph_type == "scatter":
+        figure = px.scatter(
+            df[df["Ticker"].isin(selected_Tickers)],
+            x=x_variable,
+            y=y_variable,
+            color="Ticker",
+        ).update_layout(
+            xaxis_title=x_variable,
+            yaxis_title=y_variable,
+            width=800,
+            height=800,
+        )
 
     return figure
 
@@ -137,7 +154,8 @@ def update_selected_div(selected_options):
 # Function for updating the advantages box
 @dash.callback(
     dash.dependencies.Output('advantages-box', 'children'),
-    dash.dependencies.Input('checkbox', 'value')
+    # dash.dependencies.Input('checkbox', 'value'),
+    dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
 )
 def update_advantages_box(selected_options):
     if selected_options is None:
@@ -146,32 +164,16 @@ def update_advantages_box(selected_options):
         return
     data_frame = pd.read_csv('Competitor Data.csv')
     data_frame = clean_competitor_data(data_frame)
-    # advantages = find_advantage(data_frame, 'JEPI US Equity', 'CQQQ US Equity')
-    advantages = find_advantage(data_frame, selected_options[0], selected_options[1])
-    # if not advantages.empty:
-    #     advantage_list = []
-    #     container_style = {'display': 'flex', 'justify-content': 'space-between'}
-    #     max_value = max(advantages.values())
 
-    #     advantage_list.append(html.H2(f'{selected_options[0]} vs {selected_options[1]}', style={'font-size': '24px'}))
+    ticker_values = df.loc[selected_options, "Ticker"].tolist()
 
-    #     for index, value in advantages.items():
-    #         item_style = {'text-align': 'right'}
-    #         if value == max_value:
-    #             item_style['color'] = 'green'
-
-    #         container = html.Div(style=container_style, children=[
-    #             html.P(f'{index}:'),
-    #             html.P(f'{value}% better', style=item_style)
-    #         ])
-    #         advantage_list.append(container)
-
-    #     return advantage_list
+    advantages = find_advantage(data_frame, ticker_values[0], ticker_values[1])
+    
     if not advantages.empty:
         advantage_list = []
         container_style = {'display': 'flex', 'justify-content': 'space-between'}
         max_value = max(advantages.tolist())
-        advantage_list.append(html.H2(selected_options[0] + " v.s. " + selected_options[1], style={'font-size': '24px'}))
+        advantage_list.append(html.H2(ticker_values[0] + " v.s. " + ticker_values[1], style={'font-size': '24px'}))
         # advantage_list.append(html.H2("JEPI US Equity v.s. CQQQ US Equity", style={'font-size': '24px'}))
         for index, value in advantages.items():
             # advantage_list.append(html.P(f'{index}:'))
@@ -219,13 +221,6 @@ def update_advantages_box(selected_options):
 #         ]))
             
 #         return advantage_list
-
-# import dash
-# from dash import dcc, html
-# import plotly.express as px
-# import plotly.graph_objects as go
-# import pandas as pd
-# import dash_ag_grid as dag
 
 # dash.register_page(__name__)
 
