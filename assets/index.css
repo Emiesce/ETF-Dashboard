@@ -1,13 +1,13 @@
 .ag-theme-alpine {
-    --ag-borders: None;
-    --ag-row-border-style: solid;
-    --ag-row-border-width: 1px;
-    --ag-row-border-color: #dadada;
+    --ag-borders: None !important;
+    --ag-row-border-style: solid !important;
+    --ag-row-border-width: 1px !important;
+    --ag-row-border-color: #dadada !important;
 
-    --ag-header-column-separator-display: block;
-    --ag-header-column-separator-height: 50%;
-    --ag-header-column-separator-width: 2px;
-    --ag-header-column-separator-color: grey;
+    --ag-header-column-separator-display: block !important;
+    --ag-header-column-separator-height: 50% !important;
+    --ag-header-column-separator-width: 2px !important;
+    --ag-header-column-separator-color: grey !important;
 }
 
 .ag-header-cell {
@@ -22,7 +22,6 @@
     border-bottom-color: #936846;
 }
 
-.ag-cell {
-    text-wrap: wrap;
-    line-height: 1.5;
+.dash-dropdown {
+    width: 270px;
 }
