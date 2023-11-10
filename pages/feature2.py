@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html
+from dash import dcc, html, Input, Output, ALL
 import dash_mantine_components as dmc
 import plotly.express as px
 import pandas as pd
@@ -140,12 +140,12 @@ layout = html.Div(
 
 # Function for updating the Graph depending on the selected Graph Type and Axes
 @dash.callback(
-    dash.dependencies.Output("graph", "figure"),
-    dash.dependencies.Input("graph-type", "value"),
-    dash.dependencies.Input("x-variable", "value"),
-    dash.dependencies.Input("y-variable", "value"),
-    dash.dependencies.Input("z-variable", "value"),
-    dash.dependencies.Input({"type": "ticker-selection", "index": dash.ALL }, "derived_virtual_selected_rows")
+    Output("graph", "figure"),
+    Input("graph-type", "value"),
+    Input("x-variable", "value"),
+    Input("y-variable", "value"),
+    Input("z-variable", "value"),
+    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows")
     #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
     #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
 )
@@ -166,7 +166,7 @@ def update_graph(
             region = REGIONS[region_ind]
             ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
             selected_tickers.append(ticker)
-    print(selected_tickers)
+    #print(selected_tickers)
     
     #selected_Tickers = [ticker for region in selected_tickers for ticker in region]
 
@@ -203,8 +203,8 @@ def update_graph(
     return figure
 
 @dash.callback(
-    dash.dependencies.Output('selected-div', 'children'),
-    dash.dependencies.Input('checkbox', 'value')
+    Output('selected-div', 'children'),
+    Input('checkbox', 'value')
 )
 def update_selected_div(selected_options):
     if selected_options:
