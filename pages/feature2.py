@@ -14,77 +14,93 @@ layout = html.Div(
     [
         # This Div is responsible for the Selection of Graph Type and Axes
         html.Div([ 
-            html.H1('Select a Graph Type:'),
 
-            html.Label('Select Competitor ETFs:'),
-            # Displays Competitors in a Selectable List
-            dash.dash_table.DataTable(
-                id="selection-checkbox-grid",
-                columns=[{"name": 'Ticker', "id": 'Ticker'}],
-                data=df.to_dict("records"),
-                column_selectable="multi",
-                editable=False,
-                row_selectable="multi",
-                style_table={"overflowY": 20},
-                style_cell={"textAlign": "left"},
-                page_size= 20,
-                filter_action="native",
-            ),
-            html.Div(id="selection-output"),
+            html.Div([
+                
+                html.Div([
+                    html.Img(src="../assets/Icons/IconGraph.svg", className="w-[25px] h-[25px]"),
+                    html.Span("Graph Settings", className="text-[18px] font-medium")
+                ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"),
+                
+                dcc.Dropdown(
+                    id='graph-type',
+                    placeholder="Select a Graph Type",
+                    options=[
+                        {'label': '3D Scatter Plot', 'value': 'scatter_3d'},
+                        {'label': '2D Scatter Plot', 'value': 'scatter'},
+                    ],
+                ),
 
-            dcc.Dropdown(
-                id='graph-type',
-                options=[
-                    {'label': '3D Scatter Plot', 'value': 'scatter_3d'},
-                    {'label': '2D Scatter Plot', 'value': 'scatter'},
-                ],
-                value='scatter_3d'
-            ),
+                dcc.Dropdown(
+                    id='x-variable',
+                    placeholder="Select X Variable:",
+                    options=[
+                        {'label': col, 'value': col} for col in df.columns
+                    ],
+                ),
 
-            html.Label('Select X Variable:'),
-            dcc.Dropdown(
-                id='x-variable',
-                options=[
-                    {'label': col, 'value': col} for col in df.columns
-                ],
-                value = 'Expense Ratio'
-            ),
+                dcc.Dropdown(
+                    id='y-variable',
+                    placeholder="Select Y Variable:",
+                    options=[
+                        {'label': col, 'value': col} for col in df.columns
+                    ],
+                ),
 
-            html.Label('Select Y Variable:'),
-            dcc.Dropdown(
-                id='y-variable',
-                options=[
-                    {'label': col, 'value': col} for col in df.columns
-                ],
-                value = 'Tot Asset US$ (M)'
-            ),
+                dcc.Dropdown(
+                    id='z-variable',
+                    placeholder="Select Z Variable:",
+                    options=[
+                        {'label': col, 'value': col} for col in df.columns
+                    ],
+                    #value = 'Avg Dvd Yield'
+                ),
+                
+            ], className="flex flex-col gap-4"),
+            
+            html.Div([
+                
+                html.Div([
+                    html.Img(src="../assets/Icons/IconCompetitor.svg", className="w-[25px] h-[25px]"),
+                    html.Span("Competitor ETFs", className="text-[18px] font-medium")
+                ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze mb-2"),
 
-            html.Label('Select Z Variable:'),
-            dcc.Dropdown(
-                id='z-variable',
-                options=[
-                    {'label': col, 'value': col} for col in df.columns
-                ],
-                value = 'Avg Dvd Yield'
-            ),
-
-        ], className="p-4 flex flex-col gap-4 w-[20%] border border-gray-medium rounded-lg"),
-        html.Div(
-            [
-                dcc.Graph(id='graph', className="p-8 flex justify-center gap-12"),
-                html.Div(
-                    id='advantages-box',
-                    className="p-4 border border-gray-medium rounded-lg",
-                    style={'position': 'absolute', 'top': '30%', 'right': '10px'}
-                )
-            ],
-            style={'position': 'relative', 'flex': '1'}
-        )
-    ],
-        # dcc.Graph(id='graph', className="p-8 flex justify-center gap-12")
-        # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
-    # ], 
-    className="p-8 flex justify-center gap-12"
+                # html.Label('Select Competitor ETFs:'),
+                
+                # Displays Competitors in a Selectable List
+                dash.dash_table.DataTable(
+                    id="selection-checkbox-grid",
+                    columns=[{"name": 'Ticker', "id": 'Ticker'}],
+                    data=df.to_dict("records"),
+                    column_selectable="multi",
+                    editable=False,
+                    row_selectable="multi",
+                    style_table={"overflowY": 20},
+                    style_cell={"textAlign": "left"},
+                    page_size= 20,
+                    filter_action="native",
+                ),
+                # html.Div(id="selection-output"),
+            
+            ]),
+        
+        ], className="flex flex-col gap-4 "),
+        
+        html.Div([
+            
+            dcc.Graph(id='graph', className="w-full"),#, className="py-8 flex justify-center gap-12"),
+            html.Div(
+                id='advantages-box',
+                className="absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg",
+                #style={'position': 'absolute', 'top': '30%', 'right': '10px'}
+            )
+            # dcc.Graph(id='graph', className="p-8 flex justify-center gap-12")
+            # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
+        # ],
+         
+        ], className="flex justify-center w-full")
+        
+    ], className="p-8 flex gap-12"
 )
 
 # Function for updating the Graph depending on the selected Graph Type and Axes
