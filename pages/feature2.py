@@ -11,7 +11,7 @@ from pages.feature2_backend import select_column
 dash.register_page(__name__)
 
 df = pd.read_csv("./Competitor Data.csv")
-df1 = pd.read_csv("price data/JEPI US Equity.csv")
+df1 = pd.read_csv("price data/JEPI US Equity.csv") #to get columns for time-series plot
 
 layout = html.Div(
     [
@@ -88,7 +88,7 @@ layout = html.Div(
                 value = "365",
                 style={'display': 'none'}
             ),
-            
+            #select the y variable for time-series plot
             html.Label('Select Variable:', id = 'column-label'),
             dcc.Dropdown(
                 id='column',
@@ -115,6 +115,7 @@ layout = html.Div(
     ], className="p-8 flex justify-center gap-12"
 )
 
+#update selector according to graph-type selected
 @dash.callback(
     dash.dependencies.Output('x-variable', 'style'),
     dash.dependencies.Output('y-variable', 'style'),
@@ -225,10 +226,7 @@ def update_graph(
         if len(selected_Tickers) == 2:
             etf1 = selected_Tickers[0]
             etf2 = selected_Tickers[1]
-            # column = x_variable  # Assuming x_variable is the selected column for the time series
-            # column = plot_metric[column]
             period = int(time_period) # Set the desired period length for the time series
-            # print(time_period)
 
             etf1_data = select_column(etf1, column)[:period]
             etf2_data = select_column(etf2, column)[:period]
@@ -258,7 +256,6 @@ def update_graph(
                 width=800,
                 height=800
             )
-
     return figure
 
 @dash.callback(
