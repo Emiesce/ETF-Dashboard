@@ -70,6 +70,12 @@ layout = html.Div(
 
                 # html.Label('Select Competitor ETFs:'),
                 
+                # Displays selected competitors
+                html.Div([
+                    html.Div(id="selected-competitors", children=[
+                    ], className=""),
+                ], className="flex flex-col gap-2"),
+                
                 # Displays Competitors in a Selectable List
                 dmc.Accordion([
                     dmc.AccordionItem([
@@ -122,11 +128,11 @@ layout = html.Div(
             
             ]),
         
-        ], className="flex flex-col gap-4 "),
+        ], className="flex flex-col gap-4"),
         
         html.Div([
             
-            dcc.Graph(id='graph', className="w-full"),#, className="py-8 flex justify-center gap-12"),
+            dcc.Graph(id="graph", className="h-[600px] -mt-4"),#, className="py-8 flex justify-center gap-12"),
             html.Div(
                 id='advantages-box',
                 className="hidden",
@@ -136,10 +142,34 @@ layout = html.Div(
             # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
         # ],
          
-        ], className="flex justify-center w-full h-[550px]")
+        ], className="w-full")
         
-    ], className="p-8 flex gap-12"
+    ], className="p-8 flex gap-8"
 )
+
+# Function for showing competitors upon selected
+@dash.callback(
+    [
+        Output("selected-competitors", "children"),
+        Output("selected-competitors", "className")
+    ],
+    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
+)
+def show_selected_competitors(selected_ticker_indices):
+    if None in selected_ticker_indices:
+        return "", "hidden"
+    
+    ticker_values = []
+    for region_ind, region_dt in enumerate(selected_ticker_indices):
+        for ticker_ind in region_dt:
+            region = REGIONS[region_ind]
+            ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
+            ticker_values.append(ticker)
+    
+    return [html.Div([
+        html.Span(ticker, className="text-jade font-medium text-[14px]")
+    ], className="px-4 py-2 bg-gray-light rounded-[20px]") for ticker in ticker_values], "flex flex-wrap gap-2 mb-2 rounded-lg"
+    
 
 # Function for updating the Graph depending on the selected Graph Type and Axes
 @dash.callback(
@@ -172,9 +202,7 @@ def update_graph(
             selected_tickers.append(ticker)
     #print(selected_tickers)
     
-    #selected_Tickers = [ticker for region in selected_tickers for ticker in region]
-
-    figure = None
+    figure = {}
     if graph_type == "scatter_3d":
         figure = px.scatter_3d(
             df[df["Ticker"].isin(selected_tickers)],
@@ -188,8 +216,13 @@ def update_graph(
                 yaxis_title=y_variable,
                 zaxis_title=z_variable,
             ),
-            width=800,
-            height=800,
+            margin={"l":0,"r":0,"t":0,"b":0},
+            legend=dict(
+                yanchor="top",
+                y=0.99,
+                xanchor="left",
+                x=0.05
+            )
         )
 
     elif graph_type == "scatter":
@@ -201,25 +234,9 @@ def update_graph(
         ).update_layout(
             xaxis_title=x_variable,
             yaxis_title=y_variable,
-            width=800,
-            height=800,
+            margin={"t":0,"b":0},
         )
-        
-    return figure
-
-# @dash.callback(
-#     Output('selected-div', 'children'),
-#     Input('checkbox', 'value')
-# )
-# def update_selected_div(selected_options):
-#     if selected_options:
-#         selected_divs = []
-#         for option in selected_options:
-#             selected_divs.append(html.Div(f'Selected Option: {option}', className='selected-opyion'))
-#         return selected_divs
-#     else:
-#         return []
-    
+    return figure    
 
 # Function for hiding advantages box when <2 competitors selected
 @dash.callback(
@@ -253,7 +270,6 @@ def update_advantages_box(selected_ticker_indices):
             region = REGIONS[region_ind]
             ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
             ticker_values.append(ticker)
-    print(ticker_values)
     #ticker_values = df.loc[selected_options, "Ticker"].tolist()
 
     if len(ticker_values) < 2:
