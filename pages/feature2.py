@@ -129,7 +129,7 @@ layout = html.Div(
             dcc.Graph(id='graph', className="w-full"),#, className="py-8 flex justify-center gap-12"),
             html.Div(
                 id='advantages-box',
-                className="absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg",
+                className="hidden",
                 #style={'position': 'absolute', 'top': '30%', 'right': '10px'}
             )
             # dcc.Graph(id='graph', className="p-8 flex justify-center gap-12")
@@ -220,7 +220,22 @@ def update_graph(
 #     else:
 #         return []
     
-    
+
+# Function for hiding advantages box when <2 competitors selected
+@dash.callback(
+    Output("advantages-box", "className"),
+    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows")
+)
+def hide_advantages_box(selected_ticker_indices):
+    if None in selected_ticker_indices:
+        return "hidden"
+
+    selected = [competitor for region in selected_ticker_indices for competitor in region]
+    if len(selected) < 2:
+        return "hidden"
+    else:
+        return "absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg"
+
 # Function for updating the advantages box
 @dash.callback(
     Output('advantages-box', 'children'),
