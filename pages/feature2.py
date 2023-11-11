@@ -132,7 +132,8 @@ layout = html.Div(
         
         html.Div([
             
-            dcc.Graph(id="graph", className="h-[600px] -mt-4"),#, className="py-8 flex justify-center gap-12"),
+            dcc.Graph(id="graph", className="h-[600px] -mt-4 border-b-2 border-bronze"),#, className="py-8 flex justify-center gap-12"),
+            
             html.Div(
                 id='advantages-box',
                 className="hidden",
@@ -142,7 +143,7 @@ layout = html.Div(
             # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
         # ],
          
-        ], className="w-full")
+        ], className="w-full flex flex-col")
         
     ], className="p-8 flex gap-8"
 )
@@ -251,7 +252,7 @@ def hide_advantages_box(selected_ticker_indices):
     if len(selected) < 2:
         return "hidden"
     else:
-        return "absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg"
+        return "self-center pt-4 w-fit" #"absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg"
 
 # Function for updating the advantages box
 @dash.callback(
@@ -281,29 +282,25 @@ def update_advantages_box(selected_ticker_indices):
     
     if not advantages.empty:
         advantage_list = []
-        container_style = {'display': 'flex', 'justify-content': 'space-between'}
         max_value = max(advantages.tolist())
-        advantage_list.append(html.H2(ticker_values[0] + " v.s. " + ticker_values[1], style={'font-size': '24px'}))
-        # advantage_list.append(html.H2("JEPI US Equity v.s. CQQQ US Equity", style={'font-size': '24px'}))
+        advantage_list.append(html.H2("Fund Comparison: " + ticker_values[0] + " v.s. " + ticker_values[1], className="text-[24px] font-medium mb-2"))
         for index, value in advantages.items():
-            # advantage_list.append(html.P(f'{index}:'))
-            # advantage_list.append(html.P(f'{value}% better', style={'text-align': 'right'}))
             if value == max_value and value != float('inf'):
-                container = html.Div(style=container_style, children=[
-                html.P(f'{index}:', style={'color' : 'green'}),
-                html.P(f'{value}% better', style={'text-align': 'right', 'color' : 'green'})
-            ])
+                container = html.Div([
+                    html.P(f'{index}:'),
+                    html.P(f'{value}% better', className="text-jade font-medium")
+                ], className="flex justify-between text-jade font-medium")
             else:
                 if value == float('inf') or value == -float('inf'):
-                    container = html.Div(style=container_style, children=[
-                    html.P(f'{index}:'),
-                    html.P('data missing', style={'text-align': 'right'})
-                ])
-                else:
-                    container = html.Div(style=container_style, children=[
+                    container = html.Div([
                         html.P(f'{index}:'),
-                        html.P(f'{value}% better', style={'text-align': 'right'})
-                    ])
+                        html.P('data missing')
+                    ], className="flex justify-between")
+                else:
+                    container = html.Div([
+                        html.P(f'{index}:'),
+                        html.P(f'{value}% better')
+                    ], className="flex justify-between")
             advantage_list.append(container)
     return advantage_list
 
