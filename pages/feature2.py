@@ -29,64 +29,75 @@ layout = html.Div(
                     html.Span("Graph Settings", className="text-[18px] font-medium")
                 ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"),
                 
-                dcc.Dropdown(
-                    id='graph-type',
-                    placeholder="Select a Graph Type",
-                    options=[
-                        {'label': '3D Scatter Plot', 'value': 'scatter_3d'},
-                        {'label': '2D Scatter Plot', 'value': 'scatter'},
-                        {'label': 'Time_series Plot', 'value': 'time_series'},
-                    ],
-                ),
+                html.Div([    
+                    dcc.Dropdown(
+                        id='graph-type',
+                        placeholder="Select a Graph Type",
+                        options=[
+                            {'label': '3D Scatter Plot', 'value': 'scatter_3d'},
+                            {'label': '2D Scatter Plot', 'value': 'scatter'},
+                            {'label': 'Time_series Plot', 'value': 'time_series'},
+                        ],
+                    ),
+                ]),
 
-                dcc.Dropdown(
-                    id='x-variable',
-                    placeholder="Select X Variable:",
-                    options=[
-                        {'label': col, 'value': col} for col in df.columns
-                    ],
-                ),
+                html.Div(id="x-variable-div", children=[
+                    dcc.Dropdown(
+                        id='x-variable',
+                        placeholder="Select X Variable:",
+                        options=[
+                            {'label': col, 'value': col} for col in df.columns
+                        ],
+                    ),
+                ]),
 
-                dcc.Dropdown(
-                    id='y-variable',
-                    placeholder="Select Y Variable:",
-                    options=[
-                        {'label': col, 'value': col} for col in df.columns
-                    ],
-                ),
+                html.Div(id="y-variable-div", children=[  
+                    dcc.Dropdown(
+                        id='y-variable',
+                        placeholder="Select Y Variable:",
+                        options=[
+                            {'label': col, 'value': col} for col in df.columns
+                        ],
+                    ),
+                ]),
 
-                dcc.Dropdown(
-                    id='z-variable',
-                    placeholder="Select Z Variable:",
-                    options=[
-                        {'label': col, 'value': col} for col in df.columns
-                    ],
-                    #value = 'Avg Dvd Yield'
-                ),
+                html.Div(id="z-variable-div", children=[
+                    dcc.Dropdown(
+                        id='z-variable',
+                        placeholder="Select Z Variable:",
+                        options=[
+                            {'label': col, 'value': col} for col in df.columns
+                        ],
+                        #value = 'Avg Dvd Yield'
+                    ),
+                ]),
                 
-                html.Label('Select time period:', id = 'period-label'),
-                dcc.Dropdown(
-                    id="period",
-                    options=[
-                        {"label": "1 month", "value": "30"},
-                        {"label": "3 months", "value": "90"},
-                        {"label": "6 months", "value": "180"},
-                        {"label": "1 year", "value": "365"},
-                        {"label": "3 year", "value": "1095"},
-                    ],
-                    value = "365",
-                    style={'display': 'none'}
-                ),
+                html.Div(id="period-div", children=[
+                    dcc.Dropdown(
+                        id="period",
+                        placeholder="Select Time Period",
+                        options=[
+                            {"label": "1 month", "value": "30"},
+                            {"label": "3 months", "value": "90"},
+                            {"label": "6 months", "value": "180"},
+                            {"label": "1 year", "value": "365"},
+                            {"label": "3 year", "value": "1095"},
+                        ],
+                        #value = "365",
+                    ),
+                ]),
+                
                 #select the y variable for time-series plot
-                html.Label('Select Variable:', id = 'column-label'),
-                dcc.Dropdown(
-                    id='column',
-                    options=[
-                        {'label': col, 'value': col} for col in df1.columns
-                    ],
-                    value = 'FUND_NET_ASSET_VAL',
-                    style={'display': 'none'}
-                ),
+                html.Div(id="column-div", children=[
+                    dcc.Dropdown(
+                        id='column',
+                        placeholder="Select Variable:",
+                        options=[
+                            {'label': col, 'value': col} for col in df1.columns
+                        ],
+                        #value = 'FUND_NET_ASSET_VAL',
+                    ),
+                ])
                 
             ], className="flex flex-col gap-4"),
             
@@ -161,7 +172,7 @@ layout = html.Div(
         
         html.Div([
             
-            dcc.Graph(id="graph", className="h-[600px] -mt-4 border-b-2 border-bronze"),#, className="py-8 flex justify-center gap-12"),
+            dcc.Graph(id="graph", className="h-[560px] -mt-4 border-b-2 border-bronze"),#, className="py-8 flex justify-center gap-12"),
             
             html.Div(
                 id='advantages-box',
@@ -202,55 +213,43 @@ def show_selected_competitors(selected_ticker_indices):
 
 #update selector according to graph-type selected
 @dash.callback(
-    Output('x-variable', 'style'),
-    Output('y-variable', 'style'),
-    Output('z-variable', 'style'),
-    Output('period', 'style'),
-    Output('column', 'style'),
-    Output('x-label', 'style'),
-    Output('y-label', 'style'),
-    Output('z-label', 'style'),
-    Output('period-label', 'style'),
-    Output('column-label', 'style'),
-    Input('graph-type', 'value')
+    Output('x-variable-div', 'className'),
+    Output('y-variable-div', 'className'),
+    Output('z-variable-div', 'className'),
+    Output('period-div', 'className'),
+    Output('column-div', 'className'),
+    Input('graph-type', 'value'),
 )
 def update_dropdowns(graph_type):
     # Show by default
-    x_variable_style = {'display': 'block'}
-    y_variable_style = {'display': 'block'}
-    z_variable_style = {'display': 'block'}
-    period_style = {'display': 'block'}  
-    column_style = {'display': 'block'}  
-    x_label_style = {'display': 'block'}
-    y_label_style = {'display': 'block'}
-    z_label_style = {'display': 'block'}
-    period_label_style = {'display': 'block'}  
-    column_label_style = {'display': 'block'}  
+    x_variable_style = "block"
+    y_variable_style = "block"
+    z_variable_style = "block"
+    period_style = "block"
+    column_style = "block"  
 
     if graph_type == 'scatter_3d':
-        period_style = {'display': 'none'}
-        period_label_style = {'display': 'none'}
-        column_style = {'display': 'none'}
-        column_label_style = {'display': 'none'}
+        period_style = "hidden"
+        column_style = "hidden"
+        
     elif graph_type == 'scatter':
-        z_variable_style = {'display': 'none'}
-        z_label_style = {'display': 'none'}
-        period_style = {'display': 'none'}
-        period_label_style = {'display': 'none'}
-        column_style = {'display': 'none'}
-        column_label_style = {'display': 'none'}
+        z_variable_style = "hidden"
+        period_style = "hidden"
+        column_style = "hidden"
+    
     elif graph_type == 'time_series':
-        x_variable_style = {'display': 'none'}
-        x_label_style = {'display': 'none'}
-        y_variable_style = {'display': 'none'}
-        y_label_style = {'display': 'none'}
-        z_variable_style = {'display': 'none'}
-        z_label_style = {'display': 'none'}
+        x_variable_style = "hidden"
+        y_variable_style = "hidden"
+        z_variable_style = "hidden"
+    
+    else:
+        x_variable_style = "hidden"
+        y_variable_style = "hidden"
+        z_variable_style = "hidden"
+        period_style = "hidden"
+        column_style = "hidden" 
 
-    return (
-        x_variable_style, y_variable_style, z_variable_style, period_style, column_style
-        , x_label_style, y_label_style, z_label_style, period_label_style, column_label_style
-    )
+    return x_variable_style, y_variable_style, z_variable_style, period_style, column_style
 
 plot_metric = {
     'Tot Asset US$ (M)' : 'FUND_NET_ASSET_VAL',
@@ -356,8 +355,7 @@ def update_graph(
             figure.update_layout(
                 xaxis_title='Date',
                 yaxis_title=column,
-                width=800,
-                height=800
+                margin={"t":0,"b":0}
             )
     return figure
 
@@ -373,7 +371,7 @@ def hide_advantages_box(selected_ticker_indices):
     if len(selected) < 2:
         return "hidden"
     else:
-        return "self-center pt-4 w-fit" #"absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg"
+        return "self-center pt-2 w-fit" #"absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg"
 
 # Function for updating the advantages box
 @dash.callback(
