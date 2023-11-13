@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html, Input, Output, ALL
+from dash import dcc, html, Input, Output, State, ALL
 import dash_mantine_components as dmc
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -110,6 +110,9 @@ layout = html.Div(
 
                 # html.Label('Select Competitor ETFs:'),
                 
+                # Stores selected competitors
+                dcc.Store(id="selected-competitor-data", data={ "tickers": [] }),
+                
                 # Displays selected competitors
                 html.Div([
                     html.Div(id="selected-competitors", children=[
@@ -191,25 +194,52 @@ layout = html.Div(
 # Function for showing competitors upon selected
 @dash.callback(
     [
+        Output("selected-competitor-data", "data"),
         Output("selected-competitors", "children"),
         Output("selected-competitors", "className")
     ],
-    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
+    [
+        Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_indices"),
+        Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
+    ],
+    State("selected-competitor-data", "data")
 )
-def show_selected_competitors(selected_ticker_indices):
+def show_selected_competitors(visible_rows, selected_ticker_indices, current_selection: dict[str, list[tuple[int, str]]]):
+    print(f"\n{current_selection=}")
+    
     if None in selected_ticker_indices:
-        return "", "hidden"
+        return current_selection, "", "hidden"
     
-    ticker_values = []
+    ticker_indices = list(map(lambda x: x[0], current_selection["tickers"]))
+    ticker_values = list(map(lambda x: x[1], current_selection["tickers"]))
+    # print(f"{ticker_indices=}")
+    # print(f"{ticker_values=}")
+    
+    global_ticker_indices = set()
+    #print(f"{selected_ticker_indices=}")
     for region_ind, region_dt in enumerate(selected_ticker_indices):
+        region = REGIONS[region_ind]
+        
         for ticker_ind in region_dt:
-            region = REGIONS[region_ind]
-            ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
-            ticker_values.append(ticker)
+            global_ticker_ind = visible_rows[region_ind][ticker_ind]
+            global_ticker_indices.add(global_ticker_ind)
+            ticker = df_v2[region].iloc[global_ticker_ind]["Ticker"]
+            
+            # add new selection
+            if ticker not in ticker_values:
+                current_selection["tickers"].append((global_ticker_ind, ticker))
+    #print(f"{global_ticker_indices=}")
     
-    return [html.Div([
+    # remove deselected options
+    deselection = list(set(ticker_indices) - global_ticker_indices)
+    #print(f"{deselection=}")
+    new_selection = list(filter(lambda x: x[0] not in deselection, current_selection["tickers"]))
+    
+    #print(f"{new_selection=}\n")
+    
+    return { "tickers": new_selection }, [html.Div([
         html.Span(ticker, className="text-jade font-medium text-[14px]")
-    ], className="px-4 py-2 bg-gray-light rounded-[20px]") for ticker in ticker_values], "flex flex-wrap gap-2 mb-2 rounded-lg"
+    ], className="px-4 py-2 bg-gray-light rounded-[20px]") for ticker in map(lambda x: x[1], new_selection)], "flex flex-wrap gap-2 mb-2 rounded-lg"
 
 #update selector according to graph-type selected
 @dash.callback(
