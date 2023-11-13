@@ -12,6 +12,27 @@ from pages.feature2_backend import select_column
 dash.register_page(__name__)
 
 REGIONS = ["US Equity", "MM Equity", "CN Equity", "BH Equity", "TP Equity"]
+COLORS = [
+    '#1f77b4',  # muted blue
+    '#ff7f0e',  # safety orange
+    '#2ca02c',  # cooked asparagus green
+    '#d62728',  # brick red
+    '#9467bd',  # muted purple
+    '#8c564b',  # chestnut brown
+    '#e377c2',  # raspberry yogurt pink
+    '#7f7f7f',  # middle gray
+    '#bcbd22',  # curry yellow-green
+    '#17becf'   # blue-teal
+]
+
+def blank_fig():
+    fig = go.Figure(go.Scatter(x=[], y = []))
+    fig.update_layout(template = None)
+    fig.update_xaxes(showgrid = False, showticklabels = False, zeroline=False)
+    fig.update_yaxes(showgrid = False, showticklabels = False, zeroline=False)
+    
+    return fig
+
 #df = pd.read_csv("./Competitor Data.csv")
 df_v2 = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name=None)
 df = df_v2["Competitor Data"]
@@ -175,7 +196,8 @@ layout = html.Div(
         
         html.Div([
             
-            dcc.Graph(id="graph", className="h-[560px] -mt-4 border-b-2 border-bronze"),#, className="py-8 flex justify-center gap-12"),
+            html.Div(id="graph-div"),
+            #dcc.Graph(id="graph", figure=blank_fig(), className="h-[560px] -mt-4 border-b-2 border-bronze"),#, className="py-8 flex justify-center gap-12"),
             
             html.Div(
                 id='advantages-box',
@@ -205,7 +227,7 @@ layout = html.Div(
     State("selected-competitor-data", "data")
 )
 def show_selected_competitors(visible_rows, selected_ticker_indices, current_selection: dict[str, list[tuple[int, str]]]):
-    print(f"\n{current_selection=}")
+    # print(f"\n{current_selection=}")
     
     if None in selected_ticker_indices:
         return current_selection, "", "hidden"
@@ -288,20 +310,21 @@ plot_metric = {
 
 # Function for updating the Graph depending on the selected Graph Type and Axes
 @dash.callback(
-    Output("graph", "figure"),
+    Output("graph-div", "children"),
     Input("graph-type", "value"),
     Input("x-variable", "value"),
     Input("y-variable", "value"),
     Input("z-variable", "value"),
     Input("period", "value"),
     Input("column", "value"),
-    Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
+    Input("selected-competitor-data", "data"),
+    #Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
     #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
     #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
     prevent_initial_call=True
 )
 def update_graph(
-    graph_type, x_variable, y_variable, z_variable, time_period, column, selected_ticker_indices #rows, selected_rows
+    graph_type, x_variable, y_variable, z_variable, time_period, column, selection #rows, selected_rows
 ):
     #print(rows)
     #print(selected_rows)
@@ -311,13 +334,7 @@ def update_graph(
     #     rows[row]["Ticker"] for row in selected_rows
     # ] if selected_rows else "None"
 
-    selected_tickers = []
-    for region_ind, region_dt in enumerate(selected_ticker_indices):
-        for ticker_ind in region_dt:
-            region = REGIONS[region_ind]
-            ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
-            selected_tickers.append(ticker)
-    #print(selected_tickers)
+    selected_tickers = list(map(lambda x: x[1], selection["tickers"]))
     
     figure = {}
     if graph_type == "scatter_3d":
@@ -355,39 +372,64 @@ def update_graph(
         )
         
     elif graph_type == "time_series":
-        if len(selected_tickers) == 2:
-            etf1 = selected_tickers[0]
-            etf2 = selected_tickers[1]
-            period = int(time_period) # Set the desired period length for the time series
+        if time_period is None or column is None:
+            return
+        period = int(time_period)
+        figure = go.Figure()
+        for ind, ticker in enumerate(selected_tickers):
+            etf_data = select_column(ticker, column)[:period]
+            print(etf_data)
+            etf_data["Date"] = pd.to_datetime(etf_data["Date"])
+            etf_trace = go.Scatter(
+                x=etf_data["Date"],
+                y=etf_data[column],
+                name=ticker,
+                mode="lines",
+                line=dict(color=COLORS[ind])
+            )
+            figure.add_trace(etf_trace)
+        figure.update_layout(
+            xaxis_title='Date',
+            yaxis_title=column,
+            margin={"t":0,"b":0}
+        )
+        
+        # if len(selected_tickers) == 2:
+        #     etf1 = selected_tickers[0]
+        #     etf2 = selected_tickers[1]
+        #     period = int(time_period) # Set the desired period length for the time series
 
-            etf1_data = select_column(etf1, column)[:period]
-            etf2_data = select_column(etf2, column)[:period]
-            etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
-            etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
+        #     etf1_data = select_column(etf1, column)[:period]
+        #     etf2_data = select_column(etf2, column)[:period]
+        #     etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
+        #     etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
             
-            etf1_trace = go.Scatter(
-                x=etf1_data['Date'],
-                y=etf1_data[column],
-                name=etf1,
-                mode='lines',
-                line=dict(color='blue')
-            )
+        #     etf1_trace = go.Scatter(
+        #         x=etf1_data['Date'],
+        #         y=etf1_data[column],
+        #         name=etf1,
+        #         mode='lines',
+        #         line=dict(color='blue')
+        #     )
             
-            etf2_trace = go.Scatter(
-                x=etf2_data['Date'],
-                y=etf2_data[column],
-                name=etf2,
-                mode='lines',
-                line=dict(color='red')
-            )
+        #     etf2_trace = go.Scatter(
+        #         x=etf2_data['Date'],
+        #         y=etf2_data[column],
+        #         name=etf2,
+        #         mode='lines',
+        #         line=dict(color='red')
+        #     )
 
-            figure = go.Figure(data=[etf1_trace, etf2_trace])
-            figure.update_layout(
-                xaxis_title='Date',
-                yaxis_title=column,
-                margin={"t":0,"b":0}
-            )
-    return figure
+        #     figure = go.Figure(data=[etf1_trace, etf2_trace])
+        #     figure.update_layout(
+        #         xaxis_title='Date',
+        #         yaxis_title=column,
+        #         margin={"t":0,"b":0}
+        #     )
+    
+    print(figure)
+    return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze")#, className="py-8 flex justify-center gap-12"),
+
 
 @dash.callback(
     Output("advantages-box", "className"),
