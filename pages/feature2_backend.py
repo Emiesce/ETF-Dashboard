@@ -8,20 +8,13 @@ def find_advantage(df, x1, x2):
     etf2 = df[df['Ticker'] == x2].iloc[0][1:]
     etf1 = etf1[8:].astype(float)
     etf2 = etf2[8:].astype(float)
-    
-    # Remove '%' symbol and commas, and convert to float
-    # etf1 = etf1.str.replace('%', '').str.replace(',', '').astype(float)
-    # etf2 = etf2.str.replace('%', '').str.replace(',', '').astype(float)
 
     # Calculate percentage difference for each column
     diff = ((etf1 - etf2) / etf1) * 100
     diff = diff.round(2)
     
     advantages = diff[diff > 0]
-    # print(type(advantages))
-    # print(advantages.tolist())
     return advantages
-
     # Find the best and the second best column
     # best = diff.idxmax()
     # diff[best] = float('-inf')
@@ -47,6 +40,7 @@ def select_column(etf, column):
     return selected_data
 
 # def plot_timeseries(etf1, etf2, column, period=365):
+#     column = plot_metric[column]
 #     etf1_data = select_column(etf1, column)[:period]
 #     etf2_data = select_column(etf2, column)[:period]
 #     print(type(etf2_data[column][0]))
@@ -112,13 +106,7 @@ def plot_multi_advantages(df, x1, x2_list, jpm_x1 = True):
 df = pd.read_csv('Competitor Data.csv')
 # print(df)
 df = clean_competitor_data(df)
-# print(df)
-# print(find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity'))
-# print(find_advantage(df, 'BBSC US Equity', 'SPYG US Equity'))
-# print(select_column('QQQ', 'FUND_NET_ASSET_VAL'))
-# plot_timeseries('DFAC', 'QQQ', 'FUND_NET_ASSET_VAL', 365)
-find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity')
-# plot_advantages(df, 'JEPI US Equity', 'DFAC US Equity')
 
-# print(select_column('QQQ', 'FUND_NET_ASSET_VAL'))
-# print(select_column('QQQ', 'TOT_RETURN_INDEX_GROSS_DVDS'))
+find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity')
+# plot_timeseries('JEPI US Equity', 'QQQ US Equity', "Tot Asset US$ (M)")
+

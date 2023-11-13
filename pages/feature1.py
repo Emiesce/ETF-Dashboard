@@ -114,7 +114,7 @@ layout = html.Div([
             
         ], className="flex flex-col gap-2")
         
-    ], className="p-4 flex flex-col gap-4 w-[20%] border-y border-gray-medium"),
+    ], className="py-4 flex flex-col gap-4 w-[20%]"),
     
     html.Div([
                
@@ -152,7 +152,7 @@ layout = html.Div([
         
     ], className="flex flex-grow flex-col gap-4")
 
-], className="p-8 flex justify-center gap-12")    
+], className="p-8 flex gap-12")    
 
 @callback(
     [
