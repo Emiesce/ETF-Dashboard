@@ -237,15 +237,15 @@ def hide_selection(*args):
     prevent_initial_call=True
 )
 def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
-    print("Filter criteria:")
-    print(f"\t\u27a4 {selected_categories=}")
-    print(f"\t\u27a4 {operator=}")
-    print(f"\t\u27a4 {threshold=}")
+    # print("Filter criteria:")
+    # print(f"\t\u27a4 {selected_categories=}")
+    # print(f"\t\u27a4 {operator=}")
+    # print(f"\t\u27a4 {threshold=}")
     
     filter_ticker = []
     
     for ETF_name, df_nav in df_nav_perct.items():
-        print(ETF_name)
+        # print(ETF_name)
         for ind, sector in enumerate(list(selected_categories.keys())):
             sector_nav = df_nav.loc[df_nav["Sector"].str.match(sector)]["%NAV"]
             if len(sector_nav) == 0:

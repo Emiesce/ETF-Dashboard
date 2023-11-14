@@ -11,6 +11,7 @@ from pages.feature2_backend import select_column
 
 dash.register_page(__name__)
 
+# variables
 REGIONS = ["US Equity", "MM Equity", "CN Equity", "BH Equity", "TP Equity"]
 COLORS = [
     '#1f77b4',  # muted blue
@@ -378,7 +379,7 @@ def update_graph(
         figure = go.Figure()
         for ind, ticker in enumerate(selected_tickers):
             etf_data = select_column(ticker, column)[:period]
-            print(etf_data)
+            # print(etf_data)
             etf_data["Date"] = pd.to_datetime(etf_data["Date"])
             etf_trace = go.Scatter(
                 x=etf_data["Date"],
@@ -427,7 +428,7 @@ def update_graph(
         #         margin={"t":0,"b":0}
         #     )
     
-    print(figure)
+    # print(figure)
     return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze")#, className="py-8 flex justify-center gap-12"),
 
 
