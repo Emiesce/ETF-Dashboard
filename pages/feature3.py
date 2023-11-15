@@ -2,9 +2,11 @@ import random
 import pandas as pd
 import dash
 from dash import html, Input, Output, State, ALL
+import dash_core_components as dcc
 import dash_mantine_components as dmc
 import dash_html_components as html
 import dash_ag_grid as dag
+import plotly.express as px
 
 dash.register_page(__name__)
 
@@ -151,7 +153,7 @@ layout = html.Div([
                         ],
                     ),
                     
-                    dmc.Button("See All Holdings", id="modal-holdings-btn", className="w-full bg-aqua"),
+                    dmc.Button("See All Holdings", id="modal-holdings-btn", className="w-full bg-aqua mt-auto"),
                     
                     dmc.Modal(
                         title="New Modal",
@@ -173,15 +175,16 @@ layout = html.Div([
                         ]
                     ),
                     
-                ], className="flex flex-col gap-2 w-[25%]"),
+                ], className="flex flex-col gap-2 w-[25%] mr-4"),
                 
-                dmc.Divider(orientation="vertical"),
                 
-                html.Div([
-                    
-                ])
+                html.Div(id="list-n-holdings", className="min-w-[35%]"),
+                
+                dmc.Divider(orientation="vertical", className="mr-[20px]"),
             
-            ], className="flex-grow gap-2 p-4 flex bg-white drop-shadow-lg rounded-lg")
+                html.Div(id="holdings-graph-div")
+            
+            ], className="flex-grow gap-4 p-4 flex bg-white drop-shadow-lg rounded-lg")
             
         ], className="flex gap-4 min-h-[32%]"),
         
@@ -231,8 +234,8 @@ layout = html.Div([
     prevent_initial_call=True
 )
 def display_client_details(selected_rows):
-    #print(selected_rows)
-    if selected_rows is None and not len(selected_rows):
+    # print(selected_rows)
+    if not selected_rows:
         return html.Span("Please Provide a Client", className="text-gray-medium/50 text-center"), "h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg border border-gray-medium border-dashed"
     
     selected_client = selected_rows[0]["Client"]  # single selection restricted in Ag Grid
@@ -306,7 +309,7 @@ def populate_modal_holdings(nc, selected_row):
         return "", []
     
     df_client = df_client_holdings[selected_client]
-    #print(df_client)
+    # print(df_client)
     content = html.Div([
         
         html.Div([
@@ -319,3 +322,50 @@ def populate_modal_holdings(nc, selected_row):
     ], className="flex flex-col gap-2")
 
     return title, content
+
+@dash.callback(
+    Output("list-n-holdings", "children"),
+    Input("etf-holding-option", "value"),
+    Input("selection-checkbox-grid", "selectedRows"),
+    prevent_initial_call=True
+)
+def display_n_holdings(num_display, selected_row):
+    if not selected_row:
+        return "", []
+    selected_client = selected_row[0]["Client"]    
+    if selected_client not in list(df_client_holdings.keys()):
+        return "", []
+    
+    df_client = df_client_holdings[selected_client][:num_display]
+    content = html.Div([
+        
+        html.Div([
+            html.Span("\u2022 "),
+            dmc.Space(w=5),
+            html.Span(f"{row['Ticker']}"),
+        ], className="flex w-fit") for _, row in df_client.iterrows()
+    
+    ], className="grid grid-rows-5 grid-flow-col gap-[6px]")
+    return content
+
+@dash.callback(
+    Output("holdings-graph-div", "children"), 
+    Input("selection-checkbox-grid", "selectedRows"),
+    prevent_initial_call=True
+)
+def generate_pie_chart(selected_row):
+    if not selected_row:
+        return "", []
+    selected_client = selected_row[0]["Client"]    
+    if selected_client not in list(df_client_holdings.keys()):
+        return "", []
+    
+    data = df_client_holdings[selected_client]
+    fig = px.pie(data, values="Weight", names="Ticker", hole=0.5)
+    fig.update_layout(
+        margin={"l":0,"r":0,"t":0,"b":0},
+        width=150,
+        height=150,
+        showlegend=False
+    ).update_traces(textinfo="none")
+    return dcc.Graph(id="graph", figure=fig)
