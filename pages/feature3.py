@@ -8,38 +8,6 @@ import dash_ag_grid as dag
 
 dash.register_page(__name__)
 
-# variables
-# clients = ['Client1', 'Client2', 'Client3', 'Client4', 'Client5', 'Client6', 'Client7', 'Client8', 'Client9', 'Client10', 'Client11', 'Client12', 'Client13', 'Client14', 'Client15', 'Client16', 'Client17', 'Client18', 'Client19', 'Client20', 'Client21', 'Client22', 'Client23', 'Client24', 'Client25', 'Client26', 'Client27', 'Client28', 'Client29', 'Client30']  # J.P. Morgan institutional clients
-# groups = ['Group1', 'Group2', 'Group3', 'Group4', 'Group5', 'Group6']  # Groups
-# etfs = ['JEPI', 'JPST', 'BBJP', 'JEPQ', 'BBCA', 'BBEU', 'JIRE', 'BBAX', 'BBIN', 'JMST', 'JQUA', 'BBUS', 'BBAG', 'JCPB', 'BBMC', 'JEMA', 'JGLO', 'JMEE', 'JPLD', 'BBRE', 'JPIE', 'JMUB', 'JVAL', 'BBSC', 'JPMB', 'JAVA', 'JGRO', 'BBEM', 'JCPI', 'JPUS', 'BBHY', 'JPSE', 'JPIB', 'JPIN', 'JPRE', 'JPME', 'JMOM', 'JSCP', 'JPEM', 'JPEF', 'JMSI', 'JMHI', 'JBND', 'JIG', 'HELO', 'BBLB', 'BBCB', 'BLLD', 'BBSA', 'TEMP', 'UPWD', 'JIVE', 'JCHI', 'JPSV', 'CIRC', 'JDOC', 'BBIP', 'JTEK', 'BBIB', 'JCTR', 'BBSB']
-
-# num_clients = random.randint(25, 30)  # Number of clients (random between 25 and 30)
-# num_groups = random.randint(5, 6)  # Number of groups (random between 5 and 6)
-# clients_per_group = num_clients // num_groups  # Number of clients per group
-
-# random.shuffle(clients)  # Shuffle the client list
-# random.shuffle(etfs)  # Shuffle the ETF list
-
-# data = []
-# print(f"{num_clients=}")
-# print(f"{num_groups=}")
-# print(f"{clients_per_group=}")
-# for i in range(num_clients):
-#     if i > clients_per_group * num_groups - 1:
-#         print(f"Break at: {i}")
-#         break
-#     client = clients[i]
-#     # print(f"{i=}")
-#     group = groups[i // clients_per_group]
-#     selected_etfs = random.sample(etfs, random.randint(5, 10))
-#     row = {'Client': client, 'Group': group}
-#     for j, etf in enumerate(selected_etfs):
-#         row[f'ETF{j+1}'] = etf
-#     data.append(row)
-#     # print(data)
-
-# df = pd.DataFrame(data)
-
 clients = [
     'ABP (Stichting Pensioenfonds ABP)', 
     'GIC Private Limited', 
@@ -119,6 +87,10 @@ for i in range(num_clients):
 
 df = pd.DataFrame(data)
 
+RECOMMENDATIONS = ["JEPI US Equity", "JMOM US Equity", "JPIB US Equity", "JMEE US Equity"]
+df_etfs = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name="US Equity")
+df_recommendations = df_etfs.loc[df_etfs["Ticker"].apply(lambda x: x in RECOMMENDATIONS)].reset_index()
+
 # Create the Dash app
 layout = html.Div([
     
@@ -128,15 +100,6 @@ layout = html.Div([
             html.Img(src="../assets/Icons/IconInstitution.svg", className="w-[25px] h-[25px]"),
             html.Span("Institutional Clients", className="text-[18px] font-medium"),
         ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze bg-white"),
-        
-        # dcc.Input(id='search-input', type='text', placeholder='Search Clients...', className="py-[6px] px-[10px] mb-[10px] border border-[#AAAAAA] rounded-md"),
-        # html.Div(
-        #     [
-        #         html.H2('JP Morgan Institutional Clients', style={'color': '#004589'}),
-        #         dcc.Input(id='search-input', type='text', placeholder='Search clients...', style={'margin-bottom': '10px'})
-        #     ], className='header'
-        # ),
-
         
         html.Div(
             [
@@ -149,13 +112,6 @@ layout = html.Div([
                     dashGridOptions={ "rowSelection": "single", "rowHeight": 50, "headerHeight": 0, "pagination": True, "paginationAutoPageSize": True },
                     style={ "height": "500px" }
                 ),
-                
-                # html.Div(
-                #     [
-                #         html.H3('Clients', style={'color': '#004589'}),
-                #         html.Div(id='client-list', style={'overflow': 'scroll', 'height': 'calc(100vh - 140px)'})
-                #     ], className='sidebar'
-                # ),
 
                 html.Div(id='recommendations-container', className='recommendations-container')
             ]
@@ -179,93 +135,56 @@ layout = html.Div([
             
         ], className="flex gap-4 min-h-[32%]"),
         
-            
+        
         html.Div([
             
-            html.Div(
-                [
-                    html.H3('ETF 1', style={'color': 'white'}),
-                    html.P('ETF name: JEPI'),
-                    html.P('Flows: 124,058'),
-                    html.P('AUM: $29.56 billion'),
-                    html.P('Sharpe Ratio: 0.5'),
-                ],
-                className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
-            ),
+            html.Span("Recommended ETFs", className="pr-4 border-b-2 border-bronze self-start text-[18px] font-medium"),
+            
+            html.Div(children=[
+                            
+                html.Div(
+                    [
+                        html.Span(recommendation["Ticker"], className="text-[16px] font-medium"),
+                        html.Span([
+                            "AUM: ",
+                            html.Span(recommendation["Tot Asset US$ (M)"])
+                        ]),
+                        html.Span([
+                            '1 Year Sharpe Ratio: ',
+                            html.Span(recommendation["Sharpe 1Y-M"])
+                        ]),
+                        html.Span([
+                            "1 Year Alpha: ",
+                            html.Span(recommendation["Alpha 1Y-M"])
+                        ]),
+                        html.Div([
+                            ">"
+                        ], className="mt-auto self-end font-bold bg-white text-navy flex justify-center items-center rounded-full w-[35px] h-[35px]")
+                    ],
+                    className='flex flex-col p-4 w-[230px] h-[190px] text-white rounded-[20px] bg-navy' if ind % 2 else "flex flex-col p-4 w-[230px] h-[190px] text-white rounded-[20px] bg-jade",
+                ) for ind, recommendation in df_recommendations.iterrows()
                 
-            html.Div(
-                [
-                    html.H3('ETF 2', style={'color': 'white'}),
-                    html.P('ETF name: JMOM'),
-                    html.P('Flows: 123,456'),
-                    html.P('AUM: $10.23 billion'),
-                    html.P('Sharpe Ratio: 0.7'),
-                ],
-                className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
-            ),
-
-            html.Div(
-                [
-                    html.H3('ETF3', style={'color': 'white'}),
-                    html.P('ETF name: JPIB'),
-                    html.P('Flows: 789,012'),
-                    html.P('AUM: $50.67 billion'),
-                    html.P('Sharpe Ratio: 0.9'),
-                ],
-                className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
-            ),
+            ], className='flex-grow flex flex-wrap gap-4'),
             
-            html.Div(
-                [
-                    html.H3('ETF 4', style={'color': 'white'}),
-                    html.P('ETF name: JMEE'),
-                    html.P('Flows: 345,678'),
-                    html.P('AUM: $15.89 billion'),
-                    html.P('Sharpe Ratio: 0.6'),
-                ],
-                className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
-            ),
-            
-        ], className='flex-grow flex flex-wrap gap-4'),
+        ], className="flex flex-col items-center gap-2 px-6 py-4 bg-aqua/5 rounded-[20px] drop-shadow-md  w-full")
         
-    ], className="flex flex-col gap-6 w-full"),
+    ], className="flex flex-col gap-4 w-full"),
     
 ], className="p-8 flex gap-8")
-
-# Define callbacks
-@dash.callback(
-    Output('client-list', 'children'),
-    [Input('search-input', 'value')]
-)
-def display_client_list(search_term):
-    if search_term is None:
-        filtered_clients = df
-    else:
-        filtered_clients = df[df['Client'].str.contains(search_term, case=False, na=False)]
-
-    client_elements = [
-        html.Div(
-            client,
-            className='client-item',
-            id={'type': 'client-item', 'index': i}
-        ) for i, client in filtered_clients['Client'].items()
-    ]
-    return client_elements or []
 
 @dash.callback(
     [
         Output('client-details', 'children'),
-        Output('client-details', 'style'),
+        Output('client-details', 'className'),
     ],
     Input("selection-checkbox-grid", "selectedRows"),
     prevent_initial_call=True
 )
 def display_client_details(selected_rows):
-    if not selected_rows:
-        return html.Div()
-    
-    # if client_id is None:
-    #     return html.Div()
+    #print(selected_rows)
+    if not len(selected_rows):
+        print("Deselected")
+        return html.Span("Please Provide a Client", className="text-gray-medium/50 text-center"), "h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg border border-gray-medium border-dashed"
     
     selected_client = selected_rows[0]["Client"]  # single selection restricted in Ag Grid
     # print(selected_client)
@@ -303,23 +222,5 @@ def display_client_details(selected_rows):
         ], className="flex flex-col h-full"),
     
     ], className="flex gap-2 items-center")
-    
-    # details = html.Div([
-    #     html.H4('Client Details', style={'color': '#004589'}),
-    #     html.Table([
-    #         html.Tr([html.Th('Group', style={'color': '#575a5d'}), html.Td(client_data['Group'])]),
-    #         html.Tr([html.Th('Client', style={'color': '#575a5d'}), html.Td(client_data['Client'])])
-    #     ])
-    # ])
-    return details, { "border-style": "none" }
 
-    # client_index = client_id['index']
-    # client_data = df.iloc[client_index]
-    # details = html.Div([
-    #     html.H4('Client Details', style={'color': '#004589'}),
-    #     html.Table([
-    #         html.Tr([html.Th('Group', style={'color': '#575a5d'}), html.Td(client_data['Group'])]),
-    #         html.Tr([html.Th('Client', style={'color': '#575a5d'}), html.Td(client_data['Client'])])
-    #     ])
-    # ])
-    # return details
+    return details, "h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg"
