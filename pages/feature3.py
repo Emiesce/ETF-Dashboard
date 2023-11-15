@@ -1,7 +1,7 @@
 import random
 import pandas as pd
 import dash
-from dash import html, Input, Output, ALL
+from dash import html, Input, Output, State, ALL
 import dash_mantine_components as dmc
 import dash_html_components as html
 import dash_ag_grid as dag
@@ -9,14 +9,21 @@ import dash_ag_grid as dag
 dash.register_page(__name__)
 
 clients = [
+    'Korea Investment Corporation', 
+    'Temasek Holdings', 
+    'Canada Pension Plan Investment',
+    'NY State Common Retirement Fund',
+    'National Pension Service',
+    'TX Teachers Retirement System',
+    'MI Public School Employees',
+    'Florida Retirement System',
+    'STRS Ohio',
+    'CalSTRS',  # data available up to this client
+    'China Investment Corporation', 
     'ABP (Stichting Pensioenfonds ABP)', 
     'GIC Private Limited', 
     'Bank of Japan', 
-    'National Pension Service', 
     'Government Pension Investment Fund (Japan)', 
-    'China Investment Corporation', 
-    'Temasek Holdings', 
-    'Korea Investment Corporation', 
     'AustralianSuper', 
     'Future Fund (Australia)', 
     'Hong Kong Monetary Authority Investment Portfolio', 
@@ -91,6 +98,8 @@ RECOMMENDATIONS = ["JEPI US Equity", "JMOM US Equity", "JPIB US Equity", "JMEE U
 df_etfs = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name="US Equity")
 df_recommendations = df_etfs.loc[df_etfs["Ticker"].apply(lambda x: x in RECOMMENDATIONS)].reset_index()
 
+df_client_holdings = pd.read_excel("./static/Client ETF Holdings.xlsx", sheet_name=None)
+
 # Create the Dash app
 layout = html.Div([
     
@@ -124,14 +133,55 @@ layout = html.Div([
         html.Div([
             
             html.Div(id="client-details", children=[
-            
                 html.Span("Please Provide a Client", className="text-gray-medium/50 text-center")
-            
             ], className="h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg border border-gray-medium border-dashed"),
             
             html.Div([
-                html.Span("ETF Holdings", className="text-[18px] font-medium")
-            ], className="flex-grow p-4 flex flex-col bg-white drop-shadow-lg rounded-lg")
+                
+                html.Div([
+                    
+                    html.Span("ETF Holdings", className="border-b-2 border-bronze text-[18px] font-medium"),
+                    
+                    dmc.Select(
+                        id="etf-holding-option",
+                        value=5,
+                        data=[
+                            {"value": 5, "label": "Show Top 5"},
+                            {"value": 10, "label": "Show Top 10"},
+                        ],
+                    ),
+                    
+                    dmc.Button("See All Holdings", id="modal-holdings-btn", className="w-full bg-aqua"),
+                    
+                    dmc.Modal(
+                        title="New Modal",
+                        id="modal-holdings",
+                        zIndex=10000,
+                        children=[
+                            html.Div(id="list-etf-holdings"),
+                            dmc.Group(
+                                [
+                                    dmc.Button(
+                                        "Close",
+                                        color="red",
+                                        variant="outline",
+                                        id="modal-close-button",
+                                    ),
+                                ],
+                                position="right",
+                            ),
+                        ]
+                    ),
+                    
+                ], className="flex flex-col gap-2 w-[25%]"),
+                
+                dmc.Divider(orientation="vertical"),
+                
+                html.Div([
+                    
+                ])
+            
+            ], className="flex-grow gap-2 p-4 flex bg-white drop-shadow-lg rounded-lg")
             
         ], className="flex gap-4 min-h-[32%]"),
         
@@ -182,8 +232,7 @@ layout = html.Div([
 )
 def display_client_details(selected_rows):
     #print(selected_rows)
-    if not len(selected_rows):
-        print("Deselected")
+    if selected_rows is None and not len(selected_rows):
         return html.Span("Please Provide a Client", className="text-gray-medium/50 text-center"), "h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg border border-gray-medium border-dashed"
     
     selected_client = selected_rows[0]["Client"]  # single selection restricted in Ag Grid
@@ -224,3 +273,49 @@ def display_client_details(selected_rows):
     ], className="flex gap-2 items-center")
 
     return details, "h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg"
+
+@dash.callback(
+    Output("modal-holdings", "opened"),
+    Input("modal-holdings-btn", "n_clicks"),
+    Input("modal-close-button", "n_clicks"),
+    State("modal-holdings", "opened"),
+    State("selection-checkbox-grid", "selectedRows"),
+    prevent_initial_call=True,
+)
+def control_modal_holdings(nc1, nc2, opened, selected_row):
+    if not selected_row:
+        return
+    return not opened
+
+@dash.callback(
+    [
+        Output("modal-holdings", "title"),
+        Output("list-etf-holdings", "children"),
+    ],
+    Input("modal-holdings-btn", "n_clicks"),
+    Input("selection-checkbox-grid", "selectedRows"),
+)
+def populate_modal_holdings(nc, selected_row):
+    if not selected_row:
+        return "", []
+    
+    selected_client = selected_row[0]["Client"]
+    title = f"All ETF holdings of {selected_client}"
+    
+    if selected_client not in list(df_client_holdings.keys()):
+        return "", []
+    
+    df_client = df_client_holdings[selected_client]
+    #print(df_client)
+    content = html.Div([
+        
+        html.Div([
+            html.Span("\u2022 "),
+            dmc.Space(w=5),
+            html.Span(f"{row['Ticker']}", className="font-medium"),
+            html.Span(f"- {row['Full Name']}")
+        ], className="flex") for _, row in df_client.iterrows()
+    
+    ], className="flex flex-col gap-2")
+
+    return title, content
