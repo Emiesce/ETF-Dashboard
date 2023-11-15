@@ -43,7 +43,7 @@ clients = [
     'ABP (Stichting Pensioenfonds ABP)', 
     'GIC Private Limited', 
     'Bank of Japan', 
-    'National Pension Service of Korea', 
+    'National Pension Service', 
     'Government Pension Investment Fund (Japan)', 
     'China Investment Corporation', 
     'Temasek Holdings', 
@@ -164,68 +164,84 @@ layout = html.Div([
         
     ], className="flex flex-col gap-2 w-[400px]"),
 
-    html.Div(
-        [
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.H3('ETF 1', style={'color': 'white'}),
-                            html.P('ETF name: JEPI'),
-                            html.P('Flows: 124,058'),
-                            html.P('AUM: $29.56 billion'),
-                            html.P('Sharpe Ratio: 0.5'),
-                        ],
-                        className='box',
-                        style={'color': 'white','background-color': '#004589', 'margin-right': '20px'}
-                    ),
-                    html.Div(
-                        [
-                            html.H3('ETF 2', style={'color': 'white'}),
-                            html.P('ETF name: JMOM'),
-                            html.P('Flows: 123,456'),
-                            html.P('AUM: $10.23 billion'),
-                            html.P('Sharpe Ratio: 0.7'),
-                        ],
-                        className='box',
-                        style={'color': 'white','background-color': '#004589', 'margin-right': '20px'}
-                    ),
-                ],
-                className='box-container',
-                style={'margin-bottom': '20px'}
-            ),
+    html.Div([
+            
+        html.Div([
+            
+            html.Div([
+            
+                html.Img(src="../assets/Icons/IconClient.png", className="w-[75px] h-[75px] rounded-full"),
+                
+                html.Div([
+                    html.Span("Client Name", className="text-[18px] font-medium"),
+                    html.Span("Description")
+                ], className="flex flex-col gap-2 pb-2"),
+            
+            ], className="p-4 flex items-center min-w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg"),
+            
+            html.Div([
+                html.Span("ETF Holdings", className="text-[18px] font-medium")
+            ], className="p-4 flex flex-col w-full bg-white drop-shadow-lg rounded-lg")
+            
+        ], className="flex gap-4 min-h-[25%]"),
+        
+        html.Div([
+            
+            html.Div([
+                "Placeholder"
+            ], className="p-4 flex min-w-[21.7%] bg-white drop-shadow-lg rounded-lg"),
+            
+            html.Div([
+                
+                html.Div(
+                    [
+                        html.H3('ETF 1', style={'color': 'white'}),
+                        html.P('ETF name: JEPI'),
+                        html.P('Flows: 124,058'),
+                        html.P('AUM: $29.56 billion'),
+                        html.P('Sharpe Ratio: 0.5'),
+                    ],
+                    className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
+                ),
+                    
+                html.Div(
+                    [
+                        html.H3('ETF 2', style={'color': 'white'}),
+                        html.P('ETF name: JMOM'),
+                        html.P('Flows: 123,456'),
+                        html.P('AUM: $10.23 billion'),
+                        html.P('Sharpe Ratio: 0.7'),
+                    ],
+                    className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
+                ),
 
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.H3('ETF3', style={'color': 'white'}),
-                            html.P('ETF name: JPIB'),
-                            html.P('Flows: 789,012'),
-                            html.P('AUM: $50.67 billion'),
-                            html.P('Sharpe Ratio: 0.9'),
-                        ],
-                        className='box',
-                        style={'color': 'white','background-color': '#00a16d', 'margin-right': '20px'}
-                    ),
-                    html.Div(
-                        [
-                            html.H3('ETF 4', style={'color': 'white'}),
-                            html.P('ETF name: JMEE'),
-                            html.P('Flows: 345,678'),
-                            html.P('AUM: $15.89 billion'),
-                            html.P('Sharpe Ratio: 0.6'),
-                        ],
-                        className='box',
-                        style={'color': 'white', 'background-color': '#00a16d', 'margin-right': '20px'}
-                    ),
-                ],
-                className='box-container',
-            ),
-        ],
-        style={'display': 'flex', 'flex-wrap': 'wrap', 'justify-content': 'center', 'padding': '20px'},
-        className="w-full"
-    ),
+                html.Div(
+                    [
+                        html.H3('ETF3', style={'color': 'white'}),
+                        html.P('ETF name: JPIB'),
+                        html.P('Flows: 789,012'),
+                        html.P('AUM: $50.67 billion'),
+                        html.P('Sharpe Ratio: 0.9'),
+                    ],
+                    className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
+                ),
+                
+                html.Div(
+                    [
+                        html.H3('ETF 4', style={'color': 'white'}),
+                        html.P('ETF name: JMEE'),
+                        html.P('Flows: 345,678'),
+                        html.P('AUM: $15.89 billion'),
+                        html.P('Sharpe Ratio: 0.6'),
+                    ],
+                    className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
+                ),
+                
+            ], className='flex flex-wrap gap-4'),
+            
+        ], className="flex gap-4 h-full")
+        
+    ], className="flex flex-col gap-6 w-full"),
     
 ], className="p-8 flex gap-8")
 
@@ -251,15 +267,21 @@ def display_client_list(search_term):
 
 @dash.callback(
     Output('client-details', 'children'),
-    [Input({'type': 'client-item', 'index': ALL}, 'n_clicks'),
-     Input({'type': 'client-item', 'index': ALL}, 'id')]
+    Input("selection-checkbox-grid", "selectedRows")
 )
-def display_client_details(n_clicks, client_id):
-    if client_id is None:
+def display_client_details(selected_rows):
+    if not selected_rows:
         return html.Div()
+    
+    # if client_id is None:
+    #     return html.Div()
+    
+    selected_client = selected_rows[0]["Client"]  # single selection restricted in Ag Grid
+    # print(selected_client)
+    # print(df)
 
-    client_index = client_id['index']
-    client_data = df.iloc[client_index]
+    client_data = df.loc[df["Client"] == selected_client]
+    # print(client_data)
     details = html.Div([
         html.H4('Client Details', style={'color': '#004589'}),
         html.Table([
@@ -268,3 +290,14 @@ def display_client_details(n_clicks, client_id):
         ])
     ])
     return details
+
+    # client_index = client_id['index']
+    # client_data = df.iloc[client_index]
+    # details = html.Div([
+    #     html.H4('Client Details', style={'color': '#004589'}),
+    #     html.Table([
+    #         html.Tr([html.Th('Group', style={'color': '#575a5d'}), html.Td(client_data['Group'])]),
+    #         html.Tr([html.Th('Client', style={'color': '#575a5d'}), html.Td(client_data['Client'])])
+    #     ])
+    # ])
+    # return details
