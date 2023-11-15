@@ -2,6 +2,7 @@ import random
 import pandas as pd
 import dash
 from dash import html, Input, Output, ALL
+import dash_mantine_components as dmc
 import dash_html_components as html
 import dash_ag_grid as dag
 
@@ -95,7 +96,6 @@ num_clients = random.randint(25, 30)  # Number of clients (random between 25 and
 num_groups = random.randint(5, 6)  # Number of groups (random between 5 and 6)
 clients_per_group = num_clients // num_groups  # Number of clients per group
 
-
 random.shuffle(etfs)  # Shuffle the ETF list
 
 data = []
@@ -157,7 +157,6 @@ layout = html.Div([
                 #     ], className='sidebar'
                 # ),
 
-                html.Div(id='client-details', className='client-details'),
                 html.Div(id='recommendations-container', className='recommendations-container')
             ]
         ),
@@ -168,78 +167,66 @@ layout = html.Div([
             
         html.Div([
             
-            html.Div([
+            html.Div(id="client-details", children=[
             
-                html.Img(src="../assets/Icons/IconClient.png", className="w-[75px] h-[75px] rounded-full"),
-                
-                html.Div([
-                    html.Span("Client Name", className="text-[18px] font-medium"),
-                    html.Span("Description")
-                ], className="flex flex-col gap-2 pb-2"),
+                html.Span("Please Provide a Client", className="text-gray-medium/50 text-center")
             
-            ], className="p-4 flex items-center min-w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg"),
+            ], className="h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg border border-gray-medium border-dashed"),
             
             html.Div([
                 html.Span("ETF Holdings", className="text-[18px] font-medium")
-            ], className="p-4 flex flex-col w-full bg-white drop-shadow-lg rounded-lg")
+            ], className="flex-grow p-4 flex flex-col bg-white drop-shadow-lg rounded-lg")
             
-        ], className="flex gap-4 min-h-[25%]"),
+        ], className="flex gap-4 min-h-[32%]"),
         
+            
         html.Div([
             
-            html.Div([
-                "Placeholder"
-            ], className="p-4 flex min-w-[21.7%] bg-white drop-shadow-lg rounded-lg"),
-            
-            html.Div([
+            html.Div(
+                [
+                    html.H3('ETF 1', style={'color': 'white'}),
+                    html.P('ETF name: JEPI'),
+                    html.P('Flows: 124,058'),
+                    html.P('AUM: $29.56 billion'),
+                    html.P('Sharpe Ratio: 0.5'),
+                ],
+                className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
+            ),
                 
-                html.Div(
-                    [
-                        html.H3('ETF 1', style={'color': 'white'}),
-                        html.P('ETF name: JEPI'),
-                        html.P('Flows: 124,058'),
-                        html.P('AUM: $29.56 billion'),
-                        html.P('Sharpe Ratio: 0.5'),
-                    ],
-                    className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
-                ),
-                    
-                html.Div(
-                    [
-                        html.H3('ETF 2', style={'color': 'white'}),
-                        html.P('ETF name: JMOM'),
-                        html.P('Flows: 123,456'),
-                        html.P('AUM: $10.23 billion'),
-                        html.P('Sharpe Ratio: 0.7'),
-                    ],
-                    className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
-                ),
+            html.Div(
+                [
+                    html.H3('ETF 2', style={'color': 'white'}),
+                    html.P('ETF name: JMOM'),
+                    html.P('Flows: 123,456'),
+                    html.P('AUM: $10.23 billion'),
+                    html.P('Sharpe Ratio: 0.7'),
+                ],
+                className='p-4 w-[200px] h-[170px] text-white bg-navy rounded-[20px]',
+            ),
 
-                html.Div(
-                    [
-                        html.H3('ETF3', style={'color': 'white'}),
-                        html.P('ETF name: JPIB'),
-                        html.P('Flows: 789,012'),
-                        html.P('AUM: $50.67 billion'),
-                        html.P('Sharpe Ratio: 0.9'),
-                    ],
-                    className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
-                ),
-                
-                html.Div(
-                    [
-                        html.H3('ETF 4', style={'color': 'white'}),
-                        html.P('ETF name: JMEE'),
-                        html.P('Flows: 345,678'),
-                        html.P('AUM: $15.89 billion'),
-                        html.P('Sharpe Ratio: 0.6'),
-                    ],
-                    className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
-                ),
-                
-            ], className='flex flex-wrap gap-4'),
+            html.Div(
+                [
+                    html.H3('ETF3', style={'color': 'white'}),
+                    html.P('ETF name: JPIB'),
+                    html.P('Flows: 789,012'),
+                    html.P('AUM: $50.67 billion'),
+                    html.P('Sharpe Ratio: 0.9'),
+                ],
+                className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
+            ),
             
-        ], className="flex gap-4 h-full")
+            html.Div(
+                [
+                    html.H3('ETF 4', style={'color': 'white'}),
+                    html.P('ETF name: JMEE'),
+                    html.P('Flows: 345,678'),
+                    html.P('AUM: $15.89 billion'),
+                    html.P('Sharpe Ratio: 0.6'),
+                ],
+                className='p-4 w-[200px] h-[170px] text-white bg-jade rounded-[20px]',
+            ),
+            
+        ], className='flex-grow flex flex-wrap gap-4'),
         
     ], className="flex flex-col gap-6 w-full"),
     
@@ -266,8 +253,12 @@ def display_client_list(search_term):
     return client_elements or []
 
 @dash.callback(
-    Output('client-details', 'children'),
-    Input("selection-checkbox-grid", "selectedRows")
+    [
+        Output('client-details', 'children'),
+        Output('client-details', 'style'),
+    ],
+    Input("selection-checkbox-grid", "selectedRows"),
+    prevent_initial_call=True
 )
 def display_client_details(selected_rows):
     if not selected_rows:
@@ -282,14 +273,45 @@ def display_client_details(selected_rows):
 
     client_data = df.loc[df["Client"] == selected_client]
     # print(client_data)
+    
     details = html.Div([
-        html.H4('Client Details', style={'color': '#004589'}),
-        html.Table([
-            html.Tr([html.Th('Group', style={'color': '#575a5d'}), html.Td(client_data['Group'])]),
-            html.Tr([html.Th('Client', style={'color': '#575a5d'}), html.Td(client_data['Client'])])
-        ])
-    ])
-    return details
+    
+        html.Img(src="../assets/Icons/IconClient.png", className="w-[75px] h-[75px] rounded-full"),
+                
+        html.Div([
+            
+            html.Span(selected_client, className="text-[16px] font-medium"),
+            
+            dmc.List([
+                
+                dmc.ListItem([
+                    html.Span([
+                        "Group: ",
+                        html.Span(client_data["Group"], className="font-normal")
+                    ], className="font-medium text-[14px]")
+                ]),
+                
+                dmc.ListItem([
+                    html.Span([
+                        "Description: ",
+                        html.Span("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", className="font-normal whitespace-normal text-ellipsis")
+                    ], className="font-medium text-[14px]")
+                ])
+                
+            ])
+        
+        ], className="flex flex-col h-full"),
+    
+    ], className="flex gap-2 items-center")
+    
+    # details = html.Div([
+    #     html.H4('Client Details', style={'color': '#004589'}),
+    #     html.Table([
+    #         html.Tr([html.Th('Group', style={'color': '#575a5d'}), html.Td(client_data['Group'])]),
+    #         html.Tr([html.Th('Client', style={'color': '#575a5d'}), html.Td(client_data['Client'])])
+    #     ])
+    # ])
+    return details, { "border-style": "none" }
 
     # client_index = client_id['index']
     # client_data = df.iloc[client_index]
