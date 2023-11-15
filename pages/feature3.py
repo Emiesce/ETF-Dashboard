@@ -138,7 +138,7 @@ layout = html.Div([
                 html.Span("Please Provide a Client", className="text-gray-medium/50 text-center")
             ], className="h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg border border-gray-medium border-dashed"),
             
-            html.Div([
+            html.Div(id="etf-holdings-div", children=[
                 
                 html.Div([
                     
@@ -189,7 +189,7 @@ layout = html.Div([
         ], className="flex gap-4 min-h-[32%]"),
         
         
-        html.Div([
+        html.Div(id="recommendation-div", children=[
             
             html.Span("Recommended ETFs", className="pr-4 border-b-2 border-bronze self-start text-[18px] font-medium"),
             
@@ -276,6 +276,21 @@ def display_client_details(selected_rows):
     ], className="flex gap-2 items-center")
 
     return details, "h-full flex justify-center items-center px-4 py-2 w-[40%] gap-4 bg-white drop-shadow-lg rounded-lg"
+
+@dash.callback(
+    [
+        Output("etf-holdings-div", "className"),
+        Output("recommendation-div", "className")
+    ],
+    Input("selection-checkbox-grid", "selectedRows"),
+)
+def hide_components(selected_row):
+    holding_cn = "hidden"
+    recommendation_cn = "hidden"
+    if not selected_row:
+        return holding_cn, recommendation_cn
+    else:
+        return "flex-grow gap-4 p-4 flex bg-white drop-shadow-lg rounded-lg", "flex flex-col items-center gap-2 px-6 py-4 bg-aqua/5 rounded-[20px] drop-shadow-md  w-full"
 
 @dash.callback(
     Output("modal-holdings", "opened"),
