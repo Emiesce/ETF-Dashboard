@@ -9,6 +9,7 @@ import dash_ag_grid as dag
 import plotly.express as px
 
 from components.TitleWithIcon import TitleWithIcon
+from components.ETFTitle import ETFTitle
 
 dash.register_page(__name__)
 
@@ -322,22 +323,11 @@ def populate_modal_holdings(nc, selected_row):
     
     selected_client = selected_row[0]["Client"]
     title = f"All ETF holdings of {selected_client}"
-    
     if selected_client not in list(df_client_holdings.keys()):
         return "", []
     
     df_client = df_client_holdings[selected_client]
-    # print(df_client)
-    content = html.Div([
-        
-        html.Div([
-            html.Span("\u2022 "),
-            dmc.Space(w=5),
-            html.Span(f"{row['Ticker']}", className="font-medium"),
-            html.Span(f"- {row['Full Name']}")
-        ], className="flex") for _, row in df_client.iterrows()
-    
-    ], className="flex flex-col gap-2")
+    content = html.Div([ETFTitle(ticker=row["Ticker"], full_name=row["Full Name"], className="flex w-fit") for _, row in df_client.iterrows()], className="flex flex-col gap-2")
 
     return title, content
 
@@ -350,20 +340,13 @@ def populate_modal_holdings(nc, selected_row):
 def display_n_holdings(num_display, selected_row):
     if not selected_row:
         return "", []
+    
     selected_client = selected_row[0]["Client"]    
     if selected_client not in list(df_client_holdings.keys()):
         return "", []
     
     df_client = df_client_holdings[selected_client][:num_display]
-    content = html.Div([
-        
-        html.Div([
-            html.Span("\u2022 "),
-            dmc.Space(w=5),
-            html.Span(f"{row['Ticker']}"),
-        ], className="flex w-fit") for _, row in df_client.iterrows()
-    
-    ], className="grid grid-rows-5 grid-flow-col gap-[6px]")
+    content = html.Div([ETFTitle(ticker=row["Ticker"], className="flex w-fit") for _, row in df_client.iterrows()], className="grid grid-rows-5 grid-flow-col gap-[6px]")
     return content
 
 @dash.callback(
