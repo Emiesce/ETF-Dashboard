@@ -8,6 +8,8 @@ import dash_html_components as html
 import dash_ag_grid as dag
 import plotly.express as px
 
+from components.TitleWithIcon import TitleWithIcon
+
 dash.register_page(__name__)
 
 clients = [
@@ -107,10 +109,11 @@ layout = html.Div([
     
     html.Div([
         
-        html.Div([
-            html.Img(src="../assets/Icons/IconInstitution.svg", className="w-[25px] h-[25px]"),
-            html.Span("Institutional Clients", className="text-[18px] font-medium"),
-        ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze bg-white"),
+        TitleWithIcon(
+            icon_path="../assets/Icons/IconInstitution.svg",
+            title="Institutional Clients",
+            className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze bg-white"
+        ),
         
         html.Div(
             [

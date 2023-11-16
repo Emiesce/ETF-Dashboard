@@ -6,6 +6,8 @@ import dash_mantine_components as dmc
 import pandas as pd
 import json
 
+from components.TitleWithIcon import TitleWithIcon
+
 dash.register_page(__name__, path='/')
 
 # variables
@@ -17,13 +19,19 @@ with open("./static/ETF_categories.json") as file:
     categories = json.load(file)
 parent_categories = list(categories.keys())
 
+# read JPM ETF data
 df_etf = pd.read_excel("./static/JPMorgan_5-ETF-extract.xlsx", usecols=["Name", "Ticker", "Expense Ratio", "Tot Asset US$ (M)", "Tot Ret 1Y", "Top 5 Sector", "Top 5 %NAV"])
 df_etf["Top 5 Sector"] = df_etf["Top 5 Sector"].apply(lambda x: x.split(","))
 df_etf["Top 5 %NAV"] = df_etf["Top 5 %NAV"].apply(lambda x: x.split(","))
 df_etf["Name"] = df_etf[["Name", "Ticker"]].apply(lambda x: ",".join(x), axis=1)
+
+# read holdings of JPM ETFs
 df_holding = pd.read_excel("./static/JPMorgan_5-ETF-holdings.xlsx", sheet_name=None)  # read all sheets, i.e holdings of all ETFs
+
+# read %NAV by sector of JPM ETFs
 df_nav_perct = pd.read_excel("./static/JPMorgan_5-ETF-composition.xlsx", sheet_name=None)
 
+# generate bar charts of %NAV by sector and store in new column
 df_etf["graph"] = ""
 for i, row in df_etf.iterrows():
     df_fig = pd.DataFrame({ "Sector": row["Top 5 Sector"], "%NAV": row["Top 5 %NAV"] })
@@ -47,6 +55,7 @@ for i, row in df_etf.iterrows():
     )
     df_etf.at[i, "graph"] = fig
 
+# Ag Grid config
 columnDefs = [
     {
         "field": "Name",
@@ -85,16 +94,20 @@ layout = html.Div([
     
     html.Div([
         
-        html.Div([
-            html.Img(src="../assets/Icons/IconFilter.svg", className="w-[25px] h-[25px]"),
-            html.Span("Filter by Sector(s)", className="text-[18px] font-medium"),
-        ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"),
+        # filter list on the left
+        TitleWithIcon(
+            icon_path="../assets/Icons/IconFilter.svg",
+            title="Filter by Sector(s)",
+            className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"
+        ),
         
         html.Div([
             
             html.Div([
                 
                 dmc.Accordion([
+                    
+                    # generate an accordion for each parent category
                     dmc.AccordionItem([
                         
                         dmc.AccordionControl(category, className="py-3 text-aqua font-medium focus:bg-gray-light focus:font-bold"),
@@ -102,14 +115,17 @@ layout = html.Div([
                         dmc.AccordionPanel([
                             
                             html.Button("Select all", id=f"select-all-{category}", n_clicks=None, className="text-bronze hover:underline hover:font-medium hover:cursor-pointer"),
-                                
+
+                            # generate checklist for each sub-category
                             dcc.Checklist(id=category, options=[
                                 {"label": html.Span(sub_category, className="ml-2"), "value": sub_category} for sub_category in categories[category]
                             ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
                             
                         ], className="bg-aqua/5")
                     ], value=category) for category in parent_categories
-                ])               
+                
+                ])  
+                             
             ])
             
         ], className="flex flex-col gap-2")
@@ -117,7 +133,8 @@ layout = html.Div([
     ], className="py-4 flex flex-col gap-4 w-[20%]"),
     
     html.Div([
-               
+        
+        # displays what categories the user has selected, hidden by default  
         html.Div([
 
             html.Span("You have selected:", className="text-[18px] font-medium"),
@@ -135,7 +152,8 @@ layout = html.Div([
         ], id="selection-display", className="flex-grow p-4 bg-aqua/5 rounded-lg"),
         
         html.Hr(id="selection-display-hr", className="border-b border-bronze"),
-                
+        
+        # displays filtered JPM ETF data
         html.Div([
             
             dag.AgGrid(
@@ -154,6 +172,7 @@ layout = html.Div([
 
 ], className="p-8 flex gap-12")    
 
+# displays filter criteria on selected categories
 @callback(
     [
         Output("selected-categories", "children"),
@@ -206,6 +225,7 @@ def get_selected_categories(*args):
         
     ], className="flex gap-4 items-center") for key, val in selected_categories.items()], selected_categories
 
+# hide filter criteria section if no categories are selected
 @callback(
     [
         Output("selection-display", "className"),
@@ -225,7 +245,7 @@ def hide_selection(*args):
     selection = list(filter(lambda x: x, args[:-2]))
     return (state1, state2) if len(selection) else ("hidden", "hidden")
 
-
+# applies filter criteria to the JPM ETF data (df_etf) and outputs matching ETFs
 @callback(
     Output("etf-ag-grid", "rowData"),
     Input("submit-filter", "n_clicks"),
@@ -271,41 +291,4 @@ def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
   
     df_filter = df_etf[df_etf["Ticker"].apply(lambda x: x in filter_ticker)]
     
-    # === Sorry my brain is melting ===
-    # filter_result = []
-    # for ETF_name, ETF_holdings_df in df_holding.items():
-    #     df_nav_by_sector = ETF_holdings_df[["%NAV", "Sector"]].groupby(by="Sector").sum()
-    #     for ind, selected in enumerate(selected_categories.values()):
-    #         for sector in selected:
-    #             if sector not in ETF_holdings_df["Sector"]:
-    #                 continue
-    #             if operator[ind] == "geq":
-    #                 if 
-    #     print("Done with " + ETF_name)
-    
     return df_filter.to_dict("records")
-
-# @callback([
-#     Output(),
-#     Input()
-# ])
-# def show_selection():
-#     pass
-
-# @callback([
-#     Output(category, "value") for category in parent_categories
-# ], [
-#     [Input(f"select-all-{category}", "n_clicks") for category in parent_categories]
-# ], [
-#     [State(category, "options") for category in parent_categories]
-# ])
-# def select_all_categories(n_clicks, all_children_options):
-#     all_or_none = []
-#     for ind, n_click in enumerate(n_clicks):
-#         if n_click is not None and n_click % 2 == 1:
-#             current = all_children_options[ind]
-#             all_or_none.append([option["value"] for option in current])
-#         else:
-#             all_or_none.append(None)
-#     print(all_or_none)
-#     return all_or_none

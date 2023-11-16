@@ -10,6 +10,8 @@ from pages.feature2_backend import find_advantage
 from pages.feature2_backend import clean_competitor_data
 from pages.feature2_backend import select_column
 
+from components.TitleWithIcon import TitleWithIcon
+
 dash.register_page(__name__)
 
 # variables
@@ -47,10 +49,11 @@ layout = html.Div(
 
             html.Div([
                 
-                html.Div([
-                    html.Img(src="../assets/Icons/IconGraph.svg", className="w-[25px] h-[25px]"),
-                    html.Span("Graph Settings", className="text-[18px] font-medium")
-                ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"),
+                TitleWithIcon(
+                    icon_path="../assets/Icons/IconGraph.svg",
+                    title="Graph Settings",
+                    className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"
+                ),
                 
                 html.Div([    
                     dcc.Dropdown(
