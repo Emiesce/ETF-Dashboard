@@ -1,4 +1,4 @@
-# API key: L3BDZ3DUFUT1L0HO
+# Generally just for Adi's use to generate constituent files, feel free to ask how to use it if needed 
 import pandas as pd
 import numpy as np
 import csv
@@ -7,7 +7,7 @@ import requests
 import yfinance as yf
 import pandas as pd
 
-stock = yf.Ticker("AAPL")
+# stock = yf.Ticker("AAPL")
 # print(stock.info)
 
 def get_company_overview(symbol):
