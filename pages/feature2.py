@@ -129,12 +129,11 @@ layout = html.Div(
             
             html.Div([
                 
-                html.Div([
-                    html.Img(src="../assets/Icons/IconCompetitor.svg", className="w-[25px] h-[25px]"),
-                    html.Span("Competitor ETFs", className="text-[18px] font-medium")
-                ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze mb-2"),
-
-                # html.Label('Select Competitor ETFs:'),
+                TitleWithIcon(
+                    icon_path="../assets/Icons/IconCompetitor.svg",
+                    title="Competitor ETFs",
+                    className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze mb-2"
+                ),
                 
                 # Stores selected competitors
                 dcc.Store(id="selected-competitor-data", data={ "tickers": [] }),
@@ -168,33 +167,13 @@ layout = html.Div(
                                 page_size= 10,
                                 filter_action="native",
                             ),                    
-                                        
-                            # dcc.Checklist(
-                            #     id={
-                            #         "type": "ticker-selection",
-                            #         "index": 0
-                            #     },
-                            #     options=[{"label": html.Span(ticker, className="ml-2"), "value": ticker} for ticker in df_v2[region]["Ticker"]
-                            # ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
-                            
+                                                                    
                         ], className="bg-aqua/5")
+                    
                     ], value=region) for region in REGIONS
-                ])            
-                
-                # dash.dash_table.DataTable(
-                #     id="selection-checkbox-grid",
-                #     columns=[{"name": 'Ticker', "id": 'Ticker'}],
-                #     data=df.to_dict("records"),
-                #     column_selectable="multi",
-                #     editable=False,
-                #     row_selectable="multi",
-                #     style_table={"overflowY": 20},
-                #     style_cell={"textAlign": "left"},
-                #     page_size= 20,
-                #     filter_action="native",
-                # ),
-                # html.Div(id="selection-output"),
-            
+                    
+                ])
+                                        
             ]),
         
         ], className="flex flex-col gap-4"),
@@ -202,17 +181,12 @@ layout = html.Div(
         html.Div([
             
             html.Div(id="graph-div"),
-            #dcc.Graph(id="graph", figure=blank_fig(), className="h-[560px] -mt-4 border-b-2 border-bronze"),#, className="py-8 flex justify-center gap-12"),
             
             html.Div(
                 id='advantages-box',
                 className="hidden",
-                #style={'position': 'absolute', 'top': '30%', 'right': '10px'}
             )
-            # dcc.Graph(id='graph', className="p-8 flex justify-center gap-12")
-            # html.Div(id='graph-container', style={'display:none'}, className="p-8 flex justify-center gap-12")
-        # ],
-         
+                     
         ], className="w-full flex flex-col")
         
     ], className="p-8 flex gap-8"
@@ -323,9 +297,6 @@ plot_metric = {
     Input("period", "value"),
     Input("column", "value"),
     Input("selected-competitor-data", "data"),
-    #Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
-    #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_data"),
-    #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
     prevent_initial_call=True
 )
 def update_graph(
@@ -334,10 +305,6 @@ def update_graph(
     #print(rows)
     #print(selected_rows)
     #print(selected_ticker_indices)
-    
-    # selected_Tickers = [
-    #     rows[row]["Ticker"] for row in selected_rows
-    # ] if selected_rows else "None"
 
     selected_tickers = list(map(lambda x: x[1], selection["tickers"]))
     
@@ -398,39 +365,6 @@ def update_graph(
             yaxis_title=column,
             margin={"t":0,"b":0}
         )
-        
-        # if len(selected_tickers) == 2:
-        #     etf1 = selected_tickers[0]
-        #     etf2 = selected_tickers[1]
-        #     period = int(time_period) # Set the desired period length for the time series
-
-        #     etf1_data = select_column(etf1, column)[:period]
-        #     etf2_data = select_column(etf2, column)[:period]
-        #     etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
-        #     etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
-            
-        #     etf1_trace = go.Scatter(
-        #         x=etf1_data['Date'],
-        #         y=etf1_data[column],
-        #         name=etf1,
-        #         mode='lines',
-        #         line=dict(color='blue')
-        #     )
-            
-        #     etf2_trace = go.Scatter(
-        #         x=etf2_data['Date'],
-        #         y=etf2_data[column],
-        #         name=etf2,
-        #         mode='lines',
-        #         line=dict(color='red')
-        #     )
-
-        #     figure = go.Figure(data=[etf1_trace, etf2_trace])
-        #     figure.update_layout(
-        #         xaxis_title='Date',
-        #         yaxis_title=column,
-        #         margin={"t":0,"b":0}
-        #     )
     
     # print(figure)
     return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze")#, className="py-8 flex justify-center gap-12"),
@@ -453,8 +387,6 @@ def hide_advantages_box(selected_ticker_indices):
 # Function for updating the advantages box
 @dash.callback(
     Output('advantages-box', 'children'),
-    # dash.dependencies.Input('checkbox', 'value'),
-    #dash.dependencies.Input("selection-checkbox-grid", "derived_virtual_selected_rows"),
     Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows")
 )
 def update_advantages_box(selected_ticker_indices):
@@ -467,7 +399,6 @@ def update_advantages_box(selected_ticker_indices):
             region = REGIONS[region_ind]
             ticker = df_v2[region].iloc[ticker_ind]["Ticker"]
             ticker_values.append(ticker)
-    #ticker_values = df.loc[selected_options, "Ticker"].tolist()
 
     if len(ticker_values) < 2:
         return
@@ -480,7 +411,6 @@ def update_advantages_box(selected_ticker_indices):
     
     if advantages:
         competitor_list = []
-        # competitor_list.append(html.H2(f"Comparing {ticker_values[0]} to:"))
         for competitor, advantage in advantages.items():
             max_value = max(advantage.tolist())
             competitor_section = [html.P(html.Strong(competitor))]
