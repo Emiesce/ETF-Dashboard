@@ -1,0 +1,60 @@
+.ag-theme-alpine {
+    --ag-borders: None !important;
+    --ag-row-border-style: solid !important;
+    --ag-row-border-width: 1px !important;
+    --ag-row-border-color: #dadada !important;
+
+    --ag-header-column-separator-display: block !important;
+    --ag-header-column-separator-height: 50% !important;
+    --ag-header-column-separator-width: 2px !important;
+    --ag-header-column-separator-color: grey !important;
+}
+
+.ag-header-cell {
+    font-size: 16px;
+    font-weight: 500;
+    text-wrap: wrap;
+}
+
+.ag-header {
+    border-bottom-style: solid;
+    border-bottom: 1px;
+    border-bottom-color: #936846;
+}
+
+.dash-dropdown {
+    width: 270px;
+}
+
+.mantine-Modal-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.mantine-qb3vl4 {
+    width: 40%;
+}
+
+td > input[type=checkbox] {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+th {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid #096183 !important;
+    width: 100%;
+}
+
+tr {
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.expanded-row--empty-cell {
+    display: none !important;
+}
