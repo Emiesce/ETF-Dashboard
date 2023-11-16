@@ -1,41 +1,25 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ###x1 is JPM's ETF, x2 is target competitor's ETF
-# def find_advantage(df, x1, x2):
-#     # Get data for the two ETFs
-#     etf1 = df[df['Ticker'] == x1].iloc[0][1:]
-#     etf2 = df[df['Ticker'] == x2].iloc[0][1:]
-#     etf1 = etf1[8:].astype(float)
-#     etf2 = etf2[8:].astype(float)
-
-#     # Calculate percentage difference for each column
-#     diff = ((etf1 - etf2) / etf1) * 100
-#     diff = diff.round(2)
-    
-#     advantages = diff
-#     # advantages = diff[diff > 0]
-#     return advantages
+###x1 is JPM's ETF, x2 is target competitor's ETF
 def find_advantage(df, x1, x2):
-    # Get data for ETF1
+    # Get data for the two ETFs
     etf1 = df[df['Ticker'] == x1].iloc[0][1:]
+    etf2 = df[df['Ticker'] == x2].iloc[0][1:]
     etf1 = etf1[8:].astype(float)
+    etf2 = etf2[8:].astype(float)
 
-    advantages = {}
+    # Calculate percentage difference for each column
+    diff = ((etf1 - etf2) / etf1) * 100
+    diff = diff.round(2)
     
-    # Calculate advantages for each competitor in x2
-    for competitor in x2:
-        etf2 = df[df['Ticker'] == competitor].iloc[0][1:]
-        etf2 = etf2[8:].astype(float)
-
-        # Calculate percentage difference for each column
-        diff = ((etf1 - etf2) / etf1) * 100
-        diff = diff.round(2)
-
-        advantages[competitor] = diff
-
+    advantages = diff[diff > 0]
     return advantages
-
+    # Find the best and the second best column
+    # best = diff.idxmax()
+    # diff[best] = float('-inf')
+    # second_best = diff.idxmax()
+    # return best, second_best 
     
 
 ###Clean competitor_data.csv
@@ -123,9 +107,6 @@ df = pd.read_csv('Competitor Data.csv')
 # print(df)
 df = clean_competitor_data(df)
 
-competitors = ['QQQ US Equity', 'SPY US Equity']
-
-advantages = find_advantage(df, 'JEPI US Equity', competitors)
-print(advantages)
+find_advantage(df, 'JEPI US Equity', 'CQQQ US Equity')
 # plot_timeseries('JEPI US Equity', 'QQQ US Equity', "Tot Asset US$ (M)")
 

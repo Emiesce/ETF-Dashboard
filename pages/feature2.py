@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
 from pages.feature2_backend import find_advantage
 from pages.feature2_backend import clean_competitor_data
 from pages.feature2_backend import select_column
@@ -469,31 +470,71 @@ def update_advantages_box(selected_ticker_indices):
         return
     
     data_frame = clean_competitor_data(df)
-
-    advantages = find_advantage(data_frame, ticker_values[0], ticker_values[1])
+    advantages = find_advantage(data_frame, ticker_values[0], ticker_values[1:])
     
-    if not advantages.empty:
-        advantage_list = []
-        max_value = max(advantages.tolist())
-        advantage_list.append(html.H2("Fund Comparison: " + ticker_values[0] + " v.s. " + ticker_values[1], className="text-[24px] font-medium mb-2"))
-        for index, value in advantages.items():
-            if value == max_value and value != float('inf'):
-                container = html.Div([
-                    html.P(f'{index}:'),
-                    html.P(f'{value}% better', className="text-jade font-medium")
-                ], className="flex justify-between text-jade font-medium")
-            else:
-                if value == float('inf') or value == -float('inf'):
-                    container = html.Div([
-                        html.P(f'{index}:'),
-                        html.P('data missing')
-                    ], className="flex justify-between")
+    print("advantages")
+    print(advantages)
+    
+    if advantages:
+        competitor_list = []
+        # competitor_list.append(html.H2(f"Comparing {ticker_values[0]} to:"))
+        for competitor, advantage in advantages.items():
+            max_value = max(advantage.tolist())
+            competitor_section = [html.P(html.Strong(competitor))]
+
+            for column, value in advantage.items():
+                if value == max_value and value != float('inf'):
+                    column_value_div = html.Div(
+                        children=[
+                            html.P(f"{column}:", style={"text-align": "left", "color": "green"}),
+                            html.P(f"{value}% better", style={"text-align": "right", "color": "green"})
+                        ],
+                        style={"display": "flex", "justify-content": "space-between"}
+                    )
+                    competitor_section.append(column_value_div)
                 else:
-                    container = html.Div([
-                        html.P(f'{index}:'),
-                        html.P(f'{value}% better')
-                    ], className="flex justify-between")
-            advantage_list.append(container)
-    return advantage_list
+                    if value == float('inf') or value == -float('inf') or np.isnan(value):
+                        column_value_div = html.Div(
+                            children=[
+                                html.P(f"{column}:", style={"text-align": "left"}),
+                                html.P("Data Missing", style={"text-align": "right"})
+                            ],
+                            style={"display": "flex", "justify-content": "space-between"}
+                        )
+                        competitor_section.append(column_value_div)
+                    else:
+                        if value > 0:
+                            column_value_div = html.Div(
+                                children=[
+                                    html.P(f"{column}:", style={"text-align": "left"}),
+                                    html.P(f"{value}% better", style={"text-align": "right"})
+                                ],
+                                style={"display": "flex", "justify-content": "space-between"}
+                            )
+                        else:
+                            value = - value
+                            column_value_div = html.Div(
+                                children=[
+                                    html.P(f"{column}:", style={"text-align": "left"}),
+                                    html.P(f"{value}% worse", style={"text-align": "right"})
+                                ],
+                                style={"display": "flex", "justify-content": "space-between"}
+                            )
+                        competitor_section.append(column_value_div)
+
+            competitor_list.append(html.Div(competitor_section, style={"marginRight": "20px", "padding": "10px"}))
+
+        # container = html.Div(competitor_list, style={"display": "flex"})
+        container = html.Div(
+            children=[
+                html.H2(
+                html.Strong(f"Comparing {ticker_values[0]} to:"),
+                style={"text-align": "center", "font-size": "24px"}
+            ),
+                html.Div(competitor_list, style={"display": "flex", "justify-content": "space-between"})
+            ]
+        )
+
+    return container
 
 
