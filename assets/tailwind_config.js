@@ -7,6 +7,7 @@ tailwind.config = {
             "gray-medium": "#565a5d",
             "bronze": "#936846",
             "jade": "#649e92",
+            "navy": "#004589"
           }
         }
     }
