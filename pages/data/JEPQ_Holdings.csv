@@ -1,0 +1,123 @@
+Ticker,Security Name,Sector,Industry,Price,Weight,Return,Contribution
+MSFT,Microsoft Corporation,Information Technology,Software,366.68,9.02%,49.82%,471.83
+AAPL,Apple Inc.,Information Technology,Technology Hardware Storage and Peripherals,184.80,8.72%,24.14%,266.82
+GOOG,Alphabet Inc.,Communication Services,Interactive Media and Services,133.64,5.07%,38.16%,220.55
+AMZN,Amazon.com Inc.,Consumer Discretionary,Broadline Retail,142.59,4.96%,41.47%,229.01
+NVDA,NVIDIA Corporation,Information Technology,Semiconductors and Semiconductor Equipment,486.20,3.93%,197.97%,411.31
+META,Meta Platforms Inc.,Communication Services,Interactive Media and Services,329.19,3.46%,191.27%,357.45
+AVGO,Broadcom Inc.,Information Technology,Semiconductors and Semiconductor Equipment,946.93,2.06%,87.63%,151.43
+ADBE,Adobe Inc.,Information Technology,Software,590.34,2.00%,73.04%,133.05
+TSLA,Tesla Inc.,Consumer Discretionary,Automobiles,223.71,2.00%,14.16%,39.07
+AMD,Advanced Micro Devices Inc.,Information Technology,Semiconductors and Semiconductor Equipment,116.79,1.66%,61.38%,99.39
+NFLX,Netflix Inc.,Communication Services,Entertainment,444.62,1.55%,53.25%,84.89
+CSCO,Cisco Systems Inc.,Information Technology,Communications Equipment,52.23,1.46%,20.19%,38.50
+INTU,Intuit Inc.,Information Technology,Software,532.18,1.37%,31.37%,51.63
+CMCSA,Comcast Corporation,Communication Services,Media,41.49,1.37%,25.54%,43.76
+COST,Costco Wholesale Corporation,Consumer Staples,Consumer Staples Distribution and Retail,578.23,1.31%,13.02%,23.74
+BKNG,Booking Holdings Inc.,Consumer Discretionary,Hotels Restaurants and Leisure,3119.21,1.23%,54.74%,68.71
+SNPS,Synopsys Inc.,Information Technology,Software,522.88,1.17%,57.78%,67.16
+QCOM,QUALCOMM Incorporated,Information Technology,Semiconductors and Semiconductor Equipment,123.85,1.04%,4.72%,7.35
+ADI,Analog Devices Inc.,Information Technology,Semiconductors and Semiconductor Equipment,170.66,1.01%,5.98%,8.93
+PEP,PepsiCo Inc.,Consumer Staples,Beverages,167.77,0.95%,-3.20%,-4.96
+ISRG,Intuitive Surgical Inc.,Health Care,Health Care Equipment and Supplies,282.48,0.93%,6.56%,9.04
+REGN,Regeneron Pharmaceuticals Inc.,Health Care,Biotechnology,796.70,0.93%,8.48%,11.43
+LRCX,Lam Research Corporation,Information Technology,Semiconductors and Semiconductor Equipment,673.43,0.90%,36.24%,37.59
+MDLZ,Mondelez International Inc.,Consumer Staples,Food Products,69.30,0.89%,9.39%,12.01
+TMUS,T-Mobile US Inc.,Communication Services,Wireless Telecommunication Services,147.21,0.86%,0.70%,0.93
+VRTX,Vertex Pharmaceuticals Incorporated,Health Care,Biotechnology,378.92,0.82%,24.95%,25.83
+PANW,Palo Alto Networks Inc.,Information Technology,Software,255.64,0.80%,54.63%,44.39
+TXN,Texas Instruments Incorporated,Information Technology,Semiconductors and Semiconductor Equipment,145.87,0.78%,-16.18%,-23.69
+HON,Honeywell International Inc.,Industrials,Industrial Conglomerates,186.51,0.77%,-10.39%,-13.98
+ORLY,O'Reilly Automotive Inc.,Consumer Discretionary,Specialty Retail,995.92,0.73%,22.11%,20.67
+XEL,Xcel Energy Inc.,Utilities,Electric Utilities,58.27,0.65%,-10.85%,-12.43
+NXPI,NXP Semiconductors N.V.,Information Technology,Semiconductors and Semiconductor Equipment,184.84,0.65%,11.08%,10.19
+INTC,Intel Corporation,Information Technology,Semiconductors and Semiconductor Equipment,38.23,0.62%,28.56%,21.83
+CPRT,Copart Inc.,Industrials,Commercial Services and Supplies,48.34,0.62%,57.05%,35.66
+MNST,Monster Beverage Corporation,Consumer Staples,Beverages,55.54,0.62%,13.21%,11.39
+CSX,CSX Corporation,Industrials,Ground Transportation,30.45,0.59%,-3.33%,-3.19
+ASML,ASML Holding N.V.,Information Technology,Semiconductors and Semiconductor Equipment,654.60,0.58%,14.52%,11.53
+AMAT,Applied Materials Inc.,Information Technology,Semiconductors and Semiconductor Equipment,149.74,0.56%,36.77%,23.67
+MELI,MercadoLibre Inc.,Consumer Discretionary,Broadline Retail,1378.29,0.56%,41.38%,25.75
+MAR,Marriott International Inc.,Consumer Discretionary,Hotels Restaurants and Leisure,197.71,0.54%,21.99%,15.25
+DXCM,DexCom Inc.,Health Care,Health Care Equipment and Supplies,98.35,0.52%,-15.19%,-14.73
+CMG,Chipotle Mexican Grill Inc.,Consumer Discretionary,Hotels Restaurants and Leisure,2150.43,0.51%,42.76%,23.89
+KO,The Coca-Cola Company,Consumer Staples,Beverages,56.93,0.50%,-4.31%,-3.56
+ABBV,AbbVie Inc.,Health Care,Biotechnology,138.64,0.50%,-3.94%,-3.23
+AMGN,Amgen Inc.,Health Care,Biotechnology,266.69,0.46%,-3.28%,-2.46
+VRSK,Verisk Analytics Inc.,Industrials,Professional Services,238.51,0.45%,34.67%,18.32
+STZ,Constellation Brands Inc.,Consumer Staples,Beverages,240.85,0.44%,-1.07%,-0.75
+MRVL,Marvell Technology Inc.,Information Technology,Semiconductors and Semiconductor Equipment,53.45,0.43%,23.95%,13.02
+LOW,Lowe's Companies Inc.,Consumer Discretionary,Specialty Retail,193.84,0.41%,-5.32%,-3.63
+UNH,UnitedHealth Group Incorporated,Health Care,Health Care Providers and Services,542.57,0.41%,5.45%,3.30
+NEE,NextEra Energy Inc.,Utilities,Electric Utilities,54.50,0.40%,-32.94%,-30.95
+DE,Deere & Company,Industrials,Machinery,369.76,0.40%,-7.79%,-5.28
+CRWD,CrowdStrike Holdings Inc.,Information Technology,Software,200.96,0.39%,40.41%,17.83
+CHTR,Charter Communications Inc.,Communication Services,Media,406.41,0.39%,3.05%,1.79
+BIIB,Biogen Inc.,Health Care,Biotechnology,222.59,0.38%,-23.10%,-18.15
+ORCL,Oracle Corporation,Information Technology,Software,114.15,0.37%,49.07%,19.12
+WDAY,Workday Inc.,Information Technology,Software,226.30,0.37%,44.19%,17.65
+NOW,ServiceNow Inc.,Information Technology,Software,638.41,0.36%,55.74%,20.38
+ETN,Eaton Corporation plc,Industrials,Electrical Equipment,222.57,0.36%,40.23%,16.31
+KHC,The Kraft Heinz Company,Consumer Staples,Food Products,33.24,0.36%,-6.17%,-3.73
+STX,Seagate Technology Holdings plc,Information Technology,Technology Hardware Storage and Peripherals,72.47,0.34%,32.88%,13.43
+MU,Micron Technology Inc.,Information Technology,Semiconductors and Semiconductor Equipment,74.78,0.34%,20.55%,9.01
+FANG,Diamondback Energy Inc.,Energy,Oil Gas and Consumable Fuels,158.18,0.33%,0.79%,0.41
+TER,Teradyne Inc.,Information Technology,Semiconductors and Semiconductor Equipment,86.62,0.33%,-9.67%,-5.50
+MA,Mastercard Incorporated,Financials,Financial Services,394.35,0.33%,16.94%,7.44
+PYPL,PayPal Holdings Inc.,Financials,Financial Services,54.39,0.31%,-40.25%,-32.70
+HUBS,HubSpot Inc.,Information Technology,Software,431.73,0.27%,41.05%,12.36
+TMO,Thermo Fisher Scientific Inc.,Health Care,Life Sciences Tools and Services,445.15,0.27%,-17.15%,-8.77
+BMY,Bristol-Myers Squibb Company,Health Care,Pharmaceuticals,50.15,0.27%,-31.63%,-19.34
+PLD,Prologis Inc.,Real Estate,Industrial REITs,102.48,0.25%,-9.24%,-3.99
+DLTR,Dollar Tree Inc.,Consumer Staples,Consumer Staples Distribution and Retail,112.26,0.24%,-32.21%,-17.61
+SBUX,Starbucks Corporation,Consumer Discretionary,Hotels Restaurants and Leisure,103.51,0.23%,8.53%,2.90
+TTWO,Take-Two Interactive Software Inc.,Communication Services,Entertainment,150.09,0.23%,46.79%,11.54
+UBER,Uber Technologies Inc.,Industrials,Ground Transportation,52.24,0.22%,79.21%,15.52
+UPS,United Parcel Service Inc.,Industrials,Air Freight and Logistics,138.17,0.22%,-19.38%,-8.16
+FLT,FLEETCOR Technologies Inc.,Financials,Financial Services,229.14,0.21%,14.68%,4.18
+LULU,Lululemon Athletica Inc.,Consumer Discretionary,Textiles Apparel and Luxury Goods,416.98,0.17%,15.92%,3.66
+CTSH,Cognizant Technology Solutions Corporation,Information Technology,IT Services,65.68,0.14%,14.44%,2.73
+SGEN,Seagen Inc.,Health Care,Biotechnology,213.20,0.12%,60.41%,7.07
+ABNB,Airbnb Inc.,Consumer Discretionary,Hotels Restaurants and Leisure,119.15,0.11%,8.74%,1.43
+ROST,Ross Stores Inc.,Consumer Discretionary,Specialty Retail,122.36,0.10%,28.75%,3.62
+TTD,The Trade Desk Inc.,Communication Services,Media,63.46,0.10%,30.12%,3.67
+NKE,NIKE Inc.,Consumer Discretionary,Textiles Apparel and Luxury Goods,104.20,,-0.54%,
+[object Object],NDX_2,Unclassified,Unclassified,,3.19%,,
+[object Object],NDX_9,Unclassified,Unclassified,,3.18%,,
+[object Object],NDX_8,Unclassified,Unclassified,,3.14%,,
+[object Object],NDX_10,Unclassified,Unclassified,,2.95%,,
+[object Object],NDX_1,Unclassified,Unclassified,,2.81%,,
+[object Object],JPMORGAN US GOVT MMKT FUND IM SHARES  RESTRICTED ,Unclassified,Unclassified,,0.85%,,
+[object Object],COLLATERAL USD,Unclassified,Unclassified,,0.00%,,
+[object Object],NDX_8,Unclassified,Unclassified,,,,
+[object Object],NDX_7,Unclassified,Unclassified,,,,
+[object Object],NDX_8,Unclassified,Unclassified,,,,
+[object Object],NDX_9,Unclassified,Unclassified,,,,
+[object Object],NDX_10,Unclassified,Unclassified,,,,
+[object Object],NDX_1,Unclassified,Unclassified,,,,
+[object Object],NDX_3,Unclassified,Unclassified,,,,
+[object Object],NDX_2,Unclassified,Unclassified,,,,
+[object Object],NDX_3,Unclassified,Unclassified,,,,
+[object Object],NDX_10,Unclassified,Unclassified,,,,
+[object Object],NDX_01,Unclassified,Unclassified,,,,
+[object Object],NDX_2,Unclassified,Unclassified,,,,
+[object Object],NDX_9,Unclassified,Unclassified,,,,
+[object Object],NDX_4,Unclassified,Unclassified,,,,
+[object Object],NDX_5,Unclassified,Unclassified,,,,
+[object Object],NDX_6,Unclassified,Unclassified,,,,
+[object Object],USD FUTURES INCOME,Unclassified,Unclassified,,,,
+[object Object],UNITS,Unclassified,Unclassified,,,,
+[object Object],US SDOLLAR CALL A/C,Unclassified,Unclassified,,,,
+[object Object],JPMORGAN PRIME MONEYMARKET FUND  IM SHARE  FUND,Unclassified,Unclassified,,,,
+[object Object],U.S. DOLLAR,Unclassified,Unclassified,,,,
+[object Object],U.S. DOLLAR FOR FUTURES,Unclassified,Unclassified,,,,
+[object Object],COLLATERAL USD,Unclassified,Unclassified,,,,
+[object Object],NDX_4,Unclassified,Unclassified,,,,
+[object Object],NDX_5,Unclassified,Unclassified,,,,
+[object Object],NDX_6,Unclassified,Unclassified,,,,
+[object Object],NDX_7,Unclassified,Unclassified,,,,
+RY 71.11 09/26/23,ROYAL BANK OF CANADA MEDIUM TERM NOTE FIXED 71.11%,Unclassified,Unclassified,,,,
+[object Object],NASDAQ 100 E-MINI EQUITY INDEX 15/SEP/2023 NQU3,Unclassified,Unclassified,,,,
+[object Object],SECURITY LENDING INCOME TRANSFER,Unclassified,Unclassified,,,,
+[object Object],CASH,Unclassified,Unclassified,,0.00%,,
+[object Object],U.S. DOLLAR FOR FUTURES,Unclassified,Unclassified,,0.00%,,
