@@ -20,7 +20,7 @@ layout = html.Div(
     children=[
         html.Div(
             children=[
-                html.H1('Select a Ticker'),
+                html.H1('Select an ETF'),
                 dcc.Dropdown(
                     id='ticker-selector',
                     options=ticker_list,
@@ -72,12 +72,12 @@ layout = html.Div(
                 dcc.Dropdown(
                     id='comparison-operator',
                     options=[
-                        {'label': 'Greater than', 'value': '1'},
-                        {'label': 'Less than', 'value': '2'},
-                        {'label': 'Greater than or Equal to', 'value': '3'},
-                        {'label': 'Less than or Equal to', 'value': '4'},
-                        {'label': 'Increase by', 'value': '5'},
-                        {'label': 'Decrease by', 'value': '6'}
+                        {'label': 'Greater than', 'value': 'Greater than'},
+                        {'label': 'Less than', 'value': 'Less than'},
+                        {'label': 'Greater than or Equal to', 'value': 'Greater than or Equal to'},
+                        {'label': 'Less than or Equal to', 'value': 'Less than or Equal to'},
+                        {'label': 'Increase by', 'value': 'Increase by'},
+                        {'label': 'Decrease by', 'value': 'Decrease by'}
                     ],
                     value=None,
                     placeholder='Select a comparison operator...'
@@ -92,7 +92,7 @@ layout = html.Div(
         ),
         html.Div(
             children=[
-                html.H1('Enter a number:'),
+                html.H1('Enter a Decimal Number:'),
                 dcc.Input(
                     id='number-input',
                     type='number',
@@ -115,7 +115,19 @@ layout = html.Div(
                         'padding': '10px',
                         'margin-bottom': '10px'
                     }),
-        html.Div(id='selected-values-table'),
+        html.Div(
+            id='notification',
+            style={
+                'display': 'flex',
+                'justify-content': 'center',
+                'align-items': 'center',
+                'text-align': 'center',
+                'width': '100%',
+                'height': '100px',
+                'margin-bottom': '20px'
+            }
+            ),
+        html.Div(id='selected-values-table', style={'margin': '0 auto', 'width': 'fit-content'})
         # dbc.Modal(
         #     [
         #         dbc.ModalHeader("Notification"),
@@ -127,8 +139,6 @@ layout = html.Div(
         #     id="modal",
         #     is_open=False,
         # )
-        html.Div(id='notification'),
-        dcc.Store(id='selected-values', data=[])
         
         
     ],
@@ -138,6 +148,7 @@ layout = html.Div(
     }
 )
 
+#update the options in the coutry selector according to macro factor selected
 @dash.callback(
     Output('country', 'options'),
     Input('macro-factor-selector', 'value')
@@ -150,50 +161,7 @@ def update_country_options(factor):
     return []
 
 
-# @dash.callback(
-#     Output('selected-values-table', 'children'),
-#     Input('set-button', 'n_clicks'),
-#     Input('ticker-selector', 'value'),
-#     Input('macro-factor-selector', 'value'),
-#     Input('country', 'value'),
-#     Input('comparison-operator', 'value'),
-#     Input('number-input', 'value')
-# )
-# def display_selected_values(n_clicks, ticker, macro_factor, country, operator, number):
-#     if n_clicks > 0 and ticker and macro_factor and country and operator and number:
-#         values = {
-#             'Ticker': ticker,
-#             'Macro Factor': macro_factor,
-#             'Country/Commodity': country,
-#             'Operator': operator,
-#             'Number': number
-#         }
-#         df = pd.DataFrame(values, index=[0])
-#         table = dash_table.DataTable(
-#             columns=[{"name": col, "id": col} for col in df.columns],
-#             data=df.to_dict('records'),
-#             style_table={'border': '1px solid #ccc', 'margin-top': '10px'},
-#             style_cell={
-#                 'textAlign': 'center',  # Align cell contents to the left
-#                 'minWidth': '150px',  # Set the minimum width for each column
-#                 'maxWidth': '500px',  # Set the maximum width for each column
-#                 'whiteSpace': 'normal'  # Allow text to wrap within cells
-#             },
-#             style_header={'fontWeight': 'bold'},
-#             style_data_conditional=[
-#                 {
-#                     'if': {'row_index': 'odd'},
-#                     'backgroundColor': 'rgb(248, 248, 248)'
-#                 },
-#                 {
-#                     'if': {'column_id': 'Ticker'},
-#                     'textAlign': 'center'
-#                 }
-#             ]
-#         )
-#         return table
-#     return None
-
+#store the reminder information in a table 
 selected_values = []
 clicks = 0
 @dash.callback(
@@ -247,43 +215,45 @@ def display_selected_values(n_clicks, ticker, macro_factor, country, operator, n
         return table
     return table_children
 
-
+#function that checks whether is condition is met
 def reminder(macro, column, number, operation):
     df = pd.read_csv(f'macro data/{macro}.csv')
     data = df[column]
     # print(data[0])
-    if operation == '1': #Greater than
+    if operation == 'Greater than': #Greater than
         if data[0] > number:
             return True, "is greater than"
         else:
             return False, ""
-    if operation == '2':
+    if operation == 'Less than':
         if data[0] < number: #Less than
             return True, "is less than"
         else:
             return False, ""
-    if operation == '3': #greater than or equal to
+    if operation == 'Greater than or Equal to': #greater than or equal to
         if data[0] >= number:
             return True, "is greater than or equal to"
         else:
             return False, ""
-    if operation == '4':
+    if operation == 'Less than or Equal to':
         if data[0] <= number:
             return True, "is less than or equal to"
         else:
             return False, ""
-    if operation == '5': #increase by more than
+    if operation == 'Increase by': #increase by more than
         if (data[0]-data[1])/data[1] > number:
             return True, "has increased by more than"
         else:
             return False, ""
-    if operation == '6': #decrease by more than
+    if operation == 'Decrease by': #decrease by more than
         if (data[1]-data[0])/data[1] > number:
             return True, "has decreased by more than"
         else:
             return False, ""
 
+clicks2 = 0
 
+#pops up the notification
 @dash.callback(
     Output('notification', 'children'),
     # Output('modal', 'is_open'),
@@ -295,9 +265,10 @@ def reminder(macro, column, number, operation):
     Input('number-input', 'value'),
     prevent_initial_call=True
 )
-
 def display_selected_values(n_clicks, ticker, macro_factor, country, operator, number):
-    if n_clicks > 0 and ticker and macro_factor and country and operator and number:
+    global clicks2
+    if n_clicks > clicks2 and ticker and macro_factor and country and operator and number:
+        clicks2 += 1
         x, line = reminder(macro_factor, country, number, operator)
         if x:
             return html.Div(
@@ -322,6 +293,7 @@ def display_selected_values(n_clicks, ticker, macro_factor, country, operator, n
         # return None, False
     
     
+###TODO make notification a pop up window
 # @dash.callback(
 #     Output("modal", "is_open", allow_duplicate=True),
 #     Output("set-button", "n_clicks"),
