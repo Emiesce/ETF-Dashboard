@@ -3,6 +3,7 @@ import dash_ag_grid as dag
 import plotly.express as px
 from dash import dcc, html, callback, Output, Input, State, ALL
 import dash_mantine_components as dmc
+import dash_bootstrap_components as dbc
 import pandas as pd
 import json
 
@@ -93,6 +94,52 @@ columnDefs = [
 layout = html.Div([
     
     html.Div([
+        
+        html.Div([
+            
+            # keyword query
+            TitleWithIcon(
+                icon_path="../assets/Icons/IconKeyword.svg",
+                title="Filter by Keyword",
+                className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"
+            ),
+            
+            html.Div([
+
+                dmc.TextInput(
+                    id="keyword-input",
+                    placeholder="Enter Keyword",
+                    className="w-full"
+                ),
+
+                html.Div([
+                    
+                    dmc.HoverCard(
+                        withArrow=True,
+                        width=300,
+                        shadow="md",
+                        children=[
+                            dmc.HoverCardTarget(html.Span("Help", className="text-[14px] text-aqua/70 hover:text-aqua hover:underline hover:cursor-pointer")),
+                            dmc.HoverCardDropdown(
+                                dmc.Text(
+                                    "This first analyses the similarity between the company description of each constituent and the keyword. Then shows the ETF with the highest similarity after weighing on a constituent level",
+                                    size="sm",
+                                ),
+                            ),
+                        ],
+                        className="bg-none hover:bg-none -mt-4"
+                    ),   
+                    
+                    dmc.Button("Search", id="keyword-search-button", className="bg-aqua")
+                    
+                ], className="w-full flex justify-between items-center"),
+                
+                html.Div(id="keyword-search-output")
+                
+            ], className="flex flex-col items-end gap-2")
+
+        ], className="flex flex-col gap-2 mb-2"),
+        
         
         # filter list on the left
         TitleWithIcon(
