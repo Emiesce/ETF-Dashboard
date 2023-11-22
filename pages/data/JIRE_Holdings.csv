@@ -1,0 +1,260 @@
+Ticker,Security Name,Sector,Industry,Price,Weight,Return,Contribution
+NOVOB,Novo Nordisk A/S,Health Care,Pharmaceuticals,700.70,2.66%,72.91%,130.44
+NESN,Nestl S.A.,Consumer Staples,Food Products,99.75,2.43%,-8.73%,-27.12
+ASML,ASML Holding N.V.,Information Technology,Semiconductors and Semiconductor Equipment,625.70,2.40%,12.13%,30.23
+MC,LVMH Mot Hennessy - Louis Vuitton Socit Europenne,Consumer Discretionary,Textiles Apparel and Luxury Goods,704.10,2.02%,2.17%,4.99
+SHEL,Shell plc,Energy,Oil Gas and Consumable Fuels,26.13,1.97%,19.70%,37.73
+ROG,Roche Holding AG,Health Care,Pharmaceuticals,237.60,1.71%,-19.82%,-49.31
+AZN,AstraZeneca PLC,Health Care,Pharmaceuticals,101.92,1.70%,-6.01%,-12.63
+AI,L'Air Liquide S.A.,Materials,Chemicals,171.58,1.39%,27.91%,35.37
+BP,BP p.l.c.,Energy,Oil Gas and Consumable Fuels,4.77,1.38%,8.81%,13.05
+ALV,Allianz SE,Financials,Insurance,230.35,1.38%,19.35%,25.97
+OR,L'Oral S.A.,Consumer Staples,Personal Care Products,425.65,1.29%,23.95%,29.03
+NOVN,Novartis AG,Health Care,Pharmaceuticals,85.07,1.25%,12.82%,16.61
+SU,Schneider Electric S.E.,Industrials,Electrical Equipment,163.88,1.18%,18.75%,21.64
+BHP,BHP Group Limited,Materials,Metals and Mining,47.40,1.16%,15.36%,17.98
+REL,RELX PLC,Industrials,Professional Services,30.06,1.14%,31.67%,31.87
+0NQM,Vinci SA,Industrials,Construction and Engineering,108.97,1.12%,17.49%,19.37
+STLAM,Stellantis N.V.,Consumer Discretionary,Automobiles,18.56,1.06%,39.31%,34.95
+7203,Toyota Motor Corporation,Consumer Discretionary,Automobiles,2735.00,1.05%,37.28%,33.08
+III,3i Group plc,Financials,Capital Markets,21.51,1.03%,68.82%,48.90
+0XXT,Atlas Copco AB,Industrials,Machinery,160.30,1.03%,26.25%,24.91
+SAP,SAP SE,Information Technology,Software,139.44,0.99%,33.49%,29.06
+6758,Sony Group Corporation,Consumer Discretionary,Household Durables,12895.00,0.99%,13.43%,13.63
+VOLVB,AB Volvo (publ),Industrials,Machinery,233.85,0.94%,30.15%,25.38
+IBE,Iberdrola S.A.,Utilities,Electric Utilities,11.04,0.93%,7.64%,7.71
+4063,Shin-Etsu Chemical Co. Ltd.,Materials,Chemicals,5175.00,0.92%,51.55%,36.42
+RIO,Rio Tinto Group,Materials,Metals and Mining,127.37,0.91%,27.51%,22.75
+8316,Sumitomo Mitsui Financial Group Inc.,Financials,Banks,7379.00,0.90%,64.73%,41.06
+DGE,Diageo plc,Consumer Staples,Beverages,27.98,0.89%,-23.07%,-30.93
+8035,Tokyo Electron Limited,Information Technology,Semiconductors and Semiconductor Equipment,24170.00,0.87%,65.85%,40.36
+8058,Mitsubishi Corporation,Industrials,Trading Companies and Distributors,6967.00,0.87%,58.42%,37.21
+CAP,Capgemini SE,Information Technology,IT Services,177.75,0.87%,2.08%,2.05
+DTE,Deutsche Telekom AG,Communication Services,Diversified Telecommunication Services,21.59,0.85%,14.01%,12.23
+6861,Keyence Corporation,Information Technology,Electronic Equipment Instruments and Components,62710.00,0.84%,6.34%,5.85
+NDAFI,Nordea Bank Abp,Financials,Banks,10.36,0.83%,14.47%,12.27
+6501,Hitachi Ltd.,Industrials,Industrial Conglomerates,10220.00,0.82%,41.70%,28.09
+SAF,Safran SA,Industrials,Aerospace and Defense,160.96,0.82%,41.66%,27.99
+RWE,RWE Aktiengesellschaft,Utilities,Independent Power and Renewable Electricity Producers,38.06,0.79%,-5.12%,-5.00
+IFX,Infineon Technologies AG,Information Technology,Semiconductors and Semiconductor Equipment,33.40,0.77%,6.96%,5.82
+8001,ITOCHU Corporation,Industrials,Trading Companies and Distributors,5925.00,0.77%,42.69%,26.75
+BNP,BNP Paribas SA,Financials,Banks,56.46,0.76%,14.78%,11.45
+SIE,Siemens Aktiengesellschaft,Industrials,Industrial Conglomerates,147.66,0.76%,17.72%,13.39
+1299,AIA Group Limited,Financials,Insurance,72.60,0.76%,-0.53%,-0.47
+AIR,Airbus SE,Industrials,Aerospace and Defense,133.76,0.73%,18.82%,13.52
+ENGI,Engie SA,Utilities,Multi-Utilities,15.54,0.73%,17.77%,12.80
+GSK,GSK plc,Health Care,Pharmaceuticals,14.17,0.71%,5.47%,4.31
+TTE,TotalEnergies SE,Energy,Oil Gas and Consumable Fuels,62.95,0.70%,21.05%,14.25
+LR,Legrand SA,Industrials,Electrical Equipment,87.58,0.69%,13.42%,9.53
+ZURN,Zurich Insurance Group AG,Financials,Insurance,433.10,0.68%,2.62%,2.03
+SSE,SSE plc,Utilities,Electric Utilities,17.89,0.68%,11.56%,8.24
+8766,Tokio Marine Holdings Inc.,Financials,Insurance,3631.00,0.66%,32.71%,18.97
+7741,HOYA Corporation,Health Care,Health Care Equipment and Supplies,16530.00,0.65%,15.15%,9.93
+MUV2,Mnchener Rckversicherungs-Gesellschaft Aktiengesellschaft in Mnchen,Financials,Insurance,387.20,0.64%,36.38%,19.76
+LONN,Lonza Group AG,Health Care,Life Sciences Tools and Services,352.80,0.64%,-28.83%,-29.99
+4568,Daiichi Sankyo Company Limited,Health Care,Pharmaceuticals,4005.00,0.63%,-14.10%,-12.07
+9432,Nippon Telegraph and Telephone Corporation,Communication Services,Diversified Telecommunication Services,173.90,0.63%,14.57%,9.31
+STAN,Standard Chartered PLC,Financials,Banks,6.62,0.63%,16.52%,10.38
+DHL,Deutsche Post AG,Industrials,Air Freight and Logistics,40.90,0.63%,12.22%,7.96
+HSBA,HSBC Holdings plc,Financials,Banks,6.13,0.62%,35.98%,19.26
+CFR,Compagnie Financire Richemont SA,Consumer Discretionary,Textiles Apparel and Luxury Goods,113.05,0.60%,1.76%,1.22
+UCG,UniCredit S.p.A.,Financials,Banks,24.82,0.60%,97.05%,34.47
+IHG,InterContinental Hotels Group PLC,Consumer Discretionary,Hotels Restaurants and Leisure,61.62,0.59%,32.14%,16.76
+D05,DBS Group Holdings Ltd,Financials,Banks,31.80,0.58%,-3.29%,-2.30
+ITX,Industria de Diseo Textil S.A.,Consumer Discretionary,Specialty Retail,36.88,0.56%,55.61%,23.50
+4543,Terumo Corporation,Health Care,Health Care Equipment and Supplies,4656.00,0.56%,16.29%,9.11
+7267,Honda Motor Co. Ltd.,Consumer Discretionary,Automobiles,1530.00,0.55%,40.15%,18.37
+LLOY,Lloyds Banking Group plc,Financials,Banks,0.43,0.54%,-1.32%,-0.84
+ULVR,Unilever PLC,Consumer Staples,Personal Care Products,38.05,0.53%,-4.07%,-2.62
+CSL,CSL Limited,Health Care,Biotechnology,256.80,0.52%,-12.51%,-8.62
+6902,DENSO Corporation,Consumer Discretionary,Automobile Components,2386.50,0.51%,26.69%,12.62
+5108,Bridgestone Corporation,Consumer Discretionary,Automobile Components,5934.00,0.51%,14.68%,7.66
+TSCO,Tesco PLC,Consumer Staples,Consumer Staples Distribution and Retail,2.77,0.51%,23.98%,11.50
+6367,Daikin IndustriesLtd.,Industrials,Building Products,23660.00,0.51%,5.51%,3.09
+2802,Ajinomoto Co. Inc.,Consumer Staples,Food Products,5533.00,0.51%,31.62%,14.20
+KPN,Koninklijke KPN N.V.,Communication Services,Diversified Telecommunication Services,3.17,0.50%,15.98%,8.10
+CBA,Commonwealth Bank of Australia,Financials,Banks,103.70,0.50%,0.84%,0.49
+SEBA,Skandinaviska Enskilda Banken AB (publ),Financials,Banks,124.15,0.50%,12.00%,6.26
+BKG,The Berkeley Group Holdings plc,Consumer Discretionary,Household Durables,45.62,0.50%,25.96%,12.02
+NN,NN Group N.V.,Financials,Insurance,31.77,0.50%,-15.32%,-10.50
+2502,Asahi Group Holdings Ltd.,Consumer Staples,Beverages,5430.00,0.49%,27.47%,12.42
+6981,Murata Manufacturing Co. Ltd.,Information Technology,Electronic Equipment Instruments and Components,2875.00,0.49%,15.65%,7.68
+BARC,Barclays PLC,Financials,Banks,1.42,0.49%,-5.89%,-3.55
+9022,Central Japan Railway Company,Industrials,Ground Transportation,3558.00,0.49%,8.34%,4.35
+8801,Mitsui Fudosan Co. Ltd.,Real Estate,Real Estate Management and Development,3437.00,0.48%,28.63%,12.55
+WBC,Westpac Banking Corporation,Financials,Banks,21.29,0.47%,-4.94%,-2.85
+1925,Daiwa House Industry Co. Ltd.,Real Estate,Real Estate Management and Development,4200.00,0.47%,36.78%,14.74
+KRX,Kingspan Group plc,Industrials,Building Products,68.88,0.47%,22.16%,9.94
+GLE,Socit Gnrale Socit anonyme,Financials,Banks,22.41,0.47%,0.90%,0.49
+CARLB,Carlsberg A/S,Consumer Staples,Beverages,300.00,0.47%,1.20%,0.65
+GMG,Goodman Group,Real Estate,Industrial REITs,22.90,0.46%,28.22%,11.88
+SIKA,Sika AG,Materials,Chemicals,235.00,0.46%,-2.66%,-1.46
+RKT,Reckitt Benckiser Group plc,Consumer Staples,Household Products,54.06,0.46%,-5.49%,-3.09
+0OQV,Orange S.A.,Communication Services,Diversified Telecommunication Services,11.02,0.45%,19.33%,8.49
+0EYG,KBC Group NV,Financials,Banks,52.14,0.45%,6.20%,3.06
+WKL,Wolters Kluwer N.V.,Industrials,Professional Services,123.35,0.45%,20.67%,8.88
+7269,Suzuki Motor Corporation,Consumer Discretionary,Automobiles,5973.00,0.44%,20.46%,8.69
+8795,T&D Holdings Inc.,Financials,Insurance,2293.00,0.43%,52.18%,17.13
+8591,ORIX Corporation,Financials,Financial Services,2677.00,0.40%,27.32%,10.03
+4324,Dentsu Group Inc.,Communication Services,Media,3967.00,0.40%,-7.52%,-3.75
+388,Hong Kong Exchanges and Clearing Limited,Financials,Capital Markets,290.20,0.39%,1.96%,0.88
+RIO,Rio Tinto Group,Materials,Metals and Mining,55.32,0.39%,11.44%,4.61
+PRX,Prosus N.V.,Consumer Discretionary,Broadline Retail,30.11,0.38%,13.18%,5.12
+4768,Otsuka Corporation,Information Technology,IT Services,6034.00,0.37%,32.74%,10.67
+SGSN,SGS SA,Industrials,Professional Services,73.54,0.37%,-15.04%,-7.54
+UBSG,UBS Group AG,Financials,Capital Markets,22.96,0.36%,34.82%,10.88
+8306,Mitsubishi UFJ Financial Group Inc.,Financials,Banks,1255.00,0.35%,76.69%,17.89
+FBK,FinecoBank Banca Fineco S.p.A.,Financials,Banks,12.12,0.34%,-15.47%,-7.23
+WOW,Woolworths Group Limited,Consumer Staples,Consumer Staples Distribution and Retail,34.50,0.34%,1.74%,0.67
+BATS,British American Tobacco p.l.c.,Consumer Staples,Tobacco,25.27,0.34%,-18.24%,-8.76
+MQG,Macquarie Group Limited,Financials,Capital Markets,168.74,0.32%,-0.09%,-0.03
+SAN,Sanofi,Health Care,Pharmaceuticals,85.34,0.31%,1.54%,0.54
+LSEG,London Stock Exchange Group plc,Financials,Capital Markets,86.82,0.30%,7.81%,2.55
+PRU,Prudential plc,Financials,Insurance,9.19,0.30%,-2.30%,-0.83
+5802,Sumitomo Electric Industries Ltd.,Consumer Discretionary,Automobile Components,1809.50,0.30%,15.50%,4.61
+4307,Nomura Research Institute Ltd.,Information Technology,IT Services,4238.00,0.29%,28.40%,7.42
+5713,Sumitomo Metal Mining Co. Ltd.,Materials,Metals and Mining,4420.00,0.29%,1.22%,0.40
+9064,Yamato Holdings Co. Ltd.,Industrials,Air Freight and Logistics,2622.00,0.28%,15.42%,4.41
+BBVA,Banco Bilbao Vizcaya Argentaria S.A.,Financials,Banks,8.30,0.28%,60.84%,12.44
+4151,Kyowa Kirin Co. Ltd.,Health Care,Pharmaceuticals,2463.50,0.28%,-24.27%,-10.49
+4507,Shionogi & Co. Ltd.,Health Care,Pharmaceuticals,6975.00,0.28%,-0.40%,-0.13
+669,Techtronic Industries Company Limited,Industrials,Machinery,81.75,0.27%,-7.51%,-2.57
+STO,Santos Limited,Energy,Oil Gas and Consumable Fuels,7.07,0.27%,-0.51%,-0.16
+AD,Koninklijke Ahold Delhaize N.V.,Consumer Staples,Consumer Staples Distribution and Retail,26.54,0.27%,-1.38%,-0.44
+ADS,adidas AG,Consumer Discretionary,Textiles Apparel and Luxury Goods,185.14,0.27%,49.57%,10.32
+6098,Recruit Holdings Co. Ltd.,Industrials,Professional Services,5230.00,0.26%,18.70%,4.80
+QBE,QBE Insurance Group Limited,Financials,Insurance,14.88,0.26%,21.04%,5.27
+SAND,Sandvik AB (publ),Industrials,Machinery,203.10,0.26%,9.45%,2.59
+6504,Fuji Electric Co. Ltd.,Industrials,Electrical Equipment,6100.00,0.26%,5.63%,1.59
+3382,Seven & i Holdings Co. Ltd.,Consumer Staples,Consumer Staples Distribution and Retail,5667.00,0.25%,1.56%,0.46
+P911,Dr. Ing. h.c. F. Porsche AG,Consumer Discretionary,Automobiles,89.72,0.24%,-16.84%,-5.78
+4911,Shiseido Company Limited,Consumer Staples,Personal Care Products,4340.00,0.24%,-23.83%,-8.79
+U11,United Overseas Bank Limited,Financials,Banks,27.15,0.23%,-4.48%,-1.26
+NAB,National Australia Bank Limited,Financials,Banks,27.95,0.22%,-4.14%,-1.10
+9766,Konami Group Corporation,Communication Services,Entertainment,7296.00,0.22%,12.87%,2.89
+RI,Pernod Ricard SA,Consumer Staples,Beverages,165.95,0.22%,-10.09%,-2.85
+KER,Kering SA,Consumer Discretionary,Textiles Apparel and Luxury Goods,399.45,0.22%,-25.51%,-8.58
+SAN,Banco Santander S.A.,Financials,Banks,3.73,0.20%,43.28%,7.06
+7974,Nintendo Co. Ltd.,Communication Services,Entertainment,6846.00,0.20%,19.69%,3.82
+6723,Renesas Electronics Corporation,Information Technology,Semiconductors and Semiconductor Equipment,2475.00,0.19%,80.66%,9.99
+2388,BOC Hong Kong (Holdings) Limited,Financials,Banks,21.50,0.19%,-4.41%,-1.00
+ADYEN,Adyen N.V.,Financials,Financial Services,1048.40,0.18%,-30.62%,-9.06
+BAYN,Bayer Aktiengesellschaft,Health Care,Pharmaceuticals,33.98,0.17%,-34.91%,-10.75
+DCC,DCC plc,Industrials,Industrial Conglomerates,53.18,0.17%,25.24%,4.02
+MPL,Medibank Private Limited,Financials,Insurance,3.51,0.17%,29.41%,4.49
+WES,Wesfarmers Limited,Consumer Discretionary,Broadline Retail,52.77,0.17%,13.63%,2.36
+MBG,Mercedes-Benz Group AG,Consumer Discretionary,Automobiles,58.16,0.17%,1.45%,0.28
+BAER,Julius Br Gruppe AG,Financials,Capital Markets,48.75,0.16%,-4.84%,-0.98
+NG,National Grid plc,Utilities,Multi-Utilities,10.38,0.15%,5.90%,1.00
+MRK,Merck KGaA,Health Care,Pharmaceuticals,163.30,0.15%,-5.38%,-1.02
+CS,AXA SA,Financials,Insurance,28.20,0.15%,11.04%,1.72
+1113,CK Asset Holdings Limited,Real Estate,Real Estate Management and Development,39.20,0.15%,-11.30%,-2.19
+9983,Fast Retailing Co. Ltd.,Consumer Discretionary,Specialty Retail,36550.00,0.15%,35.96%,4.53
+TW,Taylor Wimpey plc,Consumer Discretionary,Household Durables,1.28,0.14%,35.02%,4.23
+3407,Asahi Kasei Corporation,Materials,Chemicals,1010.50,0.14%,3.32%,0.51
+ANZ,ANZ Group Holdings Limited,Financials,Banks,24.29,0.13%,5.80%,0.86
+NOKIA,Nokia Oyj,Information Technology,Communications Equipment,3.24,0.13%,-27.73%,-5.95
+ENEL,Enel SpA,Utilities,Electric Utilities,6.42,0.13%,35.07%,3.98
+5201,AGC Inc.,Industrials,Building Products,5351.00,0.13%,21.73%,2.72
+16,Sun Hung Kai Properties Limited,Real Estate,Real Estate Management and Development,79.35,0.13%,-7.88%,-1.27
+O39,Oversea-Chinese Banking Corporation Limited,Financials,Banks,12.73,0.13%,8.92%,1.21
+GIVN,Givaudan SA,Materials,Chemicals,3274.00,0.13%,6.90%,0.94
+BNR,Brenntag SE,Industrials,Trading Companies and Distributors,76.66,0.12%,20.16%,2.40
+9984,SoftBank Group Corp.,Communication Services,Wireless Telecommunication Services,6215.00,0.12%,3.21%,0.44
+9532,Osaka Gas Co. Ltd.,Utilities,Gas Utilities,2860.00,0.12%,37.93%,3.80
+1928,Sands China Ltd.,Consumer Discretionary,Hotels Restaurants and Leisure,21.50,0.12%,18.78%,2.14
+7701,Shimadzu Corporation,Information Technology,Electronic Equipment Instruments and Components,3817.00,0.12%,-8.52%,-1.26
+MGR,Mirvac Group,Real Estate,Diversified REITs,2.02,0.11%,-0.58%,-0.08
+ZAL,Zalando SE,Consumer Discretionary,Specialty Retail,99.44,0.11%,-3.88%,-0.51
+IAG,Insurance Australia Group Limited,Financials,Insurance,5.89,0.11%,23.40%,2.40
+GMAB,Genmab A/S,Health Care,Biotechnology,2144.00,0.10%,-32.41%,-5.64
+CNA,Centrica plc,Utilities,Multi-Utilities,1.48,0.09%,62.09%,4.21
+WDS,Woodside Energy Group Ltd,Energy,Oil Gas and Consumable Fuels,31.95,0.09%,-8.86%,-1.05
+BXB,Brambles Limited,Industrials,Commercial Services and Supplies,12.97,0.09%,14.18%,1.32
+SE,Sea Limited,Communication Services,Entertainment,38.26,0.09%,-29.27%,-4.32
+GLEN,Glencore plc,Materials,Metals and Mining,4.57,0.09%,1.03%,0.11
+DSFIR,DSM-Firmenich AG,Materials,Chemicals,91.04,0.09%,,
+9201,Japan Airlines Co. Ltd.,Industrials,Passenger Airlines,2908.50,0.08%,10.41%,0.87
+SDZ,Sandoz Group AG,Health Care,Pharmaceuticals,26.30,0.08%,,
+5401,Nippon Steel Corporation,Materials,Metals and Mining,3394.00,0.08%,57.40%,3.29
+DHER,Delivery Hero SE,Consumer Discretionary,Hotels Restaurants and Leisure,31.55,0.08%,-25.33%,-2.98
+6594,Nidec Corporation,Industrials,Electrical Equipment,5821.00,0.07%,-32.76%,-4.08
+GPT,The GPT Group,Real Estate,Diversified REITs,4.10,0.07%,1.35%,0.11
+DXS,DEXUS,Real Estate,Office REITs,7.00,0.07%,-0.88%,-0.07
+4502,Takeda Pharmaceutical Company Limited,Health Care,Pharmaceuticals,4176.00,0.07%,8.40%,0.61
+4612,Nippon Paint Holdings Co. Ltd.,Materials,Chemicals,1170.00,0.07%,10.95%,0.77
+ITRK,Intertek Group plc,Industrials,Professional Services,37.96,0.06%,-0.29%,-0.02
+823,Link Real Estate Investment Trust,Real Estate,Retail REITs,39.70,0.06%,-18.70%,-1.54
+BAS,BASF SE,Materials,Chemicals,43.81,0.06%,-3.12%,-0.21
+SY1,Symrise AG,Materials,Chemicals,99.36,0.05%,-8.33%,-0.55
+2,CLP Holdings Limited,Utilities,Electric Utilities,60.40,0.05%,11.13%,0.58
+6301,Komatsu Ltd.,Industrials,Machinery,3783.00,0.05%,25.60%,1.11
+AZJ,Aurizon Holdings Limited,Industrials,Ground Transportation,3.61,0.04%,1.86%,0.09
+868,Xinyi Glass Holdings Limited,Industrials,Building Products,9.46,0.03%,-27.06%,-1.39
+4528,Ono Pharmaceutical Co. Ltd.,Health Care,Pharmaceuticals,2742.50,,-21.44%,
+HEN3,Henkel AG & Co. KGaA,Consumer Staples,Household Products,96.88,,1.91%,
+4452,Kao Corporation,Consumer Staples,Personal Care Products,5510.00,,1.64%,
+0Q4U,Novozymes A/S,Materials,Chemicals,358.24,,-8.97%,
+MAERSKB,A.P. Mller - Mrsk A/S,Industrials,Marine Transportation,10090.00,,-6.03%,
+VWS,Vestas Wind Systems A/S,Industrials,Electrical Equipment,177.58,,4.74%,
+VOW3,Volkswagen AG,Consumer Discretionary,Automobiles,106.86,,-4.45%,
+CSX,Credit Suisse Group AG,Financials,Capital Markets,10.48,,,
+SW,Sodexo S.A.,Consumer Discretionary,Hotels Restaurants and Leisure,101.20,,16.72%,
+DSV,DSV A/S,Industrials,Air Freight and Logistics,1075.00,,-0.55%,
+TDCAF,TDC A/S,Communication Services,Diversified Telecommunication Services,5.06,,,
+VIE,Veolia Environnement SA,Utilities,Multi-Utilities,27.83,,15.96%,
+SREN,Swiss Re AG,Financials,Insurance,101.55,,34.90%,
+ELE,Endesa S.A.,Utilities,Electric Utilities,19.16,,8.58%,
+MAERSKA,A.P. Mller - Mrsk A/S,Industrials,Marine Transportation,10000.00,,-4.35%,
+0MR6,Chr. Hansen Holding A/S,Materials,Chemicals,550.79,,29.58%,
+DANSKE,Danske Bank A/S,Financials,Banks,176.50,,50.15%,
+ADEN,Adecco Group AG,Industrials,Professional Services,40.98,,33.96%,
+ABI,Anheuser-Busch InBev SA/NV,Consumer Staples,Beverages,56.82,,6.30%,
+NCM,Newcrest Mining Limited,Materials,Metals and Mining,20.89,,-8.44%,
+ORSTED,rsted A/S,Utilities,Electric Utilities,311.50,,-49.47%,
+NEM,Newmont Corporation,Materials,Metals and Mining,56.03,,,
+ALO,Alstom SA,Industrials,Machinery,12.46,,-48.18%,
+EOAN,E.ON SE,Utilities,Multi-Utilities,11.54,,32.84%,
+EBS,Erste Group Bank AG,Financials,Banks,35.89,,30.71%,
+HEI,Heidelberg Materials AG,Materials,Construction Materials,72.00,,45.19%,
+[object Object],JPMORGAN PRIME MONEYMARKET FUND  IM SHARE  FUND,Unclassified,Unclassified,,2.18%,,
+[object Object],COLLATERAL USD,Unclassified,Unclassified,,0.15%,,
+[object Object],AUQ,Unclassified,Unclassified,,0.07%,,
+[object Object],AUSTRALIAN DOLLAR,Unclassified,Unclassified,,0.03%,,
+[object Object],CASH,Unclassified,Unclassified,,0.01%,,
+[object Object],BRITISH POUND,Unclassified,Unclassified,,0.01%,,
+[object Object],EURO,Unclassified,Unclassified,,0.00%,,
+[object Object],JAPANESE YEN,Unclassified,Unclassified,,0.00%,,
+[object Object],NORWEGIAN KRONE,Unclassified,Unclassified,,0.00%,,
+[object Object],U.S. DOLLAR FOR FUTURES,Unclassified,Unclassified,,0.00%,,
+[object Object],SINGAPORE DOLLAR,Unclassified,Unclassified,,,,
+[object Object],SWISS FRANC,Unclassified,Unclassified,,,,
+[object Object],UNITS,Unclassified,Unclassified,,,,
+LIN,Linde AG,Unclassified,Unclassified,,,,
+SYNNE,SYNGENTA AG-2ND LINE,Unclassified,Unclassified,,,,
+[object Object],EURO DOLLAR,Unclassified,Unclassified,,,,
+[object Object],SINGAPORE DOLLAR,Unclassified,Unclassified,,,,
+[object Object],BRITISH POUND CALL A/C,Unclassified,Unclassified,,,,
+[object Object],COLLATERAL USD,Unclassified,Unclassified,,,,
+[object Object],U.S. DOLLAR,Unclassified,Unclassified,,,,
+[object Object],US SDOLLAR CALL A/C,Unclassified,Unclassified,,,,
+SGSN,SGS SA-REG,Unclassified,Unclassified,,,,
+[object Object],U.S. DOLLAR FOR FUTURES,Unclassified,Unclassified,,,,
+[object Object],INDONESIAN RUPIAH,Unclassified,Unclassified,,,,
+[object Object],BRITISH POUND,Unclassified,Unclassified,,,,
+[object Object],HONG KONG DOLLARS,Unclassified,Unclassified,,,,
+[object Object],JAPANESE YEN,Unclassified,Unclassified,,,,
+[object Object],AUSTRALIAN DOLLAR,Unclassified,Unclassified,,,,
+[object Object],SWEDISH KRONA,Unclassified,Unclassified,,,,
+[object Object],SWISS FRANC,Unclassified,Unclassified,,,,
+[object Object],USD FUTURES INCOME,Unclassified,Unclassified,,,,
+[object Object],SWEDISH KRONA,Unclassified,Unclassified,,,,
+[object Object],HONG KONG DOLLAR,Unclassified,Unclassified,,,,
+[object Object],MSCI EAFE EQUITY INDEX 15/DEC/2023 MFSZ3 INDEX,Unclassified,Unclassified,,,,
+[object Object],DANISH KRONE,Unclassified,Unclassified,,,,
+[object Object],SECURITY LENDING INCOME TRANSFER,Unclassified,Unclassified,,,,
+NOVOB,Novo Nordisk A/S,Unclassified,Unclassified,,,,
+[object Object],EURO BANK,Unclassified,Unclassified,,,,
+[object Object],AUSTRALIAN DOLLAR CALL A/C,Unclassified,Unclassified,,,,
+[object Object],AUQ,Unclassified,Unclassified,,,,
+[object Object],SPI 200 FUTURES EQUITY INDEX 21/DEC/2023 XPZ3,Unclassified,Unclassified,,-0.05%,,

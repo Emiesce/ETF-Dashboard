@@ -5,7 +5,7 @@ import numpy as np
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-fasttext.FastText.eprint = lambda x: None
+# fasttext.FastText.eprint = lambda x: None
 # The following lines must be ran once locally
 # nltk.download('stopwords')
 # nltk.download('punkt')
