@@ -126,6 +126,6 @@ df = clean_competitor_data(df)
 competitors = ['QQQ US Equity', 'SPY US Equity']
 
 advantages = find_advantage(df, 'JEPI US Equity', competitors)
-print(advantages)
+# print(advantages)
 # plot_timeseries('JEPI US Equity', 'QQQ US Equity', "Tot Asset US$ (M)")
 

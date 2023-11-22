@@ -3,15 +3,19 @@ import dash_ag_grid as dag
 import plotly.express as px
 from dash import dcc, html, callback, Output, Input, State, ALL
 import dash_mantine_components as dmc
+import dash_bootstrap_components as dbc
 import pandas as pd
 import json
+import time
 
+from pages.filter_search import get_ETF_similarity
 from components.TitleWithIcon import TitleWithIcon
 
 dash.register_page(__name__, path='/')
 
 # variables
-SECTORS=["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
+SECTORS = ["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
+SUPPORTED_TICKERS = ["JEPI", "JPST", "JIRE", "JEPQ", "JQUA", "BBIN"]
 
 # data retrieval
 categories = None
@@ -93,6 +97,57 @@ columnDefs = [
 layout = html.Div([
     
     html.Div([
+        
+        html.Div([
+            
+            # keyword query
+            TitleWithIcon(
+                icon_path="../assets/Icons/IconKeyword.svg",
+                title="Filter by Keyword",
+                className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"
+            ),
+            
+            html.Div([
+
+                dmc.TextInput(
+                    id="keyword-input",
+                    placeholder="Enter Keyword",
+                    className="w-full"
+                ),
+
+                html.Div([
+                    
+                    dmc.HoverCard(
+                        withArrow=True,
+                        width=300,
+                        shadow="md",
+                        children=[
+                            dmc.HoverCardTarget(html.Span("Help", className="text-[14px] text-aqua/70 hover:text-aqua hover:underline hover:cursor-pointer")),
+                            dmc.HoverCardDropdown(
+                                dmc.Text(
+                                    "This first analyses the similarity between the company description of each constituent and the keyword. Then shows the ETF with the highest similarity after weighing on a constituent level",
+                                    size="sm",
+                                ),
+                            ),
+                        ],
+                        className="bg-none hover:bg-none -mt-4"
+                    ),   
+                    
+                    dmc.Button("Search", id="keyword-search-button", className="bg-aqua")
+                    
+                ], className="w-full flex justify-between items-center"),
+                
+                dcc.Loading(
+                    id="loading-1",
+                    type="circle",
+                    children=[html.Div(id="keyword-search-output", className="w-full min-h-[20px]")],
+                    parent_className="w-full self-center flex justify-center items-center mb-2"
+                )
+                                
+            ], className="flex flex-col items-end gap-2")
+
+        ], className="flex flex-col gap-2 mb-2"),
+        
         
         # filter list on the left
         TitleWithIcon(
@@ -292,3 +347,49 @@ def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
     df_filter = df_etf[df_etf["Ticker"].apply(lambda x: x in filter_ticker)]
     
     return df_filter.to_dict("records")
+
+@callback(
+    [
+        Output("keyword-search-output", "children"),
+        Output("etf-ag-grid", "rowData", allow_duplicate=True)
+    ],
+    Input("keyword-search-button", "n_clicks"),
+    State("keyword-input", "value"),
+    prevent_initial_call=True
+)
+def keyword_search(n_clicks, keyword):
+    similarity_scores = get_ETF_similarity(SUPPORTED_TICKERS, keyword)
+    # print(similarity_scores)
+    similarity_scores = sorted(similarity_scores.items(), key=lambda x: x[1], reverse=True)
+    similarity_scores = similarity_scores[:3]
+
+    children = dmc.Accordion([
+        dmc.AccordionItem([
+            
+            dmc.AccordionControl("Show Top 3 Matching ETFs", className="text-[14px] text-aqua"),
+            dmc.AccordionPanel(
+                
+                html.Div([
+                    html.Div([
+                        html.Span("Ticker"),
+                        html.Span("Similarity (%)")
+                    ], className="flex justify-between text-jade font-medium pb-1 border-b border-bronze")
+                ] +
+                [
+                    html.Div([
+                        html.Span(ticker, className="text-aqua"),
+                        html.Span(f"{score:.2f}")
+                    ], className="flex justify-between") for ticker, score in similarity_scores
+                ], className="flex flex-col")
+                
+            )
+            
+        ], value="keyword-matches")
+        
+    ])
+    
+    # filter ETFs by ticker with highest similarity
+    tickers = list(map(lambda x: x[0] + " US Equity", similarity_scores))
+    df = df_etf[df_etf["Ticker"].apply(lambda x: x in tickers)]
+    
+    return children, df.to_dict("records")

@@ -14,6 +14,7 @@ nltk.download('punkt')
 # "fasttext.util.download_model('en', if_exists='ignore')"
 # I (Adi) have it on my local machine, the file is 7gigs so I havent pushed it to the repo
 # The file is in the home directory of the repo, named 'cc.en.300.bin'
+
 print('Checking if model downloaded')
 fasttext.util.download_model('en', if_exists='ignore')
 print('Model detected')
@@ -48,7 +49,7 @@ cos_similarity = lambda a, b: np.dot(a, b)/(np.linalg.norm(a)*np.linalg.norm(b))
 # fasttext.util.reduce_model(ft, 100)
 # print(ft.get_dimension())
 
-def find_top_const(etf, query, file_output=False, prnt=False):
+def find_top_const(etf, query, file_output=False, prnt=False, return_res=False):
     """Given an ETF and a search query, find the top 10 constituents of the ETF that are most similar to the query
 
     Args:
@@ -56,6 +57,7 @@ def find_top_const(etf, query, file_output=False, prnt=False):
         query (string): Search query from sales
         file_output (bool): Whether or not to output the results to a CSV file
         prnt (bool): Whether or not to print the results to the console
+        return_res: Whether or not to return the results
     """
 
     for idx, row in etf.iterrows():
@@ -76,6 +78,9 @@ def find_top_const(etf, query, file_output=False, prnt=False):
         # print(etf.sort_values(by='Cosine Similarity', ascending=False).head(10)) # Print all columns
         print(etf.sort_values(by='Cosine Similarity', ascending=False).head(10)[['Company', 'Weights', 'Cosine Similarity']])
 
+    if return_res == True:
+        etf_sorted = etf.sort_values(by='Cosine Similarity', ascending=False)[['Company', 'Weights', 'Cosine Similarity']]
+        return etf_sorted
 
 def main():
     print('Currently supported ETFs: BBIN, DFAC, JEPI, JEPQ, JPST, JQUA, QQQ ')
@@ -111,9 +116,32 @@ def main():
         print(f'ETF {score[0]} score: {score[1]} for search term: {term}')
 
 
+def get_ETF_similarity(tickers: list[str], keyword: str):
+    scores = {}
+
+    for etf in tickers:
+        # print(f'Analyzing ETF: {etf}')
+
+        source_df = pd.read_csv(f'./pages/data/{etf}_constituents.csv')
+        source_df.dropna(inplace=True) # Useless for filter, and causes errors (Removes rows with NaN descriptions)
+        source_df['Description'] = source_df['Description'].apply(remove_stopwords)
+
+        source_df_processed = find_top_const(source_df, keyword, return_res=True)
+        # print(source_df_processed)
+
+        etf_score = 0
+        for idx, row in source_df_processed.iterrows():
+            etf_score += float(row['Cosine Similarity']) * float(row['Weights'].strip('%'))
+
+        scores[etf] = etf_score
+
+    # print(scores)
+    return scores
+
 run = True
 
-while run == True:
+# while run == True:
+while run == True and __name__ == "__main__":
     main()
     run = False if input("Run again? (y/n): ") == 'n' else True
 
