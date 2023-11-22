@@ -36,7 +36,7 @@ def blank_fig():
 #df = pd.read_csv("./Competitor Data.csv")
 df_v2 = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name=None)
 df = df_v2["Competitor Data"]
-print(df['Ticker'])
+# print(df['Ticker'])
 df1 = pd.read_csv("price data/JEPI US Equity.csv") #to get columns for time-series plot
 
 layout = html.Div(
@@ -489,7 +489,8 @@ def update_advantages_box(selected_ticker_indices):
                             ) 
 
                         elif value == 100:
-                            print(column, value)
+                            pass
+                            # print(column, value)
 
                         else:
                             value = - value

@@ -6,13 +6,16 @@ import dash_mantine_components as dmc
 import dash_bootstrap_components as dbc
 import pandas as pd
 import json
+import time
 
+from pages.filter_search import get_ETF_similarity
 from components.TitleWithIcon import TitleWithIcon
 
 dash.register_page(__name__, path='/')
 
 # variables
-SECTORS=["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
+SECTORS = ["Consumer Discretionary", "Technology", "Financials", "Industrials", "Health care", "Utilities", "Materials", "Real Estate", "Energy", "Communications"]
+SUPPORTED_TICKERS = ["JEPI", "JPST", "JIRE", "JEPQ", "JQUA", "BBIN"]
 
 # data retrieval
 categories = None
@@ -134,8 +137,13 @@ layout = html.Div([
                     
                 ], className="w-full flex justify-between items-center"),
                 
-                html.Div(id="keyword-search-output")
-                
+                dcc.Loading(
+                    id="loading-1",
+                    type="circle",
+                    children=[html.Div(id="keyword-search-output", className="w-full min-h-[20px]")],
+                    parent_className="w-full self-center flex justify-center items-center mb-2"
+                )
+                                
             ], className="flex flex-col items-end gap-2")
 
         ], className="flex flex-col gap-2 mb-2"),
@@ -339,3 +347,41 @@ def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
     df_filter = df_etf[df_etf["Ticker"].apply(lambda x: x in filter_ticker)]
     
     return df_filter.to_dict("records")
+
+@callback(
+    Output("keyword-search-output", "children"),
+    Input("keyword-search-button", "n_clicks"),
+    State("keyword-input", "value"),
+    prevent_initial_call=True
+)
+def keyword_search(n_clicks, keyword):
+    similarity_scores = get_ETF_similarity(SUPPORTED_TICKERS, keyword)
+    # print(similarity_scores)
+    similarity_scores = sorted(similarity_scores.items(), key=lambda x: x[1], reverse=True)
+    similarity_scores = similarity_scores[:3]
+
+    children = dmc.Accordion([
+        dmc.AccordionItem([
+            
+            dmc.AccordionControl("Show Top 3 Matching ETFs", className="text-[14px] text-aqua"),
+            dmc.AccordionPanel(
+                
+                html.Div([
+                    html.Div([
+                        html.Span("Ticker"),
+                        html.Span("Similarity (%)")
+                    ], className="flex justify-between text-jade font-medium pb-1 border-b border-bronze")
+                ] +
+                [
+                    html.Div([
+                        html.Span(ticker, className="text-aqua"),
+                        html.Span(f"{score:.2f}")
+                    ], className="flex justify-between") for ticker, score in similarity_scores
+                ], className="flex flex-col")
+                
+            )
+            
+        ], value="keyword-matches")
+        
+    ])
+    return children
