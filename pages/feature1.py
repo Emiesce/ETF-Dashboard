@@ -349,7 +349,10 @@ def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
     return df_filter.to_dict("records")
 
 @callback(
-    Output("keyword-search-output", "children"),
+    [
+        Output("keyword-search-output", "children"),
+        Output("etf-ag-grid", "rowData", allow_duplicate=True)
+    ],
     Input("keyword-search-button", "n_clicks"),
     State("keyword-input", "value"),
     prevent_initial_call=True
@@ -384,4 +387,9 @@ def keyword_search(n_clicks, keyword):
         ], value="keyword-matches")
         
     ])
-    return children
+    
+    # filter ETFs by ticker with highest similarity
+    tickers = list(map(lambda x: x[0] + " US Equity", similarity_scores))
+    df = df_etf[df_etf["Ticker"].apply(lambda x: x in tickers)]
+    
+    return children, df.to_dict("records")
