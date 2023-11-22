@@ -7,8 +7,8 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 fasttext.FastText.eprint = lambda x: None
 # The following lines must be ran once locally
-# nltk.download('stopwords')
-# nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('punkt')
 
 # NOTE: You must download the model, for this code currently, the model is downloaded via:
 # "fasttext.util.download_model('en', if_exists='ignore')"
