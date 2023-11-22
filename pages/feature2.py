@@ -1,20 +1,16 @@
 import dash
 from dash import dcc, html, Input, Output, State, ALL
 import dash_mantine_components as dmc
+import dash_bootstrap_components as dbc
 import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
-from pages.feature2_backend import find_advantage
-from pages.feature2_backend import clean_competitor_data
-from pages.feature2_backend import select_column
-
-from components.TitleWithIcon import TitleWithIcon
+from pages.feature2_backend import find_advantage, clean_competitor_data, select_column
 
 dash.register_page(__name__)
 
-# variables
 REGIONS = ["US Equity", "MM Equity", "CN Equity", "BH Equity", "TP Equity"]
 COLORS = [
     '#1f77b4',  # muted blue
@@ -40,6 +36,7 @@ def blank_fig():
 #df = pd.read_csv("./Competitor Data.csv")
 df_v2 = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name=None)
 df = df_v2["Competitor Data"]
+print(df['Ticker'])
 df1 = pd.read_csv("price data/JEPI US Equity.csv") #to get columns for time-series plot
 
 layout = html.Div(
@@ -49,11 +46,10 @@ layout = html.Div(
 
             html.Div([
                 
-                TitleWithIcon(
-                    icon_path="../assets/Icons/IconGraph.svg",
-                    title="Graph Settings",
-                    className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"
-                ),
+                html.Div([
+                    html.Img(src="../assets/Icons/IconGraph.svg", className="w-[25px] h-[25px]"),
+                    html.Span("Graph Settings", className="text-[18px] font-medium")
+                ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze"),
                 
                 html.Div([    
                     dcc.Dropdown(
@@ -62,7 +58,8 @@ layout = html.Div(
                         options=[
                             {'label': '3D Scatter Plot', 'value': 'scatter_3d'},
                             {'label': '2D Scatter Plot', 'value': 'scatter'},
-                            {'label': 'Time_series Plot', 'value': 'time_series'},
+                            {'label': 'Bar Chart', 'value': "bar_chart"},
+                            {'label': 'Time Series Line Plot', 'value': 'time_series'},
                         ],
                     ),
                 ]),
@@ -103,11 +100,11 @@ layout = html.Div(
                         id="period",
                         placeholder="Select Time Period",
                         options=[
-                            {"label": "1 month", "value": "30"},
-                            {"label": "3 months", "value": "90"},
-                            {"label": "6 months", "value": "180"},
-                            {"label": "1 year", "value": "365"},
-                            {"label": "3 year", "value": "1095"},
+                            {"label": "1 Month", "value": "30"},
+                            {"label": "3 Months", "value": "90"},
+                            {"label": "6 Months", "value": "180"},
+                            {"label": "1 Year", "value": "365"},
+                            {"label": "3 Years", "value": "1095"},
                         ],
                         #value = "365",
                     ),
@@ -128,12 +125,11 @@ layout = html.Div(
             ], className="flex flex-col gap-4"),
             
             html.Div([
-                
-                TitleWithIcon(
-                    icon_path="../assets/Icons/IconCompetitor.svg",
-                    title="Competitor ETFs",
-                    className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze mb-2"
-                ),
+
+                html.Div([
+                    html.Img(src="../assets/Icons/IconCompetitor.svg", className="w-[25px] h-[25px]"),
+                    html.Span("Competitor ETFs", className="text-[18px] font-medium")
+                ], className="flex gap-2 items-center pb-2 border-b-2 border-b-bronze mb-2"),
                 
                 # Stores selected competitors
                 dcc.Store(id="selected-competitor-data", data={ "tickers": [] }),
@@ -167,13 +163,18 @@ layout = html.Div(
                                 page_size= 10,
                                 filter_action="native",
                             ),                    
-                                                                    
-                        ], className="bg-aqua/5")
-                    
-                    ], value=region) for region in REGIONS
-                    
-                ])
                                         
+                            # dcc.Checklist(
+                            #     id={
+                            #         "type": "ticker-selection",
+                            #         "index": 0
+                            #     },
+                            #     options=[{"label": html.Span(ticker, className="ml-2"), "value": ticker} for ticker in df_v2[region]["Ticker"]
+                            # ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
+                            
+                        ], className="bg-aqua/5")
+                    ], value=region) for region in REGIONS
+                ])                      
             ]),
         
         ], className="flex flex-col gap-4"),
@@ -183,12 +184,12 @@ layout = html.Div(
             html.Div(id="graph-div"),
             
             html.Div(
-                id='advantages-box',
+                id='advantages-box', 
                 className="hidden",
+                #style={'position': 'absolute', 'top': '30%', 'right': '10px'}
             )
-                     
         ], className="w-full flex flex-col")
-        
+
     ], className="p-8 flex gap-8"
 )
 
@@ -206,15 +207,12 @@ layout = html.Div(
     State("selected-competitor-data", "data")
 )
 def show_selected_competitors(visible_rows, selected_ticker_indices, current_selection: dict[str, list[tuple[int, str]]]):
-    # print(f"\n{current_selection=}")
     
     if None in selected_ticker_indices:
         return current_selection, "", "hidden"
     
     ticker_indices = list(map(lambda x: x[0], current_selection["tickers"]))
     ticker_values = list(map(lambda x: x[1], current_selection["tickers"]))
-    # print(f"{ticker_indices=}")
-    # print(f"{ticker_values=}")
     
     global_ticker_indices = set()
     #print(f"{selected_ticker_indices=}")
@@ -229,7 +227,6 @@ def show_selected_competitors(visible_rows, selected_ticker_indices, current_sel
             # add new selection
             if ticker not in ticker_values:
                 current_selection["tickers"].append((global_ticker_ind, ticker))
-    #print(f"{global_ticker_indices=}")
     
     # remove deselected options
     deselection = list(set(ticker_indices) - global_ticker_indices)
@@ -267,6 +264,12 @@ def update_dropdowns(graph_type):
         z_variable_style = "hidden"
         period_style = "hidden"
         column_style = "hidden"
+
+    elif graph_type == 'bar_chart':
+        x_variable_style = "hidden"
+        z_variable_style = "hidden"
+        period_style = "hidden"
+        column_style = "hidden"
     
     elif graph_type == 'time_series':
         x_variable_style = "hidden"
@@ -297,15 +300,12 @@ plot_metric = {
     Input("period", "value"),
     Input("column", "value"),
     Input("selected-competitor-data", "data"),
+    #Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
     prevent_initial_call=True
 )
 def update_graph(
-    graph_type, x_variable, y_variable, z_variable, time_period, column, selection #rows, selected_rows
+    graph_type, x_variable, y_variable, z_variable, time_period, column, selection
 ):
-    #print(rows)
-    #print(selected_rows)
-    #print(selected_ticker_indices)
-
     selected_tickers = list(map(lambda x: x[1], selection["tickers"]))
     
     figure = {}
@@ -342,6 +342,20 @@ def update_graph(
             yaxis_title=y_variable,
             margin={"t":0,"b":0},
         )
+    
+    elif graph_type == "bar_chart":
+        if y_variable is None:
+            return
+        figure = px.bar(
+            df[df["Ticker"].isin(selected_tickers)],
+            x="Ticker",
+            y=y_variable,
+            color="Ticker",
+        ).update_layout(
+            xaxis_title="ETF Tickers",
+            yaxis_title=y_variable,
+            margin={"t":0,"b":0},
+        )
         
     elif graph_type == "time_series":
         if time_period is None or column is None:
@@ -350,7 +364,6 @@ def update_graph(
         figure = go.Figure()
         for ind, ticker in enumerate(selected_tickers):
             etf_data = select_column(ticker, column)[:period]
-            # print(etf_data)
             etf_data["Date"] = pd.to_datetime(etf_data["Date"])
             etf_trace = go.Scatter(
                 x=etf_data["Date"],
@@ -365,9 +378,41 @@ def update_graph(
             yaxis_title=column,
             margin={"t":0,"b":0}
         )
+        
+        # if len(selected_tickers) == 2:
+        #     etf1 = selected_tickers[0]
+        #     etf2 = selected_tickers[1]
+        #     period = int(time_period) # Set the desired period length for the time series
+
+        #     etf1_data = select_column(etf1, column)[:period]
+        #     etf2_data = select_column(etf2, column)[:period]
+        #     etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
+        #     etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
+            
+        #     etf1_trace = go.Scatter(
+        #         x=etf1_data['Date'],
+        #         y=etf1_data[column],
+        #         name=etf1,
+        #         mode='lines',
+        #         line=dict(color='blue')
+        #     )
+            
+        #     etf2_trace = go.Scatter(
+        #         x=etf2_data['Date'],
+        #         y=etf2_data[column],
+        #         name=etf2,
+        #         mode='lines',
+        #         line=dict(color='red')
+        #     )
+
+        #     figure = go.Figure(data=[etf1_trace, etf2_trace])
+        #     figure.update_layout(
+        #         xaxis_title='Date',
+        #         yaxis_title=column,
+        #         margin={"t":0,"b":0}
+        #     )
     
-    # print(figure)
-    return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze")#, className="py-8 flex justify-center gap-12"),
+    return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze pb-3")#, className="py-8 flex justify-center gap-12"),
 
 
 @dash.callback(
@@ -406,9 +451,6 @@ def update_advantages_box(selected_ticker_indices):
     data_frame = clean_competitor_data(df)
     advantages = find_advantage(data_frame, ticker_values[0], ticker_values[1:])
     
-    print("advantages")
-    print(advantages)
-    
     if advantages:
         competitor_list = []
         for competitor, advantage in advantages.items():
@@ -419,7 +461,7 @@ def update_advantages_box(selected_ticker_indices):
                 if value == max_value and value != float('inf'):
                     column_value_div = html.Div(
                         children=[
-                            html.P(f"{column}:", style={"text-align": "left", "color": "green"}),
+                            html.P(f"{column}:", style={"text-align": "left"}),
                             html.P(f"{value}% better", style={"text-align": "right", "color": "green"})
                         ],
                         style={"display": "flex", "justify-content": "space-between"}
@@ -427,33 +469,78 @@ def update_advantages_box(selected_ticker_indices):
                     competitor_section.append(column_value_div)
                 else:
                     if value == float('inf') or value == -float('inf') or np.isnan(value):
-                        column_value_div = html.Div(
-                            children=[
-                                html.P(f"{column}:", style={"text-align": "left"}),
-                                html.P("Data Missing", style={"text-align": "right"})
-                            ],
-                            style={"display": "flex", "justify-content": "space-between"}
-                        )
-                        competitor_section.append(column_value_div)
+                        pass
+                        # column_value_div = html.Div(
+                        #     children=[
+                        #         html.P(f"{column}:", style={"text-align": "left"}),
+                        #         html.P("----", style={"text-align": "right"})
+                        #     ],
+                        #     style={"display": "flex", "justify-content": "space-between"}
+                        # )
+                        # competitor_section.append(column_value_div)
                     else:
                         if value > 0:
                             column_value_div = html.Div(
                                 children=[
                                     html.P(f"{column}:", style={"text-align": "left"}),
-                                    html.P(f"{value}% better", style={"text-align": "right"})
+                                    html.P(f"{value}% better", style={"text-align": "right", "color": "green"})
                                 ],
                                 style={"display": "flex", "justify-content": "space-between"}
-                            )
+                            ) 
+
+                        elif value == 100:
+                            print(column, value)
+
                         else:
                             value = - value
                             column_value_div = html.Div(
                                 children=[
                                     html.P(f"{column}:", style={"text-align": "left"}),
-                                    html.P(f"{value}% worse", style={"text-align": "right"})
+                                    html.P(f"{value}% worse", style={"text-align": "right", "color": "red"})
                                 ],
                                 style={"display": "flex", "justify-content": "space-between"}
                             )
                         competitor_section.append(column_value_div)
+
+            modal_competitors = [df[df['Ticker'] == ticker_values[0]], df[df['Ticker'] == competitor]]
+
+            competitor_section.append(html.Div(
+                children=[
+                dmc.Button(
+                    "View Data",
+                    id = "open",
+                    className="bg-bronze text-white font-bold py-2 px-4 rounded-full mx-auto",
+                    style = {"padding": "10px", "margin": "5px", "width": "100%"}
+                ),
+                # Add a Modal to display actual data as a table between Competitor and main ETF:
+                dmc.Modal(
+                    title = f"{ticker_values[0]} vs. {competitor}",
+                    id="modal",
+                    zIndex=10000,
+                    size = "100%",
+                    children=[
+                        dmc.Text("I am a modal component"),
+                        dash.dash_table.DataTable(
+                            data = pd.concat(modal_competitors).to_dict("records"),
+                            id='competitor-table',
+                            
+                            style_cell={'textAlign': 'left'},
+                        ),
+                        dmc.Group(
+                        [
+                            dmc.Button("Submit", id="modal-submit-button"),
+                            dmc.Button(
+                                "Close",
+                                color="red",
+                                variant="outline",
+                                id="modal-close-button",
+                            ),
+                        ],
+                        position="right",
+                        ),
+                    ]),
+                ],
+            ))
 
             competitor_list.append(html.Div(competitor_section, style={"marginRight": "20px", "padding": "10px"}))
 
@@ -470,4 +557,13 @@ def update_advantages_box(selected_ticker_indices):
 
     return container
 
-
+@dash.callback(
+    Output("modal", "opened"),
+    Input("open", "n_clicks"),
+    Input("modal-close-button", "n_clicks"),
+    Input("modal-submit-button", "n_clicks"),
+    State("modal", "opened"),
+    prevent_initial_call=True,
+)
+def modal_demo(nc1, nc2, nc3, opened):
+    return not opened

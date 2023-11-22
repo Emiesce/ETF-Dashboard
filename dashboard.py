@@ -5,6 +5,7 @@ import pandas as pd
 
 tailwind_cdn = "https://cdn.tailwindcss.com"
 app = Dash(__name__,
+           suppress_callback_exceptions=True,
            use_pages = True, # Access Multiple Pages
            external_scripts=[tailwind_cdn, { "src": "./assets/tailwind_config.js" }],  # enable TailwindCSS
     )
