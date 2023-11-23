@@ -96,7 +96,7 @@ for i in range(num_clients):
 
 df = pd.DataFrame(data)
 
-RECOMMENDATIONS = ["JEPI US Equity", "JMOM US Equity", "JPIB US Equity", "JMEE US Equity"]
+RECOMMENDATIONS = ["JEPI US Equity", "JEPQ US Equity", "JIRE US Equity", "BBIN US Equity"]
 df_etfs = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name="US Equity")
 df_recommendations = df_etfs.loc[df_etfs["Ticker"].apply(lambda x: x in RECOMMENDATIONS)].reset_index()
 
