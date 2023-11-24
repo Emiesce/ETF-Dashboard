@@ -99,11 +99,12 @@ for i in range(num_clients):
 
 df = pd.DataFrame(data)
 
-RECOMMENDATIONS = ["JEPI US Equity", "JMOM US Equity", "JPIB US Equity", "JMEE US Equity"]
+RECOMMENDATIONS = ["JEPI US Equity", "JEPQ US Equity", "JIRE US Equity", "BBIN US Equity"]
 df_etfs = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name="US Equity")
 df_recommendations = df_etfs.loc[df_etfs["Ticker"].apply(lambda x: x in RECOMMENDATIONS)].reset_index()
 
 df_client_holdings = pd.read_excel("./static/Client ETF Holdings.xlsx", sheet_name=None)
+df_features = pd.read_excel("./static/ETF Recommendations and features.xlsx", sheet_name=None)
 
 # Create the Dash app
 layout = html.Div([
@@ -247,7 +248,10 @@ def display_client_details(selected_rows):
     # print(df)
 
     client_data = df.loc[df["Client"] == selected_client]
+    client_description_data = df_features["Client Descriptions"]
+    client_description = client_description_data.loc[client_description_data["Clients"] == selected_client]
     # print(client_data)
+    print(client_description_data.loc[client_description_data["Clients"] == selected_client])
     
     details = html.Div([
     
@@ -260,19 +264,23 @@ def display_client_details(selected_rows):
             dmc.List([
                 
                 dmc.ListItem([
+                    
                     html.Span([
-                        "Group: ",
-                        html.Span(client_data["Group"], className="font-normal")
-                    ], className="font-medium text-[14px]")
+                        "Description: ",
+                        html.Span(client_description["Client Descriptions"], className="font-normal whitespace-normal text-ellipsis")
+                    ], className="font-medium text-[14px]"),
+                    
+                
                 ]),
                 
                 dmc.ListItem([
+                    
                     html.Span([
-                        "Description: ",
-                        html.Span("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", className="font-normal whitespace-normal text-ellipsis")
+                        "Interpretation: ",
+                        html.Span(client_description["Interpretations"], className="font-normal whitespace-normal text-ellipsis")
                     ], className="font-medium text-[14px]")
+                    
                 ])
-                
             ])
         
         ], className="flex flex-col h-full"),
