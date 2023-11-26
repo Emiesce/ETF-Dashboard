@@ -137,6 +137,7 @@ layout = html.Div([
                     
                 ], className="w-full flex justify-between items-center"),
                 
+                dcc.Store(id="constituent-similarity-data"),
                 dcc.Loading(
                     id="loading-1",
                     type="circle",
@@ -372,14 +373,15 @@ def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
 @callback(
     [
         Output("keyword-search-output", "children"),
-        Output("etf-ag-grid", "rowData", allow_duplicate=True)
+        Output("etf-ag-grid", "rowData", allow_duplicate=True),
+        Output("constituent-similarity-data", "data")
     ],
     Input("keyword-search-button", "n_clicks"),
     State("keyword-input", "value"),
     prevent_initial_call=True
 )
 def keyword_search(n_clicks, keyword):
-    similarity_scores = get_ETF_similarity(SUPPORTED_TICKERS, keyword)
+    similarity_scores, constituent_similarity = get_ETF_similarity(SUPPORTED_TICKERS, keyword)
     # print(similarity_scores)
     similarity_scores = sorted(similarity_scores.items(), key=lambda x: x[1], reverse=True)
     similarity_scores = similarity_scores[:3]
@@ -413,19 +415,18 @@ def keyword_search(n_clicks, keyword):
     tickers = list(map(lambda x: x[0] + " US Equity", similarity_scores))
     df = df_etf[df_etf["Ticker"].apply(lambda x: x in tickers)]
     
-    return children, df.to_dict("records")
+    return children, df.to_dict("records"), constituent_similarity
 
 @callback(
     Output("ticker-modal", "opened"),
     [
-      Input({"type": "ticker-modal-button", "index": ALL}, "children"),
       Input({"type": "ticker-modal-button", "index": ALL}, "n_clicks"),
       Input("ticker-modal-close-button", "n_clicks")  
     ],
     State("ticker-modal", "opened"),
     prevent_initial_call=True,
 )
-def control_ticker_modal(ticker, nc1, nc2, opened):
+def control_ticker_modal(nc1, nc2, opened):
     if all(i is None for i in nc1):
         return 
     return not opened
@@ -433,9 +434,11 @@ def control_ticker_modal(ticker, nc1, nc2, opened):
 @callback(
     Output("constituent-similarity", "children"),
     Input({"type": "ticker-modal-button", "index": ALL}, "n_clicks"),
+    State("constituent-similarity-data", "data"),
     prevent_initial_call=True
 )
-def populate_ticker_modal(nc1):
+def populate_ticker_modal(nc1, data):
     selected_ticker = ctx.triggered_id["index"]
-    print(selected_ticker)
+    constituent_similarity_df = pd.DataFrame.from_dict(data[selected_ticker])
+    print(constituent_similarity_df)
     return html.Div(selected_ticker)
