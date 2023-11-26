@@ -1,7 +1,7 @@
 import dash
 import dash_ag_grid as dag
 import plotly.express as px
-from dash import dcc, html, callback, Output, Input, State, ALL
+from dash import dcc, html, callback, ctx, Output, Input, State, ALL, MATCH
 import dash_mantine_components as dmc
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -140,9 +140,30 @@ layout = html.Div([
                 dcc.Loading(
                     id="loading-1",
                     type="circle",
-                    children=[html.Div(id="keyword-search-output", className="w-full min-h-[20px]")],
+                    children=[
+                        html.Div(id="keyword-search-output", className="w-full min-h-[20px]"),
+                        dmc.Modal(
+                            title="Ticker Modal",
+                            id="ticker-modal",
+                            zIndex=10000,
+                            children=[
+                                html.Div(id="constituent-similarity"),
+                                dmc.Group(
+                                    [
+                                        dmc.Button(
+                                            "Close",
+                                            color="red",
+                                            variant="outline",
+                                            id="ticker-modal-close-button",
+                                        ),
+                                    ],
+                                    position="right",
+                                ),
+                            ]
+                        ),
+                    ],
                     parent_className="w-full self-center flex justify-center items-center mb-2"
-                )
+                ),
                                 
             ], className="flex flex-col items-end gap-2")
 
@@ -377,7 +398,7 @@ def keyword_search(n_clicks, keyword):
                 ] +
                 [
                     html.Div([
-                        html.Span(ticker, className="text-aqua"),
+                        html.Span(ticker, id={"type": "ticker-modal-button", "index": ticker}, className="text-aqua hover:underline hover:cursor-pointer"),
                         html.Span(f"{score:.2f}")
                     ], className="flex justify-between") for ticker, score in similarity_scores
                 ], className="flex flex-col")
@@ -393,3 +414,28 @@ def keyword_search(n_clicks, keyword):
     df = df_etf[df_etf["Ticker"].apply(lambda x: x in tickers)]
     
     return children, df.to_dict("records")
+
+@callback(
+    Output("ticker-modal", "opened"),
+    [
+      Input({"type": "ticker-modal-button", "index": ALL}, "children"),
+      Input({"type": "ticker-modal-button", "index": ALL}, "n_clicks"),
+      Input("ticker-modal-close-button", "n_clicks")  
+    ],
+    State("ticker-modal", "opened"),
+    prevent_initial_call=True,
+)
+def control_ticker_modal(ticker, nc1, nc2, opened):
+    if all(i is None for i in nc1):
+        return 
+    return not opened
+
+@callback(
+    Output("constituent-similarity", "children"),
+    Input({"type": "ticker-modal-button", "index": ALL}, "n_clicks"),
+    prevent_initial_call=True
+)
+def populate_ticker_modal(nc1):
+    selected_ticker = ctx.triggered_id["index"]
+    print(selected_ticker)
+    return html.Div(selected_ticker)
