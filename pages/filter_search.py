@@ -119,6 +119,7 @@ def main():
 def get_ETF_similarity(tickers: list[str], keyword: str):
     scores = {}
 
+    constituent_similarity = {}
     for etf in tickers:
         # print(f'Analyzing ETF: {etf}')
 
@@ -127,6 +128,7 @@ def get_ETF_similarity(tickers: list[str], keyword: str):
         source_df['Description'] = source_df['Description'].apply(remove_stopwords)
 
         source_df_processed = find_top_const(source_df, keyword, return_res=True)
+        constituent_similarity[etf] = source_df_processed.to_dict()
         # print(source_df_processed)
 
         etf_score = 0
@@ -136,7 +138,7 @@ def get_ETF_similarity(tickers: list[str], keyword: str):
         scores[etf] = etf_score
 
     # print(scores)
-    return scores
+    return scores, constituent_similarity
 
 run = True
 

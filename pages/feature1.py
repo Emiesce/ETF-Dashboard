@@ -1,12 +1,11 @@
 import dash
 import dash_ag_grid as dag
 import plotly.express as px
-from dash import dcc, html, callback, Output, Input, State, ALL
+from dash import dcc, html, callback, ctx, Output, Input, State, ALL, MATCH
 import dash_mantine_components as dmc
 import dash_bootstrap_components as dbc
 import pandas as pd
 import json
-import time
 
 from pages.filter_search import get_ETF_similarity
 from components.TitleWithIcon import TitleWithIcon
@@ -137,12 +136,35 @@ layout = html.Div([
                     
                 ], className="w-full flex justify-between items-center"),
                 
+                dcc.Store(id="constituent-similarity-data"),
                 dcc.Loading(
                     id="loading-1",
                     type="circle",
-                    children=[html.Div(id="keyword-search-output", className="w-full min-h-[20px]")],
+                    children=[
+                        html.Div(id="keyword-search-output", className="w-full min-h-[20px]"),
+                        dmc.Modal(
+                            title="",
+                            id="ticker-modal",
+                            zIndex=10000,
+                            children=[
+                                html.Div(id="constituent-similarity"),
+                                dmc.Group(
+                                    [
+                                        dmc.Button(
+                                            "Close",
+                                            color="red",
+                                            variant="outline",
+                                            id="ticker-modal-close-button",
+                                            className="mt-4"
+                                        ),
+                                    ],
+                                    position="right",
+                                ),
+                            ]
+                        ),
+                    ],
                     parent_className="w-full self-center flex justify-center items-center mb-2"
-                )
+                ),
                                 
             ], className="flex flex-col items-end gap-2")
 
@@ -351,14 +373,15 @@ def apply_ETF_filter(n_clicks, selected_categories, operator, threshold):
 @callback(
     [
         Output("keyword-search-output", "children"),
-        Output("etf-ag-grid", "rowData", allow_duplicate=True)
+        Output("etf-ag-grid", "rowData", allow_duplicate=True),
+        Output("constituent-similarity-data", "data")
     ],
     Input("keyword-search-button", "n_clicks"),
     State("keyword-input", "value"),
     prevent_initial_call=True
 )
 def keyword_search(n_clicks, keyword):
-    similarity_scores = get_ETF_similarity(SUPPORTED_TICKERS, keyword)
+    similarity_scores, constituent_similarity = get_ETF_similarity(SUPPORTED_TICKERS, keyword)
     # print(similarity_scores)
     similarity_scores = sorted(similarity_scores.items(), key=lambda x: x[1], reverse=True)
     similarity_scores = similarity_scores[:3]
@@ -377,7 +400,7 @@ def keyword_search(n_clicks, keyword):
                 ] +
                 [
                     html.Div([
-                        html.Span(ticker, className="text-aqua"),
+                        html.Span(ticker, id={"type": "ticker-modal-button", "index": ticker}, className="text-aqua hover:underline hover:cursor-pointer"),
                         html.Span(f"{score:.2f}")
                     ], className="flex justify-between") for ticker, score in similarity_scores
                 ], className="flex flex-col")
@@ -392,4 +415,55 @@ def keyword_search(n_clicks, keyword):
     tickers = list(map(lambda x: x[0] + " US Equity", similarity_scores))
     df = df_etf[df_etf["Ticker"].apply(lambda x: x in tickers)]
     
-    return children, df.to_dict("records")
+    return children, df.to_dict("records"), constituent_similarity
+
+@callback(
+    Output("ticker-modal", "opened"),
+    [
+      Input({"type": "ticker-modal-button", "index": ALL}, "n_clicks"),
+      Input("ticker-modal-close-button", "n_clicks")  
+    ],
+    State("ticker-modal", "opened"),
+    prevent_initial_call=True,
+)
+def control_ticker_modal(nc1, nc2, opened):
+    if all(i is None for i in nc1):
+        return 
+    return not opened
+
+@callback(
+    [
+        Output("constituent-similarity", "children"),
+        Output("ticker-modal", "title"),
+    ],
+    Input({"type": "ticker-modal-button", "index": ALL}, "n_clicks"),
+    State("constituent-similarity-data", "data"),
+    prevent_initial_call=True
+)
+def populate_ticker_modal(nc1, data):
+    selected_ticker = ctx.triggered_id["index"]
+    constituent_similarity_df = pd.DataFrame.from_dict(data[selected_ticker])
+    
+    columnDefs_modal = [
+        { "field": "Company", "cellClass": "text-jade" },
+        { 
+            "field": "Weights",
+            "cellClass": "text-aqua",
+            "maxWidth": 150,
+            "sortable": True
+        },
+        { 
+            "field": "Cosine Similarity",
+            "valueFormatter": {"function": 'd3.format("(,.3f")(params.value)'},
+            "maxWidth": 180,
+            "sortable": True
+        }
+    ]
+    
+    children = dag.AgGrid(
+        id="ticker-modal-ag-grid",
+        rowData=constituent_similarity_df.to_dict("records"),
+        columnDefs=columnDefs_modal,
+    )
+    
+    return children, f"Constituent Breakdown for {selected_ticker}"
