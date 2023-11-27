@@ -64,28 +64,30 @@ columnDefs = [
         "field": "Name",
         "cellClass": "text-aqua font-medium",
         "cellRenderer": "ShowNameAndTicker",
-        "minWidth": 250,
-        "maxWidth": 300
+        "maxWidth": 230
     },
     {
         "field": "graph",
         "cellRenderer": "DCC_GraphClickData",
-        "headerName": "Holdings by Sector (%NAV)",
+        "headerName": "Top 5 Holdings by Sector (%NAV)",
         "minWidth": 250,
-        "maxWidth": 400,
+        "maxWidth": 450,
     },
     {
         "field": "Expense Ratio",
         "valueFormatter": {"function": 'd3.format("(,.2f")(params.value)'},
+        "maxWidth": 180
     },
     {
         "field": "Tot Asset US$ (M)",
-        "headerName": "AUM (USD million)"
+        "headerName": "AUM (USD million)",
+        "maxWidth": 200
     },
     {
         "field": "Tot Ret 1Y",
         "headerName": "1 Year Return (%)",
-        "valueFormatter": {"function": 'd3.format("(,.2f")(params.value)'}
+        "valueFormatter": {"function": 'd3.format("(,.2f")(params.value)'},
+        "maxWidth": 180
     }
 ]
 
@@ -239,7 +241,7 @@ layout = html.Div([
                 columnSize="sizeToFit",
                 columnDefs=columnDefs,
                 defaultColDef={"sortable": True, "filter": True, "minWidth": 125},
-                dashGridOptions={"rowHeight": 90, "domLayout": "autoHeight"},
+                dashGridOptions={"rowHeight": 250, "domLayout": "autoHeight"},
                 style={"height": None, "width": "100%" }
             ),
         
