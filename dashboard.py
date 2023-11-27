@@ -19,9 +19,13 @@ app.layout = html.Div([
             html.Div([
                 
                 html.Div([
-                    html.Img(src="./assets/Icons/IconJPM_AM.svg", className="w-[96px] h-[31px]"),
+                    #html.Img(src="./assets/Icons/IconJPM_AM.svg", className="w-[96px] h-[31px]"),
                     
-                    html.Img(src="./assets/Icons/IconDDP.svg", className="h-[31px]"),
+                    #html.Img(src="./assets/Icons/IconDDP.svg", className="h-[31px]"),
+
+                    html.Img(src="./assets/Icons/logo.png", className="h-[50px]"),
+
+
                 ], className="flex gap-2 items-center"),
                 
                 html.Div([
