@@ -2,7 +2,7 @@ import dash
 from dash import dcc, html, Input, Output, State, ALL
 import dash_mantine_components as dmc
 import dash_bootstrap_components as dbc
-import matplotlib.pyplot as plt
+import dash_ag_grid as dag
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -33,11 +33,12 @@ def blank_fig():
     
     return fig
 
-#df = pd.read_csv("./Competitor Data.csv")
 df_v2 = pd.read_excel("./static/Competitor Data_v2.xlsx", sheet_name=None)
 df = df_v2["Competitor Data"]
-# print(df['Ticker'])
 df1 = pd.read_csv("price data/JEPI US Equity.csv") #to get columns for time-series plot
+
+excluded_columns = ["North", "Name", "Primary Exchange", "Ticker", "Parent Comp. Name", "Fund Objective", 
+"Fund Geographical Focus", "Fund Asset Class Focus", "General Attribute"] # Remove all non-quantiative columns
 
 layout = html.Div(
     [
@@ -69,7 +70,7 @@ layout = html.Div(
                         id='x-variable',
                         placeholder="Select X Variable:",
                         options=[
-                            {'label': col, 'value': col} for col in df.columns
+                            {'label': col, 'value': col} for col in df.columns if col not in excluded_columns
                         ],
                     ),
                 ]),
@@ -79,7 +80,7 @@ layout = html.Div(
                         id='y-variable',
                         placeholder="Select Y Variable:",
                         options=[
-                            {'label': col, 'value': col} for col in df.columns
+                            {'label': col, 'value': col} for col in df.columns if col not in excluded_columns
                         ],
                     ),
                 ]),
@@ -89,7 +90,7 @@ layout = html.Div(
                         id='z-variable',
                         placeholder="Select Z Variable:",
                         options=[
-                            {'label': col, 'value': col} for col in df.columns
+                            {'label': col, 'value': col} for col in df.columns if col not in excluded_columns
                         ],
                         #value = 'Avg Dvd Yield'
                     ),
@@ -106,7 +107,6 @@ layout = html.Div(
                             {"label": "1 Year", "value": "365"},
                             {"label": "3 Years", "value": "1095"},
                         ],
-                        #value = "365",
                     ),
                 ]),
                 
@@ -230,10 +230,7 @@ def show_selected_competitors(visible_rows, selected_ticker_indices, current_sel
     
     # remove deselected options
     deselection = list(set(ticker_indices) - global_ticker_indices)
-    #print(f"{deselection=}")
     new_selection = list(filter(lambda x: x[0] not in deselection, current_selection["tickers"]))
-    
-    #print(f"{new_selection=}\n")
     
     return { "tickers": new_selection }, [html.Div([
         html.Span(ticker, className="text-jade font-medium text-[14px]")
@@ -378,39 +375,6 @@ def update_graph(
             yaxis_title=column,
             margin={"t":0,"b":0}
         )
-        
-        # if len(selected_tickers) == 2:
-        #     etf1 = selected_tickers[0]
-        #     etf2 = selected_tickers[1]
-        #     period = int(time_period) # Set the desired period length for the time series
-
-        #     etf1_data = select_column(etf1, column)[:period]
-        #     etf2_data = select_column(etf2, column)[:period]
-        #     etf1_data['Date'] = pd.to_datetime(etf1_data['Date'])
-        #     etf2_data['Date'] = pd.to_datetime(etf2_data['Date'])
-            
-        #     etf1_trace = go.Scatter(
-        #         x=etf1_data['Date'],
-        #         y=etf1_data[column],
-        #         name=etf1,
-        #         mode='lines',
-        #         line=dict(color='blue')
-        #     )
-            
-        #     etf2_trace = go.Scatter(
-        #         x=etf2_data['Date'],
-        #         y=etf2_data[column],
-        #         name=etf2,
-        #         mode='lines',
-        #         line=dict(color='red')
-        #     )
-
-        #     figure = go.Figure(data=[etf1_trace, etf2_trace])
-        #     figure.update_layout(
-        #         xaxis_title='Date',
-        #         yaxis_title=column,
-        #         margin={"t":0,"b":0}
-        #     )
     
     return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze pb-3")#, className="py-8 flex justify-center gap-12"),
 
@@ -450,6 +414,8 @@ def update_advantages_box(selected_ticker_indices):
     
     data_frame = clean_competitor_data(df)
     advantages = find_advantage(data_frame, ticker_values[0], ticker_values[1:])
+
+    unbiased_metrics = ["Expense Ratio", "Beta 1Y-M", "Beta 3Y"]
     
     if advantages:
         competitor_list = []
@@ -470,40 +436,69 @@ def update_advantages_box(selected_ticker_indices):
                 else:
                     if value == float('inf') or value == -float('inf') or np.isnan(value):
                         pass
-                        # column_value_div = html.Div(
-                        #     children=[
-                        #         html.P(f"{column}:", style={"text-align": "left"}),
-                        #         html.P("----", style={"text-align": "right"})
-                        #     ],
-                        #     style={"display": "flex", "justify-content": "space-between"}
-                        # )
-                        # competitor_section.append(column_value_div)
                     else:
                         if value > 0:
-                            column_value_div = html.Div(
-                                children=[
-                                    html.P(f"{column}:", style={"text-align": "left"}),
-                                    html.P(f"{value}% better", style={"text-align": "right", "color": "green"})
-                                ],
-                                style={"display": "flex", "justify-content": "space-between"}
-                            ) 
+                            if column not in unbiased_metrics:
+                                column_value_div = html.Div(
+                                    children=[
+                                        html.P(f"{column}:", style={"text-align": "left"}),
+                                        html.P(f"{value}% better", style={"text-align": "right", "color": "green"})
+                                    ],
+                                    style={"display": "flex", "justify-content": "space-between"}
+                                ) 
+                            else:
+                                if column == "Expense Ratio":
+                                    column_value_div = html.Div(
+                                        children=[
+                                            html.P(f"{column}:", style={"text-align": "left"}),
+                                            html.P(f"{value}% higher", style={"text-align": "right", "color": "red"})
+                                        ],
+                                        style={"display": "flex", "justify-content": "space-between"}
+                                    ) 
+                                else:
+                                    column_value_div = html.Div(
+                                        children=[
+                                            html.P(f"{column}:", style={"text-align": "left"}),
+                                            html.P(f"{value}% higher", style={"text-align": "right"})
+                                        ],
+                                        style={"display": "flex", "justify-content": "space-between"}
+                                    ) 
 
                         elif value == 100:
                             pass
-                            # print(column, value)
 
                         else:
                             value = - value
-                            column_value_div = html.Div(
-                                children=[
-                                    html.P(f"{column}:", style={"text-align": "left"}),
-                                    html.P(f"{value}% worse", style={"text-align": "right", "color": "red"})
-                                ],
-                                style={"display": "flex", "justify-content": "space-between"}
-                            )
+                            if column not in unbiased_metrics:
+                                column_value_div = html.Div(
+                                    children=[
+                                        html.P(f"{column}:", style={"text-align": "left"}),
+                                        html.P(f"{value}% worse", style={"text-align": "right", "color": "red"})
+                                    ],
+                                    style={"display": "flex", "justify-content": "space-between"}
+                                )
+                            else:
+                                if column == "Expense Ratio":
+                                    column_value_div = html.Div(
+                                        children=[
+                                            html.P(f"{column}:", style={"text-align": "left"}),
+                                            html.P(f"{value}% lower", style={"text-align": "right", "color": "green"})
+                                        ],
+                                        style={"display": "flex", "justify-content": "space-between"}
+                                    )
+                                else:
+                                    column_value_div = html.Div(
+                                        children=[
+                                            html.P(f"{column}:", style={"text-align": "left"}),
+                                            html.P(f"{value}% lower", style={"text-align": "right"})
+                                        ],
+                                        style={"display": "flex", "justify-content": "space-between"}
+                                    )
+
                         competitor_section.append(column_value_div)
 
-            modal_competitors = [df[df['Ticker'] == ticker_values[0]], df[df['Ticker'] == competitor]]
+            modal_competitors = [df[df['Ticker'] == ticker_values[0]].drop(columns = ["North"]),
+                df[df['Ticker'] == competitor].drop(columns = ["North"])]
 
             competitor_section.append(html.Div(
                 children=[
@@ -520,12 +515,16 @@ def update_advantages_box(selected_ticker_indices):
                     zIndex=10000,
                     size = "100%",
                     children=[
-                        dmc.Text("I am a modal component"),
-                        dash.dash_table.DataTable(
-                            data = pd.concat(modal_competitors).to_dict("records"),
-                            id='competitor-table',
+                        # dash.dash_table.DataTable(
+                        #     data = pd.concat(modal_competitors).to_dict("records"),
+                        #     id='competitor-table',
                             
-                            style_cell={'textAlign': 'left'},
+                        #     style_cell={'textAlign': 'left'},
+                        # ),
+                        dag.AgGrid(
+                            id='competitor-table',
+                            rowData= pd.concat(modal_competitors).to_dict("records"),
+                            columnDefs = [{"headerName": i, "field": i, "sortable": True} for i in pd.concat(modal_competitors).columns],
                         ),
                         dmc.Group(
                         [
