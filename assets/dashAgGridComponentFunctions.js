@@ -8,12 +8,35 @@ dagcomponentfuncs.DCC_GraphClickData = function (props) {
             setData(graphProps);
         }
     }
-    return React.createElement(window.dash_core_components.Graph, {
-        figure: props.value,
-        setProps,
-        style: {height: '100%'},
-        config: {displayModeBar: false},
-    });
+    const sectors = props.value.data[0].x
+    const navs = props.value.data[0].y
+
+    const labels = sectors.map((sector, ind) => {
+        const nav = navs[ind]
+        return React.createElement(
+            "div",
+            { className: "flex justify-between px-4 leading-6" },
+            [
+                React.createElement("span", { className: "font-bold" }, `${sector}:`),
+                React.createElement("span", {}, `${nav}%`)
+            ]
+        )
+    })
+
+    return React.createElement(
+        "div",
+        { className: "flex flex-col h-full" },
+        [
+            React.createElement(window.dash_core_components.Graph, {
+                figure: props.value,
+                setProps,
+                style: { width: '100%', height: '150px', marginBottom: "4px" },
+                config: {displayModeBar: false},
+            }),
+            ...labels
+        ]
+    )
+    
 };
 
 dagcomponentfuncs.ShowNameAndTicker = function(props) {
@@ -26,7 +49,7 @@ dagcomponentfuncs.ShowNameAndTicker = function(props) {
         { className: "flex flex-col" },
         [
             React.createElement("span", { className: "text-jade" }, ticker),
-            React.createElement("span", { className: "-mt-2" }, name),
+            React.createElement("span", { className: "w-full whitespace-normal leading-5 -mt-2" }, name),
         ]
     );
 }
