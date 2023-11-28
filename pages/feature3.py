@@ -130,7 +130,7 @@ layout = html.Div([
                 ),
 
                 html.Div(id='recommendations-container', className='recommendations-container'),
-                dmc.Anchor(dmc.Button("Set Macro Event Reminder", className="bg-aqua", style={"margin-top": "20px", "display": "flex", "justify-content": "center", "width": "100%"}), href="https://vanshikayadav0209.wixsite.com/my-site-1")
+                dmc.Anchor(dmc.Button("Set Macro Event Reminder", className="bg-aqua", style={"margin-top": "20px", "display": "flex", "justify-content": "center", "width": "100%"}), href="/macro")
             ]
         ),
         
