@@ -1,7 +1,6 @@
 import dash
 from dash import dcc, html, Input, Output, State, ALL
 import dash_mantine_components as dmc
-import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import plotly.express as px
 import plotly.graph_objects as go
@@ -44,9 +43,7 @@ layout = html.Div(
     [
         # This Div is responsible for the Selection of Graph Type and Axes
         html.Div([ 
-
             html.Div([
-                
                 html.Div([
                     html.Img(src="../assets/Icons/IconGraph.svg", className="w-[25px] h-[25px]"),
                     html.Span("Graph Settings", className="text-[18px] font-medium")
@@ -92,7 +89,6 @@ layout = html.Div(
                         options=[
                             {'label': col, 'value': col} for col in df.columns if col not in excluded_columns
                         ],
-                        #value = 'Avg Dvd Yield'
                     ),
                 ]),
                 
@@ -143,11 +139,8 @@ layout = html.Div(
                 # Displays Competitors in a Selectable List
                 dmc.Accordion([
                     dmc.AccordionItem([
-                        
                         dmc.AccordionControl(region, className="py-3 text-aqua font-medium focus:bg-gray-light focus:font-bold"),
-                        
-                        dmc.AccordionPanel([
-                                            
+                        dmc.AccordionPanel([      
                             dash.dash_table.DataTable(
                                 id={ "type": "ticker-selection", "index": 0 },
                                 columns=[{"name": 'Ticker', "id": 'Ticker'}],
@@ -162,16 +155,7 @@ layout = html.Div(
                                 style_data={"border": "none", "background-color": "transparent"},
                                 page_size= 10,
                                 filter_action="native",
-                            ),                    
-                                        
-                            # dcc.Checklist(
-                            #     id={
-                            #         "type": "ticker-selection",
-                            #         "index": 0
-                            #     },
-                            #     options=[{"label": html.Span(ticker, className="ml-2"), "value": ticker} for ticker in df_v2[region]["Ticker"]
-                            # ], value=[], labelClassName="my-2 ml-2 !flex items-center", inputClassName="min-w-[20px] min-h-[20px] rounded-sm")
-                            
+                            ),
                         ], className="bg-aqua/5")
                     ], value=region) for region in REGIONS
                 ])                      
@@ -180,13 +164,10 @@ layout = html.Div(
         ], className="flex flex-col gap-4"),
         
         html.Div([
-            
             html.Div(id="graph-div"),
-            
             html.Div(
                 id='advantages-box', 
                 className="hidden",
-                #style={'position': 'absolute', 'top': '30%', 'right': '10px'}
             )
         ], className="w-full flex flex-col")
 
@@ -215,7 +196,7 @@ def show_selected_competitors(visible_rows, selected_ticker_indices, current_sel
     ticker_values = list(map(lambda x: x[1], current_selection["tickers"]))
     
     global_ticker_indices = set()
-    #print(f"{selected_ticker_indices=}")
+
     for region_ind, region_dt in enumerate(selected_ticker_indices):
         region = REGIONS[region_ind]
         
@@ -236,7 +217,7 @@ def show_selected_competitors(visible_rows, selected_ticker_indices, current_sel
         html.Span(ticker, className="text-jade font-medium text-[14px]")
     ], className="px-4 py-2 bg-gray-light rounded-[20px]") for ticker in map(lambda x: x[1], new_selection)], "flex flex-wrap gap-2 mb-2 rounded-lg"
 
-#update selector according to graph-type selected
+# update selector according to graph-type selected
 @dash.callback(
     Output('x-variable-div', 'className'),
     Output('y-variable-div', 'className'),
@@ -297,7 +278,6 @@ plot_metric = {
     Input("period", "value"),
     Input("column", "value"),
     Input("selected-competitor-data", "data"),
-    #Input({"type": "ticker-selection", "index": ALL }, "derived_virtual_selected_rows"),
     prevent_initial_call=True
 )
 def update_graph(
@@ -375,9 +355,8 @@ def update_graph(
             yaxis_title=column,
             margin={"t":0,"b":0}
         )
+    return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze pb-3")
     
-    return dcc.Graph(id="graph", figure=figure, className="h-[560px] -mt-4 border-b-2 border-bronze pb-3")#, className="py-8 flex justify-center gap-12"),
-
 
 @dash.callback(
     Output("advantages-box", "className"),
@@ -391,7 +370,7 @@ def hide_advantages_box(selected_ticker_indices):
     if len(selected) < 2:
         return "hidden"
     else:
-        return "self-center pt-2 w-fit" #"absolute top-[30%] right-[10px] p-4 border border-gray-medium rounded-lg"
+        return "self-center pt-2 w-fit"
 
 # Function for updating the advantages box
 @dash.callback(
@@ -499,7 +478,7 @@ def update_advantages_box(selected_ticker_indices):
 
             modal_competitors = [df[df['Ticker'] == ticker_values[0]].drop(columns = ["North"]),
                 df[df['Ticker'] == competitor].drop(columns = ["North"])]
-
+            
             competitor_section.append(html.Div(
                 children=[
                 dmc.Button(
@@ -515,16 +494,11 @@ def update_advantages_box(selected_ticker_indices):
                     zIndex=10000,
                     size = "100%",
                     children=[
-                        # dash.dash_table.DataTable(
-                        #     data = pd.concat(modal_competitors).to_dict("records"),
-                        #     id='competitor-table',
-                            
-                        #     style_cell={'textAlign': 'left'},
-                        # ),
                         dag.AgGrid(
                             id='competitor-table',
                             rowData= pd.concat(modal_competitors).to_dict("records"),
-                            columnDefs = [{"headerName": i, "field": i, "sortable": True} for i in pd.concat(modal_competitors).columns],
+                            columnDefs = [{"headerName": i, "field": i.replace(".", ""), "sortable": True} 
+                                for i in pd.concat(modal_competitors).columns],
                         ),
                         dmc.Group(
                         [
@@ -544,7 +518,6 @@ def update_advantages_box(selected_ticker_indices):
 
             competitor_list.append(html.Div(competitor_section, style={"marginRight": "20px", "padding": "10px"}))
 
-        # container = html.Div(competitor_list, style={"display": "flex"})
         container = html.Div(
             children=[
                 html.H2(
