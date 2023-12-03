@@ -2,8 +2,9 @@ import dash
 from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
+from itertools import islice
 
-FEATURES = ["ETF Filter", "Competitor Analysis", "Recommendation"]
+FEATURES = ["ETF Filter", "Competitor Analysis", "Recommendation", "Macro"]
 
 tailwind_cdn = "https://cdn.tailwindcss.com"
 app = Dash(__name__,
@@ -34,7 +35,7 @@ app.layout = html.Div([
             ], className="flex gap-8 items-center font-medium"),
 
             html.Div([
-                dcc.Link(FEATURES[ind], id=page["name"], href=page['path'], className="px-4 py-2 border border-gray-medium rounded-lg focus:bg-aqua focus:text-white hover:bg-aqua hover:text-white", ) for ind, page in enumerate(dash.page_registry.values())
+                dcc.Link(FEATURES[ind], id=page["name"], href=page['path'], className="px-4 py-2 border border-gray-medium rounded-lg focus:bg-aqua focus:text-white hover:bg-aqua hover:text-white", ) for ind, page in islice(enumerate(dash.page_registry.values()), 3)
             ], className="flex justify-center gap-4"),
         ], className="bg-gray-light h-[80px] px-4 flex justify-between items-center border-b border-gray-medium text-gray-medium"),
                 
