@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 
 ###x1 is JPM's ETF, x2 is target competitor's ETF
 def find_advantage(df, x1, x2):
