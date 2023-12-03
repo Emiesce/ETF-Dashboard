@@ -16,11 +16,11 @@ nltk.download('punkt')
 # The file is in the home directory of the repo, named 'cc.en.300.bin'
 
 print('Checking if model downloaded')
-fasttext.util.download_model('en', if_exists='ignore')
-print('Model detected')
-
-print('Loading model')
-ft = fasttext.load_model('cc.en.300.bin')
+# fasttext.util.download_model('en', if_exists='ignore')
+# print('Model detected')
+#
+# print('Loading model')
+# ft = fasttext.load_model('cc.en.300.bin')
 
 print('Loading stopwords')
 stop_words = set(stopwords.words('english'))  # Set of English stopwords
@@ -106,7 +106,7 @@ def main():
                        True if printb == 'y' else False)
 
         etf_score = 0
-        for idx, row in source_df.iterrows():
+        for _, row in source_df.iterrows():
             etf_score += float(row['Cosine Similarity']) * float(row['Weights'].strip('%'))
 
         scores.append([etf,etf_score])
@@ -132,7 +132,7 @@ def get_ETF_similarity(tickers: list[str], keyword: str):
         # print(source_df_processed)
 
         etf_score = 0
-        for idx, row in source_df_processed.iterrows():
+        for _, row in source_df_processed.iterrows():
             etf_score += float(row['Cosine Similarity']) * float(row['Weights'].strip('%'))
 
         scores[etf] = etf_score
@@ -140,12 +140,31 @@ def get_ETF_similarity(tickers: list[str], keyword: str):
     # print(scores)
     return scores, constituent_similarity
 
-run = True
 
 # while run == True:
-while run == True and __name__ == "__main__":
-    main()
-    run = False if input("Run again? (y/n): ") == 'n' else True
+if __name__ == "__main__":
+    # Count the number of unique words in the model
+    df = pd.read_csv(f'./pages/data/JPST_constituents.csv')
+    df = df.dropna()
+    df['Description'] = df['Description'].apply(remove_stopwords)
+    # Create set of unique words
+    unique_words = set()
+    # Loop through each row of the dataframe
+    for _, row in df.iterrows():
+        # Tokenize the description
+        tokens = word_tokenize(row['Description'])
+        # Add the tokens to the set of unique words
+        unique_words.update(tokens)
+
+    print(len(unique_words))
+
+
+
+
+    run = True
+    while run == True:
+        main()
+        run = False if input("Run again? (y/n): ") == 'n' else True
 
 # source_df = pd.read_csv(f'pages/data/{etf}_constituents.csv')
 # source_df.dropna(inplace=True) # Useless for filter, and causes errors
